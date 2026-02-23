@@ -1,0 +1,92 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ChevronDown } from "lucide-react";
+
+const SidebarItem = ({ name, icon, path, sub, index, isOpen, onToggle }) => {
+  const pathname = usePathname();
+
+  const isActive = path && pathname === path;
+
+  const isParentActive =
+    sub && sub.some((item) => pathname.startsWith(item.path));
+
+  return (
+    <div className="w-full">
+      {/* Main Item */}
+      {path ? (
+        <Link
+          href={path}
+          className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+          ${
+            isActive
+              ? "bg-blue-500 text-white shadow-sm"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+        >
+          <span className="">{icon}</span>
+          <span className="text-sm ">{name}</span>
+        </Link>
+      ) : (
+        <button
+          onClick={() => onToggle(index)}
+          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200
+          ${
+            isParentActive
+              ? "bg-blue-50 text-blue-600"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <span className="">{icon}</span>
+            <span className="text-sm ">{name}</span>
+          </div>
+
+          <ChevronDown
+            className={`transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+            size={16}
+          />
+        </button>
+      )}
+
+      {/* Sub Items */}
+      {sub && (
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out transform origin-top
+          ${
+            isOpen
+              ? "max-h-125 opacity-100 scale-y-100 mt-2"
+              : "max-h-0 opacity-0 scale-y-95"
+          }`}
+        >
+          <div className=" flex flex-col gap-2 bg-blue-50 rounded-lg p-2 ">
+            {sub.map((item, i) => {
+              const active = pathname === item.path;
+              return (
+                <Link
+                  key={i}
+                  href={item.path}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all duration-300
+                  ${
+                    active
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {item.icon && <span>{item.icon}</span>}
+                  {item.name}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SidebarItem;
