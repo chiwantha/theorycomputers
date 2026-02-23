@@ -19,7 +19,7 @@ const SidebarItem = ({ name, icon, path, sub, index, isOpen, onToggle }) => {
       {path ? (
         <Link
           href={path}
-          className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+          className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200
           ${
             isActive
               ? "bg-blue-500 text-white shadow-sm"
@@ -70,7 +70,7 @@ const SidebarItem = ({ name, icon, path, sub, index, isOpen, onToggle }) => {
                 <Link
                   key={i}
                   href={item.path}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all duration-300
+                  className={`flex items-center gap-4 px-4 py-2 rounded-lg text-sm transition-all duration-300
                   ${
                     active
                       ? "bg-blue-500 text-white"

@@ -18,58 +18,79 @@ import {
 } from "lucide-react";
 
 import SidebarItem from "./sidebarItem/SidebarItem";
+import GreetingCard from "../../cards/greetingCard/GreetingCard";
 
 const admin_links = [
   {
     name: `Dashboard`,
-    icon: <LayoutDashboard />,
+    icon: <LayoutDashboard size={20} />,
     path: `/admin`,
   },
   {
     name: `Pos`,
-    icon: <ShoppingCart />,
+    icon: <ShoppingCart size={20} />,
     path: `/`,
   },
   {
     name: "Master",
-    icon: <Database />,
+    icon: <Database size={20} />,
     sub: [
-      { name: "Items", icon: <Package />, path: "/admin/master/items" },
+      {
+        name: "Items",
+        icon: <Package size={20} />,
+        path: "/admin/master/items",
+      },
       {
         name: "Categories",
-        icon: <Layers />,
+        icon: <Layers size={20} />,
         path: "/admin/master/categories",
       },
-      { name: "Brands", icon: <Boxes />, path: "/admin/master/brands" },
-      { name: "Suppliers", icon: <Users />, path: "/admin/master/suppliers" },
+      {
+        name: "Brands",
+        icon: <Boxes size={20} />,
+        path: "/admin/master/brands",
+      },
+      {
+        name: "Suppliers",
+        icon: <Users size={20} />,
+        path: "/admin/master/suppliers",
+      },
     ],
   },
   {
     name: "Inventory",
-    icon: <Warehouse />,
+    icon: <Warehouse size={20} />,
     sub: [
-      { name: "GRN", icon: <ClipboardList />, path: "/admin/inventory/grn" },
-      { name: "Stock", icon: <Warehouse />, path: "/admin/inventory/stock" },
+      {
+        name: "GRN",
+        icon: <ClipboardList size={20} />,
+        path: "/admin/inventory/grn",
+      },
+      {
+        name: "Stock",
+        icon: <Warehouse size={20} />,
+        path: "/admin/inventory/stock",
+      },
       {
         name: "Serials",
-        icon: <Barcode />,
+        icon: <Barcode size={20} />,
         path: "/admin/inventory/serials",
       },
       {
         name: "Returns",
-        icon: <RotateCcw />,
+        icon: <RotateCcw size={20} />,
         path: "/admin/inventory/returns",
       },
       {
         name: "Damages",
-        icon: <AlertTriangle />,
+        icon: <AlertTriangle size={20} />,
         path: "/admin/inventory/damages",
       },
     ],
   },
   {
     name: "Settings",
-    icon: <Settings />,
+    icon: <Settings size={20} />,
     path: "/admin/settings",
   },
 ];
@@ -83,9 +104,7 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-xl p-8 bg-blue-500 flex flex-col space-y-4 justify-center items-center">
-        <div className="rounded-full w-[90%] aspect-square bg-white"></div>
-      </div>
+      <GreetingCard />
       <div className="flex flex-col gap-2">
         {admin_links.map((link, index) => (
           <SidebarItem
