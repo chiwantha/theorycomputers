@@ -1,54 +1,154 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import Button from "../button/Button";
 
-const Table = ({ colunms, rows, searchkeys, tablename }) => {
+const Table = ({ colunms, rows, searchkeys = [], tablename }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortKey, setSortKey] = useState(null);
+  const [sortDir, setSortDir] = useState("asc");
+  const [page, setPage] = useState(1);
 
-  // Logic to filter rows based on searchkeys
-  const filteredRows = rows.filter((row) => {
-    if (!searchTerm) return true;
+  const rowsPerPage = 13;
 
-    // searchkeys might be ["name, selling, id"] or ["name", "selling", "id"]
-    // We normalize it to ensure we can iterate through the keys
-    const keys = searchkeys[0].includes(",")
-      ? searchkeys[0].split(",").map((k) => k.trim())
-      : searchkeys;
+  const filteredRows = useMemo(() => {
+    if (!searchTerm) return rows;
 
-    return keys.some((key) => {
-      const value = row[key];
-      return String(value).toLowerCase().includes(searchTerm.toLowerCase());
+    return rows.filter((row) =>
+      searchkeys.some((key) =>
+        String(row[key] || "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()),
+      ),
+    );
+  }, [rows, searchTerm, searchkeys]);
+
+  const sortedRows = useMemo(() => {
+    if (!sortKey) return filteredRows;
+
+    return [...filteredRows].sort((a, b) => {
+      const aVal = a[sortKey];
+      const bVal = b[sortKey];
+
+      if (aVal < bVal) return sortDir === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortDir === "asc" ? 1 : -1;
+      return 0;
     });
-  });
+  }, [filteredRows, sortKey, sortDir]);
+
+  const totalPages = Math.ceil(sortedRows.length / rowsPerPage);
+  const paginatedRows = sortedRows.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage,
+  );
+
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortDir(sortDir === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
 
   return (
-    <div className="flex flex-col">
-      {/* Simple input to trigger the search */}
-      <input
-        type="text"
-        placeholder={`Search ${tablename || `Table`}...`}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+    <div className="flex flex-col gap-2 bg-white p-2 rounded-xl shadow-lg">
+      {/* 🔍 Search */}
+      <div className="flex justify-between items-center sm:flex-row flex-col ">
+        <h2 className="text-lg font-semibold text-gray-700 px-2 sm:block hidden">
+          {tablename || "Items"}
+        </h2>
 
-      <table className="">
-        <thead>
-          <tr>
-            {colunms.map((col, index) => (
-              <th key={index} title={col.data_name} className="text-left">
-                {col.header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredRows.map((row, index) => (
-            <tr key={index}>
-              {colunms.map((dn, idx) => (
-                <td key={idx}>{row[dn.data_name]}</td>
+        <input
+          type="text"
+          placeholder="Search..."
+          className="bg-gray-200 px-4 py-2 rounded-lg text-sm w-full sm:w-56 md:w-70 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPage(1);
+          }}
+        />
+      </div>
+
+      {/* 📊 Table */}
+      <div className="overflow-x-auto rounded-lg">
+        <table className="min-w-full text-sm rounded-lg overflow-hidden">
+          {/* Header */}
+          <thead className=" bg-red-300 overflow-hidden">
+            <tr className="bg-blue-100 text-gray-600 uppercase text-xs">
+              {colunms.map((col, index) => (
+                <th
+                  key={index}
+                  onClick={() => handleSort(col.data_name)}
+                  className={`px-4 py-3 text-left font-semibold cursor-pointer select-none ${col.className}`}
+                >
+                  <div className="flex items-center gap-1">
+                    {col.header}
+                    {sortKey === col.data_name && (
+                      <span className="text-blue-500">
+                        {sortDir === "asc" ? "↑" : "↓"}
+                      </span>
+                    )}
+                  </div>
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          {/* Body */}
+          <tbody>
+            {paginatedRows.length > 0 ? (
+              paginatedRows.map((row, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-gray-100 hover:bg-blue-50 transition duration-150"
+                >
+                  {colunms.map((col, idx) => (
+                    <td
+                      key={idx}
+                      className={`px-4 py-3  ${col.className} ${col.data_className || `text-gray-600`}`}
+                    >
+                      {row[col.data_name]}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={colunms.length}
+                  className="text-center py-8 text-gray-400"
+                >
+                  No data found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* 📄 Pagination */}
+      <div className="flex justify-between items-center">
+        <span className="px-2 text-sm text-gray-400">
+          Page {page} of {totalPages || 1}
+        </span>
+
+        <div className="flex gap-2">
+          <Button
+            pd={`px-4 py-1`}
+            rounded={`rounded-lg`}
+            name={`Prev`}
+            click={() => setPage((p) => Math.max(p - 1, 1))}
+            disabled={page === 1}
+          />
+          <Button
+            pd={`px-4 py-1`}
+            rounded={`rounded-lg`}
+            name={`Next`}
+            click={() => setPage((p) => Math.min(p + 1, totalPages))}
+            disabled={page === totalPages}
+          />
+        </div>
+      </div>
     </div>
   );
 };
