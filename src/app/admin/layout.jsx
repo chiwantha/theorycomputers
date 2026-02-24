@@ -1,5 +1,6 @@
 import Sidebar from "@/components/admin/layout/sidebar/Sidebar";
 import Navbar from "@/components/admin/layout/navbar/Navbar";
+import { SidebarProvider } from "@/context/SidebarContext";
 
 export const metadata = {
   title: "Control Panel",
@@ -9,22 +10,24 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="h-screen flex">
       {/* Sidebar */}
-      <aside className="w-70 p-4 overflow-y-auto border-r shadow-sm border-gray-100 ">
-        <Sidebar />
-      </aside>
+      <SidebarProvider>
+        <aside>
+          <Sidebar />
+        </aside>
 
-      {/* Right Side */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        {/* Navbar */}
-        <div className="sticky top-0 z-50">
-          <Navbar />
+        {/* Right Side */}
+        <div className="flex flex-col flex-1 overflow-hidden">
+          {/* Navbar */}
+          <div className="sticky top-0 z-50">
+            <Navbar />
+          </div>
+
+          {/* Content */}
+          <main className="flex-1 overflow-y-auto p-4 bg-gray-100">
+            {children}
+          </main>
         </div>
-
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto p-4 bg-gray-100">
-          {children}
-        </main>
-      </div>
+      </SidebarProvider>
     </div>
   );
 };

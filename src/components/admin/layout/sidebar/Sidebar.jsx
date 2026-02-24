@@ -19,6 +19,7 @@ import {
 
 import SidebarItem from "./sidebarItem/SidebarItem";
 import GreetingCard from "../../cards/greetingCard/GreetingCard";
+import { useSidebar } from "@/context/SidebarContext";
 
 const admin_links = [
   {
@@ -102,8 +103,15 @@ const Sidebar = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const { isSidebarOpen } = useSidebar();
+
   return (
-    <div className="flex flex-col gap-4">
+    <div
+      className={`w-70 p-4 overflow-y-auto border-r shadow-sm border-gray-100
+      md:translate-x-0 fixed md:relative top-0 left-0 h-full z-51
+      transform transition-transform duration-300 bg-white flex flex-col gap-4
+      ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} md:translate-x-0`}
+    >
       <GreetingCard />
       <div className="flex flex-col gap-2">
         {admin_links.map((link, index) => (
