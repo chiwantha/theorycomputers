@@ -31,11 +31,13 @@ const MasterItems = () => {
     },
   ];
 
+  const search = ["name, category"];
+
   const data = ItemsMasterList;
   return (
     <div className=" flex flex-col ">
       <div className="">Items Mater</div>
-      <Table colunms={colunms} rows={data} />
+      <Table colunms={colunms} rows={data} searchkeys={search} />
     </div>
   );
 };
