@@ -14,7 +14,7 @@ const Button = ({
   disabled,
 }) => {
   const baseStyles = `
-             transition-all duration-300
+             transition-all duration-300 select-none cursor-pointer
         ${bg ? bg : `bg-blue-600 hover:bg-blue-700 text-white`}
         ${fg}
         ${mg}

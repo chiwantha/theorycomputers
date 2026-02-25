@@ -1,10 +1,17 @@
+"use client";
 import ItemMasterForm from "@/components/admin/forms/master/items/ItemMasterForm";
 import Drawer from "@/components/common/drawer/Drawer";
 import Table from "@/components/common/table/Table";
 
 import { ItemsMasterList } from "@/constant/DummyItemsMaster";
 
+import { BrandMasterList } from "@/constant/DummyBrandMaster";
+
 const MasterItems = () => {
+  const frameworks = BrandMasterList.map((brand) => ({
+    value: brand.id,
+    label: brand.name,
+  }));
   const colunms = [
     {
       header: "Id",

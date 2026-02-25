@@ -1,39 +1,40 @@
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import Button from "../button/Button";
+import {
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerSlide,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../drawerslide/DrawerSlide";
 
 const Drawer = ({ title, description, button, close, form }) => {
   return (
     <div className="">
-      <Sheet className={``}>
-        <SheetTrigger>
-          <Button name={`Add Item`} />
-        </SheetTrigger>
-        <SheetContent
-          className={`bg-white p-4 md:p-6 border-none md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%] `}
-        >
-          <SheetHeader className={`px-0 ${!title && `hidden`}`}>
-            <SheetTitle>This Is My Drawer</SheetTitle>
-            <SheetDescription>Lets Practice to use Drawer</SheetDescription>
-          </SheetHeader>
-          <div className="">{form}</div>
-          <SheetFooter>
+      <DrawerSlide>
+        <DrawerTrigger>
+          <Button name="Add Item" />
+        </DrawerTrigger>
+
+        <DrawerContent className="bg-white p-4 md:p-6 border-none md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]">
+          <DrawerHeader className={`px-0 ${!title && "hidden"}`}>
+            <DrawerTitle>This Is My Drawer</DrawerTitle>
+            <DrawerDescription>Lets Practice to use Drawer</DrawerDescription>
+          </DrawerHeader>
+
+          <div>{form}</div>
+
+          <DrawerFooter>
             {close && (
-              <SheetClose>
-                <Button name={`Close`} />
-              </SheetClose>
+              <DrawerClose>
+                <Button name="Close" />
+              </DrawerClose>
             )}
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+          </DrawerFooter>
+        </DrawerContent>
+      </DrawerSlide>
     </div>
   );
 };

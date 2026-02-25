@@ -2,6 +2,7 @@
 
 import RequiredSymbole from "@/components/common/required/RequiredSymbole";
 import { InputStyle, LabelStyle } from "@/constant/Forms";
+import { BrandMasterList } from "@/constant/DummyBrandMaster";
 
 import {
   Combobox,
@@ -11,68 +12,62 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { BrandMasterList } from "@/constant/DummyBrandMaster";
+import NextInput from "@/components/common/input/NextInput";
 
 const ItemMasterForm = () => {
-  const frameworks = BrandMasterList.map((brand) => ({
+  const brands = BrandMasterList.map((brand) => ({
     value: brand.id,
     label: brand.name,
   }));
+
   return (
     <div className="flex flex-col gap-6">
       {/* <div className=""></div> */}
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
-        <div className="flex flex-col gap-1">
-          <label htmlFor="item_id" className={LabelStyle}>
-            Item Id
-          </label>
-          <input
-            type="text"
-            name="item_id"
-            id="item_id"
-            className={InputStyle}
-            placeholder="ITM-001"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label htmlFor="item_code" className={LabelStyle}>
-            Item Code
-          </label>
-          <input
-            type="text"
-            name="item_code"
-            id="item_code"
-            className={InputStyle}
-            placeholder="LAP1504VA"
-          />
-        </div>
-        <div className="flex flex-col gap-1 md:col-span-2">
-          <label htmlFor="item_name" className={LabelStyle}>
-            Item Name <RequiredSymbole />
-          </label>
-          <input
-            type="text"
-            name="item_name"
-            id="item_name"
-            className={InputStyle}
-            placeholder="Asus Vivobook X1504VA"
-          />
-        </div>
+        <NextInput
+          label={`Item Id`}
+          id={`item_id`}
+          name={`item_id`}
+          placeholder={`ITM-001`}
+        />
+        <NextInput
+          label={`Item Code`}
+          id={`item_code`}
+          name={`item_code`}
+          placeholder={`LAP1504VA`}
+        />
+        <NextInput
+          label={`Item Name`}
+          id={`item_name`}
+          name={`item_name`}
+          placeholder={`Asus Vivobook X1504VA`}
+          className={`md:col-span-2`}
+        />
+
+        <NextInput
+          id={`item_brand`}
+          combo={true}
+          combobox_items={brands}
+          label={`Brand`}
+          placeholder={`Asus`}
+        />
+
         <div className="flex flex-col gap-1">
           <label htmlFor="item_id" className={LabelStyle}>
             Brand
           </label>
           <Combobox
-            items={frameworks}
-            itemToStringValue={(framework) => framework.label}
+            items={brands}
+            itemToStringValue={(brand) => brand.value}
+            // onValueChange={(brand) => alert(brand?.value || 0)}
           >
-            <ComboboxInput placeholder="Select a framework" />
+            <ComboboxInput placeholder="Select a framework" showClear />
             <ComboboxContent>
               <ComboboxEmpty>No items found.</ComboboxEmpty>
               <ComboboxList>
-                {(framework) => (
-                  <ComboboxItem key={framework.value} value={framework}>
-                    {framework.label}
+                {(brands) => (
+                  <ComboboxItem key={brands.value} value={brands}>
+                    {brands.label}
                   </ComboboxItem>
                 )}
               </ComboboxList>
