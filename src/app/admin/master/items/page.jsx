@@ -1,4 +1,4 @@
-import Button from "@/components/common/button/Button";
+import ItemMasterForm from "@/components/admin/forms/master/items/ItemMasterForm";
 import Drawer from "@/components/common/drawer/Drawer";
 import Table from "@/components/common/table/Table";
 
@@ -50,7 +50,7 @@ const MasterItems = () => {
   return (
     <div className=" flex flex-col gap-4">
       <div className="">
-        <Drawer />
+        <Drawer form={<ItemMasterForm />} />
       </div>
       <Table
         colunms={colunms}

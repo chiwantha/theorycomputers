@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sheet";
 import Button from "../button/Button";
 
-const Drawer = ({ button, close, form }) => {
+const Drawer = ({ title, description, button, close, form }) => {
   return (
     <div className="">
       <Sheet className={``}>
@@ -18,18 +18,13 @@ const Drawer = ({ button, close, form }) => {
           <Button name={`Add Item`} />
         </SheetTrigger>
         <SheetContent
-          className={`bg-white p-4 border-none md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]`}
+          className={`bg-white p-4 md:p-6 border-none md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%] `}
         >
-          <SheetHeader className={`px-0`}>
-            <SheetTitle>This Is My Sheet</SheetTitle>
-            <SheetDescription>Lets Practice to use Sheets</SheetDescription>
+          <SheetHeader className={`px-0 ${!title && `hidden`}`}>
+            <SheetTitle>This Is My Drawer</SheetTitle>
+            <SheetDescription>Lets Practice to use Drawer</SheetDescription>
           </SheetHeader>
-          <div className="">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Non,
-            debitis blanditiis eaque nulla enim deserunt dolores mollitia
-            quibusdam. Harum hic expedita omnis similique ex rem dolor culpa
-            repudiandae id cum.
-          </div>
+          <div className="">{form}</div>
           <SheetFooter>
             {close && (
               <SheetClose>
