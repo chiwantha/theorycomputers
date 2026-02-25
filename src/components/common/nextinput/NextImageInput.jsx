@@ -56,7 +56,7 @@ const NextImageInput = ({
         {preview && (
           <div
             className={cn(
-              "relative rounded-xl overflow-hidden border border-gray-300 max-w-[200px] aspect-square",
+              "relative rounded-xl overflow-hidden border border-gray-300 max-w-50 aspect-square",
               `w-[${size}px] h-[${size}px]`,
             )}
           >
