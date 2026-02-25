@@ -70,7 +70,7 @@ function DrawerContent({
       {/* Drawer */}
       <div
         className={cn(
-          "fixed z-50 bg-white shadow-lg transition-transform duration-300 flex flex-col",
+          "fixed z-50 bg-white shadow-lg transition-transform duration-300 flex overflow-y-auto flex-col",
           side === "right" &&
             `top-0 right-0 h-full transform ${
               open ? "translate-x-0" : "translate-x-full"

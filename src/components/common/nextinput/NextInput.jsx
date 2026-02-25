@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import RequiredSymbole from "@/components/common/required/RequiredSymbole";
 import { cn } from "@/lib/utils";
 import { InputStyle, LabelStyle } from "@/constant/Forms";
 import {
@@ -21,36 +21,20 @@ const NextInput = ({
   inputClassName, // input-specific classes
   placeholder,
   value,
+  required,
   onChange,
   combo = false,
   combobox_items = [],
   onComboboxChange, // pass selected value handler
+  textarea = false, // new prop
+  textareaRows = 4, // default rows
 }) => {
-  if (!combo) {
+  if (combo) {
     return (
       <div className={cn("flex flex-col gap-1", className)}>
         {label && (
           <label htmlFor={id} className={LabelStyle}>
-            {label}
-          </label>
-        )}
-        <input
-          type={type}
-          name={name}
-          id={id}
-          value={value}
-          onChange={onChange}
-          className={cn(InputStyle, inputClassName)}
-          placeholder={placeholder}
-        />
-      </div>
-    );
-  } else {
-    return (
-      <div className={cn("flex flex-col gap-1", className)}>
-        {label && (
-          <label htmlFor={id} className={LabelStyle}>
-            {label}
+            {label} {required === true && <RequiredSymbole />}
           </label>
         )}
         <Combobox
@@ -70,6 +54,45 @@ const NextInput = ({
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
+      </div>
+    );
+  } else if (textarea) {
+    return (
+      <div className={cn("flex flex-col gap-1", className)}>
+        {label && (
+          <label htmlFor={id} className={LabelStyle}>
+            {label} {required === true && <RequiredSymbole />}
+          </label>
+        )}
+        <textarea
+          id={id}
+          name={name}
+          placeholder={placeholder}
+          rows={textareaRows}
+          value={value}
+          onChange={onChange}
+          className={cn(InputStyle, inputClassName)}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div className={cn("flex flex-col gap-1", className)}>
+        {label && (
+          <label htmlFor={id} className={LabelStyle}>
+            {label} {required === true && <RequiredSymbole />}
+          </label>
+        )}
+        <input
+          type={type}
+          name={name}
+          id={id}
+          required={true}
+          value={value}
+          onChange={onChange}
+          className={cn(InputStyle, inputClassName)}
+          placeholder={placeholder}
+        />
       </div>
     );
   }
