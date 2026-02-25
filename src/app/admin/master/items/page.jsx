@@ -1,6 +1,8 @@
+import Button from "@/components/common/button/Button";
+import Drawer from "@/components/common/drawer/Drawer";
 import Table from "@/components/common/table/Table";
+
 import { ItemsMasterList } from "@/constant/DummyItemsMaster";
-import React from "react";
 
 const MasterItems = () => {
   const colunms = [
@@ -46,8 +48,10 @@ const MasterItems = () => {
 
   const data = ItemsMasterList;
   return (
-    <div className=" flex flex-col ">
-      {/* <div className="">Items Mater</div> */}
+    <div className=" flex flex-col gap-4">
+      <div className="">
+        <Drawer />
+      </div>
       <Table
         colunms={colunms}
         rows={data}

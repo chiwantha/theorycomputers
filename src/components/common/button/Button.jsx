@@ -31,9 +31,9 @@ const Button = ({
     );
   } else {
     return (
-      <button className={baseStyles} onClick={click} disabled={disabled}>
+      <div className={baseStyles} onClick={click} disabled={disabled}>
         {name || `Button`}
-      </button>
+      </div>
     );
   }
 };
