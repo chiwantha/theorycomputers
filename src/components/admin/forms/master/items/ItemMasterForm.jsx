@@ -11,6 +11,7 @@ const ItemMasterForm = () => {
   const [formData, setFormData] = useState({
     id: ``,
     code: ``,
+    name: ``,
     brand: ``,
     category: ``,
     description: ``,
@@ -29,9 +30,48 @@ const ItemMasterForm = () => {
     label: category.name,
   }));
 
+  const handleSave = async () => {
+    try {
+      const data = new FormData();
+      data.append(`id`, formData.id);
+      data.append(`code`, formData.code);
+      data.append(`name`, formData.name);
+      data.append(`brand`, formData.brand);
+      data.append(`category`, formData.category);
+      data.append(`description`, formData.description);
+      data.append(`image`, formData.image);
+      data.append(`cost`, formData.cost);
+      data.append(`selling`, formData.selling);
+      data.append(`serial`, formData.serial);
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items/new`,
+        {
+          method: "POST",
+          body: data,
+        },
+      );
+
+      if (!res.ok) {
+        alert(`Save Failed !`);
+        return;
+      }
+
+      alert(`Saved !`);
+      return;
+    } catch (err) {
+      alert(`Error On Save !`, err);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
-      {/* <div className=""></div> */}
+      <div className="">
+        <span className="font-black text-2xl uppercase text-gray-700">
+          Master Items
+        </span>
+      </div>
+      <hr className="border-gray-200 w-full col-span-full" />
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
         <NextInput
           label={`Item Id`}
@@ -39,6 +79,7 @@ const ItemMasterForm = () => {
           name={`item_id`}
           placeholder={`ITM-001`}
           onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+          value={formData.id}
         />
         <NextInput
           label={`Item Code`}
@@ -46,6 +87,7 @@ const ItemMasterForm = () => {
           name={`item_code`}
           placeholder={`LAP1504VA`}
           onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+          value={formData.code}
         />
         <NextInput
           label={`Item Name`}
@@ -55,6 +97,7 @@ const ItemMasterForm = () => {
           placeholder={`Asus Vivobook X1504VA`}
           className={`sm:col-span-2`}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          value={formData.name}
         />
         <NextInput
           label={`Brand`}
@@ -66,6 +109,7 @@ const ItemMasterForm = () => {
           onComboboxChange={(e) =>
             setFormData({ ...formData, brand: e?.value })
           }
+          value={formData.brand}
         />
         <NextInput
           label={`Category`}
@@ -77,6 +121,7 @@ const ItemMasterForm = () => {
           onComboboxChange={(e) =>
             setFormData({ ...formData, category: e?.value })
           }
+          value={formData.category}
         />
         <NextInput
           label={`Description`}
@@ -88,6 +133,7 @@ const ItemMasterForm = () => {
           onChange={(e) =>
             setFormData({ ...formData, description: e.target.value })
           }
+          value={formData.description}
         />
         <NextImageInput
           label={`Image`}
@@ -101,6 +147,7 @@ const ItemMasterForm = () => {
             name={`item_cost`}
             placeholder={`189000`}
             onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+            value={formData.cost}
           />
           <NextInput
             label={`Selling`}
@@ -111,6 +158,7 @@ const ItemMasterForm = () => {
             onChange={(e) =>
               setFormData({ ...formData, selling: e.target.value })
             }
+            value={formData.selling}
           />
           <NextInput
             label={`Serial`}
@@ -125,6 +173,7 @@ const ItemMasterForm = () => {
             onComboboxChange={(e) =>
               setFormData({ ...formData, serial: e?.value })
             }
+            value={formData.serial}
           />
         </div>
         <hr className="border-gray-200 w-full col-span-full my-2" />
@@ -132,7 +181,7 @@ const ItemMasterForm = () => {
           name={`Save Item`}
           bg={`bg-green-400 hover:bg-green-500 text-white`}
           click={() => {
-            alert(JSON.stringify(formData, null, 2));
+            handleSave();
           }}
         />
       </div>
