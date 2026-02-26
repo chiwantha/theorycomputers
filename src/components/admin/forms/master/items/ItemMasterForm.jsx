@@ -18,6 +18,7 @@ const ItemMasterForm = () => {
     image: ``,
     cost: ``,
     selling: ``,
+    reorder: ``,
     serial: ``,
   });
 
@@ -154,6 +155,17 @@ const ItemMasterForm = () => {
             id={`item_selling`}
             required={true}
             name={`item_selling`}
+            placeholder={`201000`}
+            onChange={(e) =>
+              setFormData({ ...formData, selling: e.target.value })
+            }
+            value={formData.selling}
+          />
+          <NextInput
+            label={`ReOrder`}
+            id={`stock_reorder`}
+            required={true}
+            name={`stock_reorder`}
             placeholder={`201000`}
             onChange={(e) =>
               setFormData({ ...formData, selling: e.target.value })

@@ -1,5 +1,5 @@
 import { query } from "@/lib/db";
-import { saveImage } from "@/lib/helper";
+import { generateNames, saveImage } from "@/lib/helper";
 import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
@@ -16,9 +16,16 @@ export const POST = async (request) => {
     const selling = data.get("selling");
     const serial = data.get("serial");
 
-    const image = data.get("image"); // 👈 this is File object
+    const image = data.get("image") || null; // 👈 this is File object
 
-    const saveIamge = await saveImage(image, image?.name, `/master/items`);
+    let saveIamge = {};
+    if (image) {
+      saveIamge = await saveImage(
+        image,
+        generateNames(image?.name),
+        `/master/items`,
+      );
+    }
 
     let save_query = "";
 
@@ -30,7 +37,7 @@ export const POST = async (request) => {
       code,
       name,
       description,
-      saveIamge?.fileUrl,
+      saveIamge?.fileUrl || null,
       category,
       brand,
       cost,
@@ -43,8 +50,9 @@ export const POST = async (request) => {
 
     return NextResponse.json({ message: "Received", name }, { status: 200 });
   } catch (err) {
+    console.log(err);
     return NextResponse.json(
-      { error: `Internal Server Error !` },
+      { error: `Internal Server Error !`, err },
       { status: 500 },
     );
   }
