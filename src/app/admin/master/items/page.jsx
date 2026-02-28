@@ -6,12 +6,18 @@ import Table from "@/components/common/table/Table";
 import { ItemsMasterList } from "@/constant/DummyItemsMaster";
 
 import { BrandMasterList } from "@/constant/DummyBrandMaster";
+import { useState } from "react";
+import Button from "@/components/common/button/Button";
 
 const MasterItems = () => {
+  const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState(null);
+
   const frameworks = BrandMasterList.map((brand) => ({
     value: brand.id,
     label: brand.name,
   }));
+
   const colunms = [
     {
       header: "Id",
@@ -56,8 +62,22 @@ const MasterItems = () => {
   const data = ItemsMasterList;
   return (
     <div className=" flex flex-col gap-4">
-      <div className="">
-        <Drawer form={<ItemMasterForm />} />
+      <div className="flex items-center justify-between">
+        <Drawer
+          form={<ItemMasterForm data={editId} />}
+          callback={() => {
+            setEditId(null);
+          }}
+          open={open}
+          setOpen={setOpen}
+        />
+        <Button
+          name={`Open Manual !`}
+          click={() => {
+            setEditId(true);
+            setOpen(!open);
+          }}
+        />
       </div>
       <Table
         colunms={colunms}

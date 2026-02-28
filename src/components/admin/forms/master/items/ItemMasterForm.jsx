@@ -7,7 +7,7 @@ import NextImageInput from "@/components/common/nextinput/NextImageInput";
 import Button from "@/components/common/button/Button";
 import { useState } from "react";
 
-const ItemMasterForm = () => {
+const ItemMasterForm = ({ data }) => {
   const [formData, setFormData] = useState({
     id: ``,
     code: ``,
@@ -69,7 +69,7 @@ const ItemMasterForm = () => {
     <div className="flex flex-col gap-6">
       <div className="">
         <span className="font-black text-2xl uppercase text-gray-700">
-          Master Items
+          {`${data ? `Edit` : `New`} Master Items`}
         </span>
       </div>
       <hr className="border-gray-200 w-full col-span-full" />

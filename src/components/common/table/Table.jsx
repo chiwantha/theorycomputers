@@ -105,9 +105,9 @@ const Table = ({ colunms, rows, searchkeys = [], tablename }) => {
                   {colunms.map((col, idx) => (
                     <td
                       key={idx}
-                      className={`px-4 py-3  ${col.className} ${col.data_className || `text-gray-600`}`}
+                      className={`px-4 py-3 ${col.className} ${col.data_className || `text-gray-600`}`}
                     >
-                      {row[col.data_name]}
+                      {col.render ? col.render(row) : row[col.data_name]}
                     </td>
                   ))}
                 </tr>

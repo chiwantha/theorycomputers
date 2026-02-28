@@ -1,3 +1,4 @@
+"use client";
 import Button from "../button/Button";
 import {
   DrawerClose,
@@ -10,12 +11,21 @@ import {
   DrawerTrigger,
 } from "../drawerslide/DrawerSlide";
 
-const Drawer = ({ title, description, button, close, form }) => {
+const Drawer = ({
+  title,
+  description,
+  button,
+  close,
+  form,
+  open,
+  setOpen,
+  callback,
+}) => {
   return (
     <div className="">
-      <DrawerSlide>
+      <DrawerSlide open={open} onOpenChange={setOpen}>
         <DrawerTrigger>
-          <Button name="Add Item" />
+          <Button name={button || "Add Item"} click={callback} />
         </DrawerTrigger>
 
         <DrawerContent className="bg-white p-4 md:p-6 border-none md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]">

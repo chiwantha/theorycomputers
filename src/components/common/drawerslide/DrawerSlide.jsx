@@ -7,8 +7,25 @@ import { cn } from "@/lib/utils";
 
 const DrawerContext = createContext();
 
-function DrawerSlide({ children }) {
-  const [open, setOpen] = useState(false);
+function DrawerSlide({
+  children,
+  open: controlledOpen,
+  defaultOpen = false,
+  onOpenChange,
+}) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+
+  const isControlled = controlledOpen !== undefined;
+
+  const open = isControlled ? controlledOpen : internalOpen;
+
+  const setOpen = (value) => {
+    if (isControlled) {
+      onOpenChange && onOpenChange(value);
+    } else {
+      setInternalOpen(value);
+    }
+  };
 
   return (
     <DrawerContext.Provider value={{ open, setOpen }}>
@@ -18,7 +35,11 @@ function DrawerSlide({ children }) {
 }
 
 function useDrawer() {
-  return useContext(DrawerContext);
+  const context = useContext(DrawerContext);
+  if (!context) {
+    throw new Error("useDrawer must be used within DrawerSlide");
+  }
+  return context;
 }
 
 function DrawerTrigger({ children }) {
