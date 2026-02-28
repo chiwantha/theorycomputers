@@ -4,7 +4,7 @@ export const ItemsMasterList = [
     code: "LAP-ASUS-VB-01",
     name: "Asus VivoBook Laptop",
     description: "15.6-inch laptop, Intel i5, 8GB RAM, 512GB SSD",
-    image: "https://source.unsplash.com/featured/?asus,laptop",
+    image: "/master/items/appmm6p5omkpde0.png",
     category: "Laptops",
     brand: "Asus",
     cost: 120000,

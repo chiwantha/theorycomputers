@@ -8,7 +8,7 @@ const Table = ({ colunms, rows, searchkeys = [], tablename }) => {
   const [sortDir, setSortDir] = useState("asc");
   const [page, setPage] = useState(1);
 
-  const rowsPerPage = 13;
+  const rowsPerPage = 12;
 
   const filteredRows = useMemo(() => {
     if (!searchTerm) return rows;

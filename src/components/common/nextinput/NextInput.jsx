@@ -40,6 +40,11 @@ const NextInput = ({
         <Combobox
           items={combobox_items}
           itemToStringValue={(item) => item.label || ""}
+          value={
+            (value &&
+              combobox_items.find((item) => item.value === value)?.value) ||
+            ""
+          }
           onValueChange={(item) => onComboboxChange?.(item)}
         >
           <ComboboxInput placeholder={placeholder} showClear />

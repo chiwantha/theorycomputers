@@ -2,21 +2,13 @@
 import ItemMasterForm from "@/components/admin/forms/master/items/ItemMasterForm";
 import Drawer from "@/components/common/drawer/Drawer";
 import Table from "@/components/common/table/Table";
-
+import ActionColumn from "@/components/common/actioncolumn/ActionColumn";
 import { ItemsMasterList } from "@/constant/DummyItemsMaster";
-
-import { BrandMasterList } from "@/constant/DummyBrandMaster";
 import { useState } from "react";
-import Button from "@/components/common/button/Button";
 
 const MasterItems = () => {
   const [open, setOpen] = useState(false);
-  const [editId, setEditId] = useState(null);
-
-  const frameworks = BrandMasterList.map((brand) => ({
-    value: brand.id,
-    label: brand.name,
-  }));
+  const [changeData, setChangeData] = useState(null);
 
   const colunms = [
     {
@@ -55,6 +47,18 @@ const MasterItems = () => {
       className: "",
       data_className: "text-blue-400 font-medium",
     },
+    {
+      header: "Actions",
+      data_name: "actions",
+      className: "text-center",
+      render: (row) => (
+        <ActionColumn
+          row={row}
+          setChangeData={setChangeData}
+          setOpen={setOpen}
+        />
+      ),
+    },
   ];
 
   const search = ["name", "category"];
@@ -64,19 +68,12 @@ const MasterItems = () => {
     <div className=" flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <Drawer
-          form={<ItemMasterForm data={editId} />}
+          form={<ItemMasterForm defaultData={changeData} />}
           callback={() => {
-            setEditId(null);
+            setChangeData(null);
           }}
           open={open}
           setOpen={setOpen}
-        />
-        <Button
-          name={`Open Manual !`}
-          click={() => {
-            setEditId(true);
-            setOpen(!open);
-          }}
         />
       </div>
       <Table

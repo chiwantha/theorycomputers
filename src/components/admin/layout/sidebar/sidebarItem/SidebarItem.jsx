@@ -63,7 +63,7 @@ const SidebarItem = ({ name, icon, path, sub, index, isOpen, onToggle }) => {
               : "max-h-0 opacity-0 scale-y-95"
           }`}
         >
-          <div className=" flex flex-col gap-2 bg-blue-50 rounded-lg p-2 ">
+          <div className=" flex flex-col gap-2 bg-blue-50 rounded-xl p-2 ">
             {sub.map((item, i) => {
               const active = pathname === item.path;
               return (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { XIcon } from "lucide-react";
 import { LabelStyle } from "@/constant/Forms";
@@ -9,22 +9,39 @@ const NextImageInput = ({
   label,
   className, // wrapper div
   imageClassName, // img styling
-  onChange, // callback with selected file
+  onChange, // callback with selected file or null
   size = 120, // width & height of square
   accept = "image/*",
+  value, // controlled value: string URL or File object
 }) => {
   const [preview, setPreview] = useState(null);
+
+  // Sync preview with value prop
+  useEffect(() => {
+    if (value instanceof File) {
+      setPreview(URL.createObjectURL(value));
+    } else if (typeof value === "string") {
+      setPreview(value); // URL string
+    } else {
+      setPreview(null);
+    }
+
+    // Clean up object URLs
+    return () => {
+      if (value instanceof File) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [value]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPreview(URL.createObjectURL(file));
       onChange?.(file);
     }
   };
 
   const handleRemove = () => {
-    setPreview(null);
     onChange?.(null);
   };
 
