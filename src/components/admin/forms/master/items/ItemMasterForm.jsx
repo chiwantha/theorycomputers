@@ -6,6 +6,8 @@ import { CategoryMasterList } from "@/constant/DummyCategoryMaster";
 import NextImageInput from "@/components/common/nextinput/NextImageInput";
 import Button from "@/components/common/button/Button";
 import { useEffect, useState } from "react";
+import NextDropdown from "@/components/common/nextinput/NextDropdown";
+import { InputStyle } from "@/constant/Forms";
 
 const ItemMasterForm = ({ defaultData }) => {
   const defaultFormData = defaultData?.row || {};
@@ -215,7 +217,7 @@ const ItemMasterForm = ({ defaultData }) => {
               }
               value={formData.selling}
             />
-            <NextInput
+            {/* <NextInput
               label={`Serial`}
               id={`item_serial`}
               required={true}
@@ -229,6 +231,16 @@ const ItemMasterForm = ({ defaultData }) => {
                 setFormData({ ...formData, serial: e?.value })
               }
               value={formData.serial}
+            /> */}
+            <NextDropdown
+              className={InputStyle}
+              placeholder={`Yes / No`}
+              items={[
+                { value: 1, label: `Yes` },
+                { value: 0, label: `No` },
+              ]}
+              defaultValue={formData.serial ? 1 : 0}
+              onChange={(e) => setFormData({ ...formData, serial: e?.value })}
             />
           </div>
           <hr className="border-gray-200 w-full col-span-full my-2" />
