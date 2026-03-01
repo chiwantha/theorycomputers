@@ -1,6 +1,6 @@
 "use client";
 
-import RequiredSymbole from "@/components/common/required/RequiredSymbole";
+import RequiredSymbole from "@/components/common/form/required/RequiredSymbole";
 import { cn } from "@/lib/utils";
 import { InputStyle, LabelStyle } from "@/constant/Forms";
 import {

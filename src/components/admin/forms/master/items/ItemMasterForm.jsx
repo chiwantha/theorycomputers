@@ -1,13 +1,13 @@
 "use client";
 
 import { BrandMasterList } from "@/constant/DummyBrandMaster";
-import NextInput from "@/components/common/nextinput/NextInput";
+import NextInput from "@/components/common/form/nextinput/NextInput";
 import { CategoryMasterList } from "@/constant/DummyCategoryMaster";
-import NextImageInput from "@/components/common/nextinput/NextImageInput";
+import NextImageInput from "@/components/common/form/nextinput/NextImageInput";
 import Button from "@/components/common/button/Button";
 import { useEffect, useState } from "react";
-import NextDropdown from "@/components/common/nextinput/NextDropdown";
-import { InputStyle } from "@/constant/Forms";
+import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
+import Separator from "@/components/common/separator/Separator";
 
 const ItemMasterForm = ({ defaultData }) => {
   const defaultFormData = defaultData?.row || {};
@@ -107,19 +107,21 @@ const ItemMasterForm = ({ defaultData }) => {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* header form */}
       <div>
         <span className="font-black text-2xl uppercase text-gray-700">
           {!defaultData && "New Master Item"}
 
-          {defaultData?.type === "edit" && `Edit ${defaultData.row_id}`}
+          {defaultData?.type === "edit" && `Edit ${defaultData?.row.id}`}
 
           {defaultData?.type === "delete" && (
-            <span className="text-red-600">Delete {defaultData.row_id}?</span>
+            <span className="text-red-600">Delete {defaultData?.row.id}?</span>
           )}
         </span>
       </div>
-      <hr className="border-gray-200 w-full col-span-full" />
+      <Separator />
       {!defaultData || defaultData?.type !== `delete` ? (
+        //form
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
           <NextInput
             label={`Item Id`}
@@ -149,7 +151,7 @@ const ItemMasterForm = ({ defaultData }) => {
           />
 
           <NextDropdown
-            key={defaultFormData ? defaultFormData.id + "bra" : "new"}
+            // key={defaultFormData ? defaultFormData.id + "bra" : "new"}
             label={`Brand`}
             id={`item_brand`}
             placeholder={`Asus`}
@@ -159,7 +161,7 @@ const ItemMasterForm = ({ defaultData }) => {
             onChange={(value) => setFormData({ ...formData, brand: value })}
           />
           <NextDropdown
-            key={defaultFormData ? defaultFormData.id + "cat" : "new"}
+            // key={defaultFormData ? defaultFormData.id + "cat" : "new"}
             label={`Category`}
             id={`item_category`}
             placeholder={`Laptop`}
@@ -185,7 +187,7 @@ const ItemMasterForm = ({ defaultData }) => {
             onChange={(img) => setFormData({ ...formData, image: img })}
             value={formData.image}
           />
-          <hr className="border-gray-200 w-full col-span-full my-2" />
+          <Separator />
           <div className="col-span-full grid grid-cols-1 sm:grid-cols-3 gap-4">
             <NextInput
               label={`Cost`}
@@ -220,7 +222,6 @@ const ItemMasterForm = ({ defaultData }) => {
               value={formData.selling}
             />
             <NextDropdown
-              key={defaultFormData ? defaultFormData.id + "ser" : "new"}
               placeholder={`Yes / No`}
               label={`Serial`}
               id={`item_serial`}
@@ -233,7 +234,7 @@ const ItemMasterForm = ({ defaultData }) => {
               onChange={(value) => setFormData({ ...formData, serial: value })}
             />
           </div>
-          <hr className="border-gray-200 w-full col-span-full my-2" />
+          <Separator />
           <Button
             name={`Save Item`}
             bg={`bg-green-400 hover:bg-green-500 text-white`}
@@ -243,6 +244,7 @@ const ItemMasterForm = ({ defaultData }) => {
           />
         </div>
       ) : (
+        //delete
         <div className="w-full flex flex-col gap-2">
           <span className="capitalize text-gray-600">
             Do You Really Want to Delete{" "}

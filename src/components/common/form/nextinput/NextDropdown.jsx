@@ -18,21 +18,30 @@ const NextDropdown = ({
   label,
 }) => {
   const [selected, setSelected] = useState("");
-  const [selectedValue, setSelectedValue] = useState(null); // ✅ NEW
+  const [selectedValue, setSelectedValue] = useState(null);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const containerRef = useRef(null);
+  const appliedDefaultRef = useRef(undefined); // tracks last applied defaultValue
 
-  // ✅ FIX: only set default ONCE (or when defaultValue changes)
   useEffect(() => {
-    if (defaultValue !== null && defaultValue !== undefined) {
-      const defaultItem = items.find((i) => i.value === defaultValue);
-      if (defaultItem) {
-        setSelected(defaultItem.label);
-        setSelectedValue(defaultItem.value);
+    // Runs when defaultValue changes OR when items arrive (async load case)
+    if (defaultValue !== appliedDefaultRef.current) {
+      appliedDefaultRef.current = defaultValue;
+
+      if (defaultValue !== null && defaultValue !== undefined) {
+        const defaultItem = items.find((i) => i.value === defaultValue);
+        if (defaultItem) {
+          setSelected(defaultItem.label);
+          setSelectedValue(defaultItem.value);
+          return;
+        }
       }
+      // defaultValue is null/undefined or item not found → reset
+      setSelected("");
+      setSelectedValue(null);
     }
-  }, [defaultValue]); // ❗ removed `items`
+  }, [defaultValue, items]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -47,7 +56,7 @@ const NextDropdown = ({
 
   const handleSelect = (item) => {
     setSelected(item.label);
-    setSelectedValue(item.value); // ✅ track value
+    setSelectedValue(item.value);
     setOpen(false);
     setSearch("");
     onChange?.(item.value);
@@ -55,7 +64,7 @@ const NextDropdown = ({
 
   const handleClear = () => {
     setSelected("");
-    setSelectedValue(null); // ✅ clear value too
+    setSelectedValue(null);
     setSearch("");
     onChange?.(null);
   };
@@ -74,7 +83,7 @@ const NextDropdown = ({
 
       <div
         className={cn(
-          "outline-none w-full rounded-xl bg-gray-100 py-2  flex justify-between relative",
+          "outline-none w-full rounded-xl bg-gray-100 py-2 flex justify-between relative",
         )}
         ref={containerRef}
       >
