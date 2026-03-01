@@ -17,6 +17,7 @@ const ItemMasterForm = ({ defaultData }) => {
     name: ``,
     brand: ``,
     category: ``,
+    category_id: ``,
     description: ``,
     image: ``,
     cost: ``,
@@ -34,6 +35,8 @@ const ItemMasterForm = ({ defaultData }) => {
         name: defaultFormData.name,
         brand: defaultFormData.brand,
         category: defaultFormData.category,
+        category_id: defaultFormData.category_id,
+
         description: defaultFormData.description,
         image: defaultFormData.image,
         cost: defaultFormData.cost,
@@ -48,6 +51,8 @@ const ItemMasterForm = ({ defaultData }) => {
         name: ``,
         brand: ``,
         category: ``,
+        category_id: ``,
+
         description: ``,
         image: ``,
         cost: ``,
@@ -142,38 +147,26 @@ const ItemMasterForm = ({ defaultData }) => {
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             value={formData.name}
           />
-          <NextInput
+
+          <NextDropdown
+            key={defaultFormData ? defaultFormData.id + "bra" : "new"}
             label={`Brand`}
             id={`item_brand`}
-            required={true}
-            combo={true}
-            combobox_items={brands}
             placeholder={`Asus`}
-            onComboboxChange={(e) =>
-              setFormData({ ...formData, brand: e?.value })
-            }
-            value={formData.brand}
-          />
-          {/* <NextInput
-            label={`Category`}
-            id={`item_category`}
             required={true}
-            combo={true}
-            combobox_items={categories}
-            placeholder={`Laptop`}
-            onComboboxChange={(e) =>
-              setFormData({ ...formData, category: e?.value })
-            }
-            value={formData.category}
-          /> */}
+            items={brands}
+            defaultValue={defaultData ? formData.category_id : null}
+            onChange={(value) => setFormData({ ...formData, brand: value })}
+          />
           <NextDropdown
+            key={defaultFormData ? defaultFormData.id + "cat" : "new"}
             label={`Category`}
             id={`item_category`}
             placeholder={`Laptop`}
             required={true}
             items={categories}
-            defaultValue={defaultData ? defaultFormData?.category_id : null}
-            onChange={(e) => setFormData({ ...formData, category: e?.value })}
+            defaultValue={defaultData ? formData.category_id : null}
+            onChange={(value) => setFormData({ ...formData, category: value })}
           />
           <NextInput
             label={`Description`}
@@ -227,6 +220,7 @@ const ItemMasterForm = ({ defaultData }) => {
               value={formData.selling}
             />
             <NextDropdown
+              key={defaultFormData ? defaultFormData.id + "ser" : "new"}
               placeholder={`Yes / No`}
               label={`Serial`}
               id={`item_serial`}
