@@ -154,7 +154,7 @@ const ItemMasterForm = ({ defaultData }) => {
             }
             value={formData.brand}
           />
-          <NextInput
+          {/* <NextInput
             label={`Category`}
             id={`item_category`}
             required={true}
@@ -165,10 +165,19 @@ const ItemMasterForm = ({ defaultData }) => {
               setFormData({ ...formData, category: e?.value })
             }
             value={formData.category}
+          /> */}
+          <NextDropdown
+            label={`Category`}
+            id={`item_category`}
+            placeholder={`Laptop`}
+            required={true}
+            items={categories}
+            defaultValue={defaultData ? defaultFormData?.category_id : null}
+            onChange={(e) => setFormData({ ...formData, category: e?.value })}
           />
           <NextInput
             label={`Description`}
-            id={`item_category`}
+            id={`item_description`}
             textarea={true}
             textareaRows={3}
             placeholder={`Asus Vivobook 15 X1504VA i5 13th Gen 8-Gb Ram ...`}
@@ -217,30 +226,17 @@ const ItemMasterForm = ({ defaultData }) => {
               }
               value={formData.selling}
             />
-            {/* <NextInput
+            <NextDropdown
+              placeholder={`Yes / No`}
               label={`Serial`}
               id={`item_serial`}
               required={true}
-              combo={true}
-              combobox_items={[
-                { value: 1, label: `Yes` },
-                { value: 0, label: `No` },
-              ]}
-              placeholder={`Yes / No`}
-              onComboboxChange={(e) =>
-                setFormData({ ...formData, serial: e?.value })
-              }
-              value={formData.serial}
-            /> */}
-            <NextDropdown
-              className={InputStyle}
-              placeholder={`Yes / No`}
               items={[
                 { value: 1, label: `Yes` },
                 { value: 0, label: `No` },
               ]}
-              defaultValue={formData.serial ? 1 : 0}
-              onChange={(e) => setFormData({ ...formData, serial: e?.value })}
+              defaultValue={defaultData ? (formData.serial ? 1 : 0) : null}
+              onChange={(value) => setFormData({ ...formData, serial: value })}
             />
           </div>
           <hr className="border-gray-200 w-full col-span-full my-2" />
