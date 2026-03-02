@@ -14,18 +14,28 @@ export const POST = async (request) => {
     const description = data.get("description") || null;
     const cost = data.get("cost");
     const selling = data.get("selling");
+    const reorder = data.get("reorder");
     const serial = data.get("serial");
+    const image = data.get("image");
 
-    const image = data.get("image") || null; // 👈 this is File object
-
-    let saveIamge = {};
+    let savedImage = null;
     if (image) {
-      saveIamge = await saveImage(
-        image,
-        generateNames(image?.name),
-        `/master/items`,
-      );
+      if (image instanceof File) {
+        // 👉 New file → upload it
+        savedImage = await saveImage(
+          image,
+          generateNames(image.name),
+          `/master/items`,
+        );
+        savedImage = savedImage?.fileUrl;
+      } else if (typeof image === "string") {
+        // 👉 Already a URL/path → keep as-is
+        savedImage = image;
+      }
     }
+
+    // console.log(...data, { imagesave: savedImage });
+    // return NextResponse.json(true, { status: 200 });
 
     let save_query = "";
 
@@ -37,18 +47,18 @@ export const POST = async (request) => {
       code,
       name,
       description,
-      saveIamge?.fileUrl || null,
+      savedImage,
       category,
       brand,
       cost,
       selling,
       serial,
-      "5",
+      reorder,
     ]);
 
     console.log(res);
 
-    return NextResponse.json({ message: "Received", name }, { status: 200 });
+    return NextResponse.json({ message: `Saved : `, res }, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.json(

@@ -1,16 +1,18 @@
 "use client";
 
-import { BrandMasterList } from "@/constant/DummyBrandMaster";
 import NextInput from "@/components/common/form/nextinput/NextInput";
-import { CategoryMasterList } from "@/constant/DummyCategoryMaster";
 import NextImageInput from "@/components/common/form/nextinput/NextImageInput";
 import Button from "@/components/common/button/Button";
 import { useEffect, useState } from "react";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import Separator from "@/components/common/separator/Separator";
+import FormHeader from "@/components/common/form/formheader/FormHeader";
+import DeleteData from "@/components/common/form/deletedata/DeleteData";
+import { toast } from "react-toastify";
 
 const ItemMasterForm = ({ defaultData }) => {
-  const defaultFormData = defaultData?.row || {};
+  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     id: ``,
     code: ``,
@@ -27,22 +29,40 @@ const ItemMasterForm = ({ defaultData }) => {
   });
 
   useEffect(() => {
-    // alert(JSON.stringify(defaultData));
+    const load_cat_brand = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_URL}/api/admin/support/load_cat_brand`,
+          { next: { revalidate: 60 } },
+        );
+
+        if (!res.ok) {
+          return [];
+        }
+
+        const data = await res.json();
+        setCategories(data.categories);
+        setBrands(data.brands);
+        return;
+      } catch (err) {
+        return [];
+      }
+    };
+    load_cat_brand();
     if (defaultData)
       setFormData({
-        id: defaultFormData.id,
-        code: defaultFormData.code,
-        name: defaultFormData.name,
-        brand: defaultFormData.brand,
-        category: defaultFormData.category,
-        category_id: defaultFormData.category_id,
-
-        description: defaultFormData.description,
-        image: defaultFormData.image,
-        cost: defaultFormData.cost,
-        selling: defaultFormData.selling,
-        reorder: defaultFormData.reorder_level,
-        serial: defaultFormData.is_serial,
+        id: defaultData.row.id,
+        code: defaultData.row.code,
+        name: defaultData.row.name,
+        brand: defaultData.row.brand,
+        category: defaultData.row.category,
+        category_id: defaultData.row.category_id,
+        description: defaultData.row.description,
+        image: defaultData.row.image,
+        cost: defaultData.row.cost,
+        selling: defaultData.row.selling,
+        reorder: defaultData.row.reorder_level,
+        serial: defaultData.row.is_serial,
       });
     else
       setFormData({
@@ -52,7 +72,6 @@ const ItemMasterForm = ({ defaultData }) => {
         brand: ``,
         category: ``,
         category_id: ``,
-
         description: ``,
         image: ``,
         cost: ``,
@@ -61,15 +80,6 @@ const ItemMasterForm = ({ defaultData }) => {
         serial: ``,
       });
   }, [defaultData]);
-
-  const brands = BrandMasterList.map((brand) => ({
-    value: brand.id,
-    label: brand.name,
-  }));
-  const categories = CategoryMasterList.map((category) => ({
-    value: category.id,
-    label: category.name,
-  }));
 
   const handleSave = async () => {
     try {
@@ -83,22 +93,23 @@ const ItemMasterForm = ({ defaultData }) => {
       data.append(`image`, formData.image);
       data.append(`cost`, formData.cost);
       data.append(`selling`, formData.selling);
+      data.append(`reorder`, formData.reorder);
       data.append(`serial`, formData.serial);
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items/new`,
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items/action`,
         {
-          method: "POST",
+          method: defaultData ? "PUT" : "POST",
           body: data,
         },
       );
 
       if (!res.ok) {
-        alert(`Save Failed !`);
+        toast.error(`Save Failed !`);
         return;
       }
 
-      alert(`Saved !`);
+      toast.success(`Item Saved`);
       return;
     } catch (err) {
       alert(`Error On Save !`, err);
@@ -108,29 +119,21 @@ const ItemMasterForm = ({ defaultData }) => {
   return (
     <div className="flex flex-col gap-6">
       {/* header form */}
-      <div>
-        <span className="font-black text-2xl uppercase text-gray-700">
-          {!defaultData && "New Master Item"}
-
-          {defaultData?.type === "edit" && `Edit ${defaultData?.row.id}`}
-
-          {defaultData?.type === "delete" && (
-            <span className="text-red-600">Delete {defaultData?.row.id}?</span>
-          )}
-        </span>
-      </div>
+      <FormHeader defaultData={defaultData} title={`Master Item`} />
       <Separator />
       {!defaultData || defaultData?.type !== `delete` ? (
         //form
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
-          <NextInput
-            label={`Item Id`}
-            id={`item_id`}
-            name={`item_id`}
-            placeholder={`ITM-001`}
-            onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-            value={formData.id}
-          />
+          {defaultData && (
+            <NextInput
+              label={`Item Id`}
+              id={`item_id`}
+              name={`item_id`}
+              placeholder={`ITM-001`}
+              onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+              value={formData.id}
+            />
+          )}
           <NextInput
             label={`Item Code`}
             id={`item_code`}
@@ -151,7 +154,6 @@ const ItemMasterForm = ({ defaultData }) => {
           />
 
           <NextDropdown
-            // key={defaultFormData ? defaultFormData.id + "bra" : "new"}
             label={`Brand`}
             id={`item_brand`}
             placeholder={`Asus`}
@@ -161,7 +163,6 @@ const ItemMasterForm = ({ defaultData }) => {
             onChange={(value) => setFormData({ ...formData, brand: value })}
           />
           <NextDropdown
-            // key={defaultFormData ? defaultFormData.id + "cat" : "new"}
             label={`Category`}
             id={`item_category`}
             placeholder={`Laptop`}
@@ -217,9 +218,9 @@ const ItemMasterForm = ({ defaultData }) => {
               name={`stock_reorder`}
               placeholder={`201000`}
               onChange={(e) =>
-                setFormData({ ...formData, selling: e.target.value })
+                setFormData({ ...formData, reorder: e.target.value })
               }
-              value={formData.selling}
+              value={formData.reorder}
             />
             <NextDropdown
               placeholder={`Yes / No`}
@@ -245,19 +246,11 @@ const ItemMasterForm = ({ defaultData }) => {
         </div>
       ) : (
         //delete
-        <div className="w-full flex flex-col gap-2">
-          <span className="capitalize text-gray-600">
-            Do You Really Want to Delete{" "}
-            <span className="font-bold text-gray-700">
-              {defaultData?.row?.name}
-            </span>{" "}
-            From Item Master
-          </span>
-          <Button
-            name={`Delete`}
-            bg={`bg-red-600 hover:bg-red-700 text-white`}
-          />
-        </div>
+        <DeleteData
+          defaultData={defaultData}
+          table={`mst_items`}
+          explicit={false}
+        />
       )}
     </div>
   );
