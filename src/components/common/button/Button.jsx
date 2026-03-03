@@ -14,28 +14,38 @@ const Button = ({
   disabled,
 }) => {
   const baseStyles = `
-             transition-all duration-300 select-none cursor-pointer
-        ${bg ? bg : `bg-blue-600 hover:bg-blue-700 text-white`}
-        ${fg}
-        ${mg}
-        ${wfull ? `w-full` : `w-fit`}
-        ${pd ? pd : `px-4 py-2`}
-        ${disabled && "opacity-75"}
-        ${rounded ? rounded : `rounded-xl`}`;
+    transition-all duration-300 select-none
+    ${bg ? bg : `bg-blue-600 hover:bg-blue-700 text-white`}
+    ${fg || ""}
+    ${mg || ""}
+    ${wfull ? `w-full` : `w-fit`}
+    ${pd ? pd : `px-4 py-2`}
+    ${disabled ? "opacity-75 cursor-not-allowed pointer-events-none" : "cursor-pointer"}
+    ${rounded ? rounded : `rounded-xl`}
+  `;
 
   if (link) {
     return (
-      <Link href={link || `#`} className={baseStyles}>
-        {name || `Button`}
+      <Link
+        href={disabled ? "#" : link}
+        className={baseStyles}
+        aria-disabled={disabled}
+      >
+        {name || "Button"}
       </Link>
     );
-  } else {
-    return (
-      <div className={baseStyles} onClick={click} disabled={disabled}>
-        {name || `Button`}
-      </div>
-    );
   }
+
+  return (
+    <button
+      type="button"
+      className={baseStyles}
+      onClick={!disabled ? click : undefined}
+      disabled={disabled}
+    >
+      {name || "Button"}
+    </button>
+  );
 };
 
 export default Button;

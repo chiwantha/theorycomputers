@@ -9,16 +9,18 @@ import Separator from "@/components/common/separator/Separator";
 import FormHeader from "@/components/common/form/formheader/FormHeader";
 import DeleteData from "@/components/common/form/deletedata/DeleteData";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const ItemMasterForm = ({ defaultData }) => {
-  const [brands, setBrands] = useState([]);
-  const [categories, setCategories] = useState([]);
+const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
+  const { category_list, brand_list } = form_props || {};
+  const [pending, setIsPending] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const router = useRouter();
   const [formData, setFormData] = useState({
     id: ``,
     code: ``,
     name: ``,
-    brand: ``,
-    category: ``,
+    brand_id: ``,
     category_id: ``,
     description: ``,
     image: ``,
@@ -29,33 +31,14 @@ const ItemMasterForm = ({ defaultData }) => {
   });
 
   useEffect(() => {
-    const load_cat_brand = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}/api/admin/support/load_cat_brand`,
-          { next: { revalidate: 60 } },
-        );
-
-        if (!res.ok) {
-          return [];
-        }
-
-        const data = await res.json();
-        setCategories(data.categories);
-        setBrands(data.brands);
-        return;
-      } catch (err) {
-        return [];
-      }
-    };
-    load_cat_brand();
+    setSuccess(false);
+    setIsPending(false);
     if (defaultData)
       setFormData({
         id: defaultData.row.id,
         code: defaultData.row.code,
         name: defaultData.row.name,
-        brand: defaultData.row.brand,
-        category: defaultData.row.category,
+        brand_id: defaultData.row.brand_id,
         category_id: defaultData.row.category_id,
         description: defaultData.row.description,
         image: defaultData.row.image,
@@ -69,8 +52,7 @@ const ItemMasterForm = ({ defaultData }) => {
         id: ``,
         code: ``,
         name: ``,
-        brand: ``,
-        category: ``,
+        brand_id: ``,
         category_id: ``,
         description: ``,
         image: ``,
@@ -82,13 +64,14 @@ const ItemMasterForm = ({ defaultData }) => {
   }, [defaultData]);
 
   const handleSave = async () => {
+    setIsPending(true);
     try {
       const data = new FormData();
       data.append(`id`, formData.id);
       data.append(`code`, formData.code);
       data.append(`name`, formData.name);
-      data.append(`brand`, formData.brand);
-      data.append(`category`, formData.category);
+      data.append(`brand`, formData.brand_id);
+      data.append(`category`, formData.category_id);
       data.append(`description`, formData.description);
       data.append(`image`, formData.image);
       data.append(`cost`, formData.cost);
@@ -97,7 +80,7 @@ const ItemMasterForm = ({ defaultData }) => {
       data.append(`serial`, formData.serial);
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items/action`,
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items/`,
         {
           method: defaultData ? "PUT" : "POST",
           body: data,
@@ -109,10 +92,47 @@ const ItemMasterForm = ({ defaultData }) => {
         return;
       }
 
-      toast.success(`Item Saved`);
+      toast.success(`Item ${defaultData ? `Updated !` : `Saved !`}`);
+      router.refresh();
+      setSuccess(true);
+      close_drawer(true);
       return;
     } catch (err) {
+      toast.error(`Save Failed !`);
       alert(`Error On Save !`, err);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setIsPending(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items`,
+        {
+          method: "DELETE",
+          body: JSON.stringify({
+            id: defaultData?.row?.id || null,
+          }),
+        },
+      );
+
+      if (!res.ok) {
+        toast.error(`Delete failed !`);
+        return;
+      }
+
+      toast.success(`Deleted !`);
+      router.refresh();
+      setSuccess(true);
+      close_drawer(true);
+      return;
+    } catch (err) {
+      toast.error(`Delete failed !`);
+      return;
+    } finally {
+      setIsPending(fasle);
     }
   };
 
@@ -158,18 +178,20 @@ const ItemMasterForm = ({ defaultData }) => {
             id={`item_brand`}
             placeholder={`Asus`}
             required={true}
-            items={brands}
-            defaultValue={defaultData ? formData.category_id : null}
-            onChange={(value) => setFormData({ ...formData, brand: value })}
+            items={brand_list}
+            defaultValue={defaultData ? formData.brand_id : null}
+            onChange={(value) => setFormData({ ...formData, brand_id: value })}
           />
           <NextDropdown
             label={`Category`}
             id={`item_category`}
             placeholder={`Laptop`}
             required={true}
-            items={categories}
+            items={category_list}
             defaultValue={defaultData ? formData.category_id : null}
-            onChange={(value) => setFormData({ ...formData, category: value })}
+            onChange={(value) =>
+              setFormData({ ...formData, category_id: value })
+            }
           />
           <NextInput
             label={`Description`}
@@ -216,7 +238,7 @@ const ItemMasterForm = ({ defaultData }) => {
               id={`stock_reorder`}
               required={true}
               name={`stock_reorder`}
-              placeholder={`201000`}
+              placeholder={`5`}
               onChange={(e) =>
                 setFormData({ ...formData, reorder: e.target.value })
               }
@@ -237,11 +259,18 @@ const ItemMasterForm = ({ defaultData }) => {
           </div>
           <Separator />
           <Button
-            name={`Save Item`}
+            name={
+              pending
+                ? `Processing !`
+                : success
+                  ? `Done !`
+                  : `${defaultData ? `Update` : `Save`} Item`
+            }
             bg={`bg-green-400 hover:bg-green-500 text-white`}
             click={() => {
               handleSave();
             }}
+            disabled={pending || success}
           />
         </div>
       ) : (
@@ -250,6 +279,9 @@ const ItemMasterForm = ({ defaultData }) => {
           defaultData={defaultData}
           table={`mst_items`}
           explicit={false}
+          click={() => {
+            handleDelete();
+          }}
         />
       )}
     </div>

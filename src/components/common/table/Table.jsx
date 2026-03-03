@@ -1,12 +1,24 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import Button from "../button/Button";
+import Drawer from "../drawer/Drawer";
+import ActionColumn from "../actioncolumn/ActionColumn";
 
-const Table = ({ colunms, rows, searchkeys = [], tablename }) => {
+const Table = ({
+  colunms,
+  rows,
+  searchkeys = [],
+  tablename,
+  form: FormComponent,
+  form_props,
+  action = false,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState("asc");
   const [page, setPage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [changeData, setChangeData] = useState(null);
 
   const rowsPerPage = 12;
 
@@ -58,15 +70,34 @@ const Table = ({ colunms, rows, searchkeys = [], tablename }) => {
           {tablename || "Items"}
         </h2>
 
-        <input
-          type="text"
-          placeholder="Search..."
-          className="bg-gray-200 px-4 py-2 rounded-lg text-sm w-full sm:w-56 md:w-70 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setPage(1);
-          }}
-        />
+        <div className="flex gap-2">
+          {form_props && (
+            <Drawer
+              form={
+                <FormComponent
+                  defaultData={changeData}
+                  form_props={form_props}
+                  close_drawer={() => setOpen(false)}
+                />
+              }
+              open={open}
+              setOpen={setOpen}
+              rounded={`rounded-lg`}
+              callback={() => {
+                setChangeData(null);
+              }}
+            />
+          )}
+          <input
+            type="text"
+            placeholder="Search..."
+            className="bg-gray-200 px-4 py-2 rounded-lg text-sm w-full sm:w-56 md:w-70 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
+          />
+        </div>
       </div>
 
       {/* 📊 Table */}
@@ -91,6 +122,11 @@ const Table = ({ colunms, rows, searchkeys = [], tablename }) => {
                   </div>
                 </th>
               ))}
+              {action && (
+                <th className="px-4 py-3 text-left font-semibold cursor-pointer select-none ">
+                  Action
+                </th>
+              )}
             </tr>
           </thead>
 
@@ -110,6 +146,16 @@ const Table = ({ colunms, rows, searchkeys = [], tablename }) => {
                       {col.render ? col.render(row) : row[col.data_name]}
                     </td>
                   ))}
+
+                  {action && (
+                    <td className="border-b border-gray-100 hover:bg-blue-50 transition duration-150">
+                      <ActionColumn
+                        setChangeData={setChangeData}
+                        setOpen={setOpen}
+                        row={row}
+                      />
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (

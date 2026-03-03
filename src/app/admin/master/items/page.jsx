@@ -1,15 +1,24 @@
-"use client";
 import ItemMasterForm from "@/components/admin/forms/master/items/ItemMasterForm";
-import Drawer from "@/components/common/drawer/Drawer";
 import Table from "@/components/common/table/Table";
-import ActionColumn from "@/components/common/actioncolumn/ActionColumn";
-import { ItemsMasterList } from "@/constant/DummyItemsMaster";
-import { useState } from "react";
+import { get_brands, get_categories } from "@/lib/data";
 
-const MasterItems = () => {
-  const [open, setOpen] = useState(false);
-  const [changeData, setChangeData] = useState(null);
+async function get_master_items_list() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items`,
+    );
+    if (!res.ok) {
+      return [];
+    }
 
+    return await res.json();
+  } catch (err) {
+    console.log("Error Fetching The Item Master : ", err);
+    return [];
+  }
+}
+
+const MasterItems = async () => {
   const colunms = [
     {
       header: "Id",
@@ -44,43 +53,31 @@ const MasterItems = () => {
     {
       header: "Selling",
       data_name: "selling",
-      className: "",
+      className: "md:table-cell hidden",
       data_className: "text-blue-400 font-medium",
-    },
-    {
-      header: "Actions",
-      data_name: "actions",
-      className: "text-center",
-      render: (row) => (
-        <ActionColumn
-          row={row}
-          setChangeData={setChangeData}
-          setOpen={setOpen}
-        />
-      ),
     },
   ];
 
+  const dropdowns = {
+    categories: await get_categories(),
+    brands: await get_brands(),
+  };
+  const data = await get_master_items_list();
   const search = ["name", "category"];
 
-  const data = ItemsMasterList;
   return (
-    <div className=" flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <Drawer
-          form={<ItemMasterForm defaultData={changeData} />}
-          callback={() => {
-            setChangeData(null);
-          }}
-          open={open}
-          setOpen={setOpen}
-        />
-      </div>
+    <div className=" flex flex-col gap-4 ">
       <Table
         colunms={colunms}
         rows={data}
         searchkeys={search}
         tablename={`Item Master`}
+        form={ItemMasterForm}
+        form_props={{
+          category_list: dropdowns?.categories || [],
+          brand_list: dropdowns?.brands || [],
+        }}
+        action
       />
     </div>
   );

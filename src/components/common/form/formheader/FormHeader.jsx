@@ -6,7 +6,12 @@ const FormHeader = ({ defaultData, title }) => {
       <span className="font-black text-2xl uppercase text-gray-700">
         {!defaultData && `New ${title || `+`}`}
 
-        {defaultData?.type === "edit" && `Edit ${defaultData?.row.id}`}
+        {defaultData?.type === "edit" && (
+          <span className="line-clamp-1 text-ellipsis">
+            <span className="text-blue-500">Edit </span>
+            <span>{defaultData?.row.name}</span>
+          </span>
+        )}
 
         {defaultData?.type === "delete" && (
           <span className="text-red-600">Delete {defaultData?.row.id}?</span>

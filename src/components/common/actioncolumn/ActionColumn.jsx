@@ -1,14 +1,18 @@
+"use client";
 import React from "react";
 import Button from "../button/Button";
 import { Eye, Pencil, Trash } from "lucide-react";
+import { toast } from "react-toastify";
 
-const ActionColumn = ({ setChangeData, setOpen, row }) => {
+async function set_deactive(route, id) {}
+
+const ActionColumn = ({ setChangeData, setOpen, row, route }) => {
   return (
-    <div className="flex gap-1 justify-center">
+    <div className="flex gap-1 justify-start">
       <Button
         name={<Eye size={15} />}
         pd={`px-2 py-2`}
-        bg={`bg-green-400 hover:bg-green-600 text-white`}
+        bg={`bg-green-500 hover:bg-green-600 text-white`}
         link={`/admin/master/items/${row.id}`}
       />
       <Button

@@ -20,12 +20,19 @@ const Drawer = ({
   open,
   setOpen,
   callback,
+  rounded,
 }) => {
   return (
     <div className="">
       <DrawerSlide open={open} onOpenChange={setOpen}>
         <DrawerTrigger>
-          <Button name={button || "Add Item"} click={callback} />
+          <Button
+            name={button || "New"}
+            click={callback}
+            rounded={rounded || false}
+            pd={`px-4 py-1.5`}
+            bg={`bg-green-500 hover:bg-green-600 text-white`}
+          />
         </DrawerTrigger>
 
         <DrawerContent className="bg-white p-4 md:p-6 border-none md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]">

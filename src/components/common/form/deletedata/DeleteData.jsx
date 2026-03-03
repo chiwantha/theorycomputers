@@ -2,7 +2,7 @@
 
 import Button from "../../button/Button";
 
-const DeleteData = ({ defaultData, table, explicit }) => {
+const DeleteData = ({ defaultData, table, explicit, click }) => {
   const handleDelete = async () => {};
 
   return (
@@ -15,7 +15,7 @@ const DeleteData = ({ defaultData, table, explicit }) => {
         From Item Master
       </span>
       <Button
-        click={() => handleDelete()}
+        click={click}
         name={`Delete`}
         bg={`bg-red-600 hover:bg-red-700 text-white`}
       />
