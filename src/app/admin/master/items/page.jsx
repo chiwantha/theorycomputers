@@ -2,6 +2,8 @@ import ItemMasterForm from "@/components/admin/forms/master/items/ItemMasterForm
 import Table from "@/components/common/table/Table";
 import { get_brands, get_categories } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+
 async function get_master_items_list() {
   try {
     const res = await fetch(
