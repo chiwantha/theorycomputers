@@ -14,6 +14,7 @@ const ActionColumn = ({ setChangeData, setOpen, row, route }) => {
         pd={`px-2 py-2`}
         bg={`bg-green-500 hover:bg-green-600 text-white`}
         link={`/admin/master/items/${row.id}`}
+        prefetch={false}
       />
       <Button
         name={<Pencil size={15} />}

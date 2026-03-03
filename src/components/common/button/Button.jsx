@@ -12,6 +12,7 @@ const Button = ({
   wfull,
   rounded,
   disabled,
+  prefetch,
 }) => {
   const baseStyles = `
     transition-all duration-300 select-none
@@ -30,6 +31,7 @@ const Button = ({
         href={disabled ? "#" : link}
         className={baseStyles}
         aria-disabled={disabled}
+        prefetch={prefetch}
       >
         {name || "Button"}
       </Link>
