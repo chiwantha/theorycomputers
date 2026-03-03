@@ -29,7 +29,6 @@ export const POST = async (request) => {
   try {
     const data = await request.formData();
 
-    const id = data.get("id") || null;
     const code = data.get("code") || null;
     const name = data.get("name");
     const brand = data.get("brand");
@@ -75,9 +74,11 @@ export const POST = async (request) => {
       reorder,
     ]);
 
-    console.log(res);
+    if (!res || res.insertId == ``) {
+      return NextResponse.json({ error: `Insert Failed !` }, { status: 400 });
+    }
 
-    return NextResponse.json({ message: `Saved : `, res }, { status: 200 });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.json(
