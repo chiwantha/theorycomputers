@@ -63,76 +63,90 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
       });
   }, [defaultData]);
 
-  const handleSave = async () => {
+  const handleCrud = async () => {
     setIsPending(true);
+
     try {
+      const isEdit = defaultData?.type === "edit";
+      const isDelete = defaultData?.type === "delete";
+
+      const method = isDelete ? "DELETE" : isEdit ? "PUT" : "POST";
+
+      let validation;
+
+      if (method === "POST") {
+        validation = validateFields(formData, [
+          "name",
+          "brand_id",
+          "category_id",
+          "cost",
+          "selling",
+          "reorder",
+          "serial",
+        ]);
+      } else if (method === "PUT") {
+        validation = validateFields(formData, [
+          "id",
+          "name",
+          "brand_id",
+          "category_id",
+          "cost",
+          "selling",
+          "reorder",
+          "serial",
+        ]);
+      } else {
+        // delete → only id
+        validation = validateFields(formData, ["id"]);
+      }
+
+      if (!validation.isValid) {
+        toast.error(`Missing: ${validation.emptyFields.join(", ")}`);
+        return;
+      }
+
       const data = new FormData();
-      data.append(`id`, formData.id);
-      data.append(`code`, formData.code);
-      data.append(`name`, formData.name);
-      data.append(`brand`, formData.brand_id);
-      data.append(`category`, formData.category_id);
-      data.append(`description`, formData.description);
-      data.append(`image`, formData.image);
-      data.append(`cost`, formData.cost);
-      data.append(`selling`, formData.selling);
-      data.append(`reorder`, formData.reorder);
-      data.append(`serial`, formData.serial);
+      data.append("id", formData.id);
+      data.append("code", formData.code);
+      data.append("name", formData.name);
+      data.append("brand", formData.brand_id);
+      data.append("category", formData.category_id);
+      data.append("description", formData.description);
+      data.append("image", formData.image);
+      data.append("cost", formData.cost);
+      data.append("selling", formData.selling);
+      data.append("reorder", formData.reorder);
+      data.append("serial", formData.serial);
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items/`,
         {
-          method: defaultData ? "PUT" : "POST",
+          method,
           body: data,
         },
       );
 
       if (!res.ok) {
-        toast.error(`Save Failed !`);
+        toast.error(
+          `${isDelete ? "Delete" : isEdit ? "Update" : "Create"} failed !`,
+        );
         return;
       }
 
-      toast.success(`Item ${defaultData ? `Updated !` : `Saved !`}`);
-      router.refresh();
-      setSuccess(true);
-      close_drawer(true);
-      return;
-    } catch (err) {
-      toast.error(`Save Failed !`);
-      alert(`Error On Save !`, err);
-    } finally {
-      setIsPending(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    setIsPending(true);
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items`,
-        {
-          method: "DELETE",
-          body: JSON.stringify({
-            id: defaultData?.row?.id || null,
-          }),
-        },
+      toast.success(
+        `Item ${
+          isDelete ? "Deleted" : isEdit ? "Updated" : "Created"
+        } successfully !`,
       );
 
-      if (!res.ok) {
-        toast.error(`Delete failed !`);
-        return;
-      }
-
-      toast.success(`Deleted !`);
       router.refresh();
       setSuccess(true);
       close_drawer(true);
-      return;
     } catch (err) {
-      toast.error(`Delete failed !`);
-      return;
+      console.log("Operation Failed:", err);
+      toast.error("Something went wrong !");
     } finally {
-      setIsPending(fasle);
+      setIsPending(false);
     }
   };
 
@@ -262,13 +276,11 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
             name={
               pending
                 ? `Processing !`
-                : success
-                  ? `Done !`
-                  : `${defaultData ? `Update` : `Save`} Item`
+                : `${defaultData ? `Update` : `Save`} Item`
             }
             bg={`bg-green-400 hover:bg-green-500 text-white`}
             click={() => {
-              handleSave();
+              handleCrud();
             }}
             disabled={pending || success}
           />
@@ -280,7 +292,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
           table={`mst_items`}
           explicit={false}
           click={() => {
-            handleDelete();
+            handleCrud();
           }}
         />
       )}

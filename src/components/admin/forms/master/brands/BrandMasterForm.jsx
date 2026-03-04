@@ -8,8 +8,7 @@ import { validateFields } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
+const BrandMasterForm = ({ defaultData, form_props, close_drawer }) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [formData, setformdata] = useState({
@@ -61,7 +60,7 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/categories`,
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/brands`,
         {
           method,
           body: data,
@@ -100,7 +99,7 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
           {defaultData && (
             <NextInput
               label={`Id`}
-              placeholder={`CAT001`}
+              placeholder={`BRD001`}
               name={`id`}
               value={formData.id}
               onChange={(e) => setformdata({ ...formData, id: e.target.value })}
@@ -108,7 +107,7 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
           )}
           <NextInput
             label={`Name`}
-            placeholder={`Laptops`}
+            placeholder={`Asus`}
             name={`name`}
             value={formData.name}
             onChange={(e) => setformdata({ ...formData, name: e.target.value })}
@@ -118,7 +117,7 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
             name={
               pending
                 ? `Processing !`
-                : `${defaultData ? `Update` : `Save`} Category`
+                : `${defaultData ? `Update` : `Save`} Brand`
             }
             bg={`bg-green-400 hover:bg-green-500 text-white col-span-full`}
             click={() => {
@@ -134,4 +133,4 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
   );
 };
 
-export default CategoryMasterForm;
+export default BrandMasterForm;

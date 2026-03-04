@@ -3,14 +3,11 @@ import { NextResponse } from "next/server";
 
 export const GET = async (request) => {
   try {
-    const sql = `SELECT id, name, created_at FROM mst_category WHERE state=1`;
+    const sql = `SELECT id, name, created_at FROM mst_brand WHERE state=1`;
     const res = await query(sql);
 
     if (!res || res.length == 0) {
-      return NextResponse.json(
-        { error: `No Category Found !` },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: `No Brand Found !` }, { status: 404 });
     }
 
     return NextResponse.json(res, { status: 200 });
@@ -29,7 +26,7 @@ export const POST = async (request) => {
 
     const name = data.get(`name`);
 
-    const sql = `INSERT INTO mst_category (name) VALUES (?)`;
+    const sql = `INSERT INTO mst_brand (name) VALUES (?)`;
     const values = [name];
 
     const res = await query(sql, values);
@@ -59,7 +56,7 @@ export const PUT = async (request) => {
       return NextResponse.json({ error: `No Id Found !` }, { status: 404 });
     }
 
-    const sql = `UPDATE mst_category SET name=? WHERE id=?`;
+    const sql = `UPDATE mst_brand SET name=? WHERE id=?`;
     const values = [name, id];
     const res = await query(sql, values);
 
@@ -86,7 +83,7 @@ export const DELETE = async (request) => {
       return NextResponse.json({ error: `No Id Found !` }, { status: 404 });
     }
 
-    const sql = `UPDATE mst_category SET state=0 WHERE id=?`;
+    const sql = `UPDATE mst_brand SET state=0 WHERE id=?`;
     const res = await query(sql, [id]);
 
     if (!res || res.affectedRows == 0) {

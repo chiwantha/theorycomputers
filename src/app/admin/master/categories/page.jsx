@@ -35,6 +35,12 @@ const MasterCategories = async () => {
       className: "",
       data_className: "",
     },
+    {
+      header: "Created ",
+      data_name: "created_at",
+      className: "lg:table-cell hidden",
+      data_className: "",
+    },
   ];
 
   return (
