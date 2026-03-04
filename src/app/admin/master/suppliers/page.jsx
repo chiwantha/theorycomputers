@@ -1,6 +1,8 @@
 import SupplierMasterForm from "@/components/admin/forms/master/suppliers/SupplierMasterForm";
 import Table from "@/components/common/table/Table";
 
+export const dynamic = "force-dynamic";
+
 async function get_supplier_masater_list() {
   try {
     const res = await fetch(

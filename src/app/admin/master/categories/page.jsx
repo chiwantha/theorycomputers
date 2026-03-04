@@ -1,6 +1,7 @@
 import CategoryMasterForm from "@/components/admin/forms/master/categories/CategoryMasterForm";
 import Table from "@/components/common/table/Table";
-import React from "react";
+
+export const dynamic = "force-dynamic";
 
 async function get_master_category_list() {
   try {

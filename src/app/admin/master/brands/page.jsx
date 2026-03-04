@@ -1,6 +1,8 @@
 import BrandMasterForm from "@/components/admin/forms/master/brands/BrandMasterForm";
 import Table from "@/components/common/table/Table";
 
+export const dynamic = "force-dynamic";
+
 async function get_master_brand_list() {
   try {
     const res = await fetch(
