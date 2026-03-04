@@ -20,3 +20,14 @@ export const validateFields = (formData, requiredFields = []) => {
     emptyFields,
   };
 };
+
+export const format_date = (timestamp) => {
+  if (!timestamp) return "No Date";
+
+  const dateString =
+    typeof timestamp === "string"
+      ? timestamp
+      : new Date(timestamp).toISOString();
+
+  return dateString.split("T")[0];
+};

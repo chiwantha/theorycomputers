@@ -1,7 +1,82 @@
-import React from "react";
+import GrnInventoryForm from "@/components/admin/forms/inventory/grn/GrnInventoryForm";
+import Table from "@/components/common/table/Table";
 
-const InventoryGoodReceiveNote = () => {
-  return <div>InventoryGoodReceiveNote</div>;
+async function get_grn_inventory_list() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/grn`,
+    );
+
+    if (!res.ok) {
+      return [];
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.log(`Error Fetching Grn Inventory List : `, err);
+    return [];
+  }
+}
+
+const InventoryGoodReceiveNote = async () => {
+  const colunms = [
+    {
+      header: "Id",
+      data_name: "id",
+      className: "lg:table-cell hidden",
+      data_className: "",
+    },
+    {
+      header: "No",
+      data_name: "grn_no",
+      className: "",
+      data_className: "",
+    },
+    {
+      header: "Supplier",
+      data_name: "supplier_name",
+      className: "",
+      data_className: "",
+    },
+    {
+      header: "Invoice No",
+      data_name: "invoice_no",
+      className: "md:table-cell hidden",
+      data_className: "",
+    },
+    {
+      header: "Item Count",
+      data_name: "item_count",
+      className: "sm:table-cell hidden",
+      data_className: "",
+    },
+    {
+      header: "Total",
+      data_name: "total",
+      className: "sm:table-cell hidden",
+      data_className: "text-blue-400 font-medium",
+    },
+    {
+      header: "Date",
+      data_name: "date",
+      className: "md:table-cell hidden",
+      data_className: "",
+    },
+  ];
+  const data = await get_grn_inventory_list();
+  // console.log(`grn data : `, data);
+  return (
+    <div className="">
+      <Table
+        colunms={colunms}
+        tablename={`Grn Notes`}
+        rows={data}
+        form={GrnInventoryForm}
+        form_props={{ suppliers: true }}
+        action
+      />
+    </div>
+  );
 };
 
 export default InventoryGoodReceiveNote;

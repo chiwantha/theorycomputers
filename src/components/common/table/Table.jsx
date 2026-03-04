@@ -3,6 +3,7 @@ import React, { useState, useMemo } from "react";
 import Button from "../button/Button";
 import Drawer from "../drawer/Drawer";
 import ActionColumn from "../actioncolumn/ActionColumn";
+import { format_date } from "@/lib/validation";
 
 const Table = ({
   colunms,
@@ -143,7 +144,11 @@ const Table = ({
                       key={idx}
                       className={`px-4 py-3 ${col.className} ${col.data_className || `text-gray-600`}`}
                     >
-                      {col.render ? col.render(row) : row[col.data_name]}
+                      {col.render
+                        ? col.render(row)
+                        : col.data_name == "date"
+                          ? format_date(row[col.data_name])
+                          : row[col.data_name]}
                     </td>
                   ))}
 

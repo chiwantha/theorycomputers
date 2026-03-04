@@ -2,11 +2,8 @@
 import React from "react";
 import Button from "../button/Button";
 import { Eye, Pencil, Trash } from "lucide-react";
-import { toast } from "react-toastify";
 
-async function set_deactive(route, id) {}
-
-const ActionColumn = ({ setChangeData, setOpen, row, route }) => {
+const ActionColumn = ({ setChangeData, setOpen, row }) => {
   return (
     <div className="flex gap-1 justify-start">
       <Button

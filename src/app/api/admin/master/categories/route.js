@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export const GET = async (request) => {
   try {
-    const sql = `SELECT id, name, created_at FROM mst_category WHERE state=1`;
+    const sql = `SELECT id, name, created_at AS date FROM mst_category WHERE state=1`;
     const res = await query(sql);
 
     if (!res || res.length == 0) {
