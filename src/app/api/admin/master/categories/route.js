@@ -34,7 +34,7 @@ export const POST = async (request) => {
 
     const res = await query(sql, values);
 
-    if (!res || res.insertId == "") {
+    if (!res || res.insertId == null) {
       return NextResponse.json({ error: `Insert Failed !` }, { status: 400 });
     }
 

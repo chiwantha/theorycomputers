@@ -74,7 +74,7 @@ export const POST = async (request) => {
       reorder,
     ]);
 
-    if (!res || res.insertId == ``) {
+    if (!res || res.insertId == null) {
       return NextResponse.json({ error: `Insert Failed !` }, { status: 400 });
     }
 

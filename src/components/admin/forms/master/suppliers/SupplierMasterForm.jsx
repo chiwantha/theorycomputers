@@ -10,12 +10,17 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
+const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [formData, setformdata] = useState({
     id: ``,
     name: ``,
+    agent: ``,
+    phone: ``,
+    whatsapp: ``,
+    email: ``,
+    address: ``,
   });
 
   useEffect(() => {
@@ -24,11 +29,21 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
       setformdata({
         id: defaultData?.row?.id,
         name: defaultData?.row?.name,
+        agent: defaultData?.row?.agent,
+        phone: defaultData?.row?.phone,
+        whatsapp: defaultData?.row?.whatsapp,
+        email: defaultData?.row?.email,
+        address: defaultData?.row?.address,
       });
     } else {
       setformdata({
         id: ``,
         name: ``,
+        agent: ``,
+        phone: ``,
+        whatsapp: ``,
+        email: ``,
+        address: ``,
       });
     }
   }, [defaultData]);
@@ -41,17 +56,22 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
       const isDelete = defaultData?.type === "delete";
 
       const data = new FormData();
-      data.append("id", formData.id);
-      data.append("name", formData.name);
+      data.append(`id`, formData.id);
+      data.append(`name`, formData.name);
+      data.append(`agent`, formData.agent);
+      data.append(`phone`, formData.phone);
+      data.append(`whatsapp`, formData.whatsapp);
+      data.append(`email`, formData.email);
+      data.append(`address`, formData.address);
 
       const method = isDelete ? "DELETE" : isEdit ? "PUT" : "POST";
 
       let validation;
 
       if (method === "POST") {
-        validation = validateFields(formData, ["name"]);
+        validation = validateFields(formData, ["name", "agent", "phone"]);
       } else if (method === "PUT") {
-        validation = validateFields(formData, ["id", "name"]);
+        validation = validateFields(formData, ["id", "name", "agent", "phone"]);
       } else {
         validation = validateFields(formData, ["id"]);
       }
@@ -62,7 +82,7 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/categories`,
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/suppliers`,
         {
           method,
           body: data,
@@ -92,29 +112,84 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
       setPending(false);
     }
   };
-
   return (
     <div className="flex flex-col gap-6">
-      <FormHeader defaultData={defaultData} title={`Category`} />
+      <FormHeader defaultData={defaultData} title={`Supplier`} />
       {!defaultData || defaultData?.type !== `delete` ? (
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
           {defaultData && (
-            <NextInput
-              label={`Id`}
-              placeholder={`CAT001`}
-              name={`id`}
-              value={formData.id}
-              onChange={(e) => setformdata({ ...formData, id: e.target.value })}
-            />
+            <>
+              <NextInput
+                label={`Id`}
+                placeholder={`BRD001`}
+                name={`id`}
+                value={formData.id}
+                onChange={(e) =>
+                  setformdata({ ...formData, id: e.target.value })
+                }
+              />
+              <Separator />
+            </>
           )}
           <NextInput
             label={`Name`}
-            placeholder={`Laptops`}
+            placeholder={`K-Chord ( Pvt ) Ltd`}
             name={`name`}
             value={formData.name}
             onChange={(e) => setformdata({ ...formData, name: e.target.value })}
+            className={`sm:col-span-2`}
             required={true}
           />
+          <NextInput
+            label={`Agent`}
+            placeholder={`Kasun Chiwantha`}
+            name={`agent`}
+            value={formData.agent}
+            onChange={(e) =>
+              setformdata({ ...formData, agent: e.target.value })
+            }
+            className={`sm:col-span-2`}
+            required={true}
+          />
+          <Separator />
+          <NextInput
+            label={`Phone`}
+            placeholder={`0788806670`}
+            name={`phone`}
+            value={formData.phone}
+            onChange={(e) =>
+              setformdata({ ...formData, phone: e.target.value })
+            }
+            required={true}
+          />
+          <NextInput
+            label={`WhatsApp`}
+            placeholder={`0761294262`}
+            name={`whatsapp`}
+            value={formData.whatsapp}
+            onChange={(e) =>
+              setformdata({ ...formData, whatsapp: e.target.value })
+            }
+          />
+          <NextInput
+            label={`Email`}
+            placeholder={`contact@kchord.com`}
+            name={`email`}
+            value={formData.email}
+            onChange={(e) =>
+              setformdata({ ...formData, email: e.target.value })
+            }
+          />
+          <NextInput
+            label={`Address`}
+            placeholder={`No. 361/23 parangoda , Dekatana`}
+            name={`address`}
+            value={formData.address}
+            onChange={(e) =>
+              setformdata({ ...formData, address: e.target.value })
+            }
+          />
+
           <Separator />
           <Button
             name={
@@ -136,4 +211,4 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
   );
 };
 
-export default CategoryMasterForm;
+export default SupplierMasterForm;

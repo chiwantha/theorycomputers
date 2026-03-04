@@ -4,6 +4,7 @@ import Button from "@/components/common/button/Button";
 import DeleteData from "@/components/common/form/deletedata/DeleteData";
 import FormHeader from "@/components/common/form/formheader/FormHeader";
 import NextInput from "@/components/common/form/nextinput/NextInput";
+import Separator from "@/components/common/separator/Separator";
 import { validateFields } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -93,7 +94,7 @@ const BrandMasterForm = ({ defaultData, form_props, close_drawer }) => {
 
   return (
     <div className="flex flex-col gap-6">
-      <FormHeader defaultData={defaultData} title={`Category`} />
+      <FormHeader defaultData={defaultData} title={`Brand`} />
       {!defaultData || defaultData?.type !== `delete` ? (
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
           {defaultData && (
@@ -112,7 +113,7 @@ const BrandMasterForm = ({ defaultData, form_props, close_drawer }) => {
             value={formData.name}
             onChange={(e) => setformdata({ ...formData, name: e.target.value })}
           />
-
+          <Separator />
           <Button
             name={
               pending
