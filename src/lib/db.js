@@ -27,9 +27,4 @@ export async function query(sql, params = []) {
   }
 }
 
-// Utility to format dates for MySQL
-export function formatDate(date) {
-  return date.toISOString().slice(0, 19).replace("T", " ");
-}
-
 export default pool;

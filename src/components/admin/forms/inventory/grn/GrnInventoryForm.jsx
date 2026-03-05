@@ -7,9 +7,12 @@ import FormHeader from "@/components/common/form/formheader/FormHeader";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import Separator from "@/components/common/separator/Separator";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
+  const router = useRouter();
   const { suppliers, items } = form_props || null;
   const [pending, setPending] = useState(false);
   const [formData, setformdata] = useState({
@@ -19,7 +22,7 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
     po_id: ``,
     invoice_no: ``,
     total: ``,
-    products: [],
+    grn_items: [],
   });
 
   useEffect(() => {
@@ -32,7 +35,7 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
         po_id: ``,
         invoice_no: ``,
         total: ``,
-        products: [],
+        grn_items: [],
       });
     } else {
       setformdata({
@@ -48,8 +51,52 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
   }, [defaultData]);
 
   const handleCrud = async () => {
-    alert(JSON.stringify(formData));
+    setPending(true);
+    try {
+      const isEdit = defaultData?.type === "edit";
+      const isDelete = defaultData?.type === "delete";
+      const method = isDelete ? `DELETE` : isEdit ? `PUT` : `POST`;
+
+      const data = new FormData();
+      data.append(`id`, formData.id);
+      data.append(`grn_no`, formData.grn_no);
+      data.append(`supplier_id`, formData.supplier_id);
+      data.append(`po_id`, formData.po_id);
+      data.append(`invoice_no`, formData.invoice_no);
+      data.append(`total`, formData.total);
+      data.append(`grn_items`, JSON.stringify(formData.grn_items));
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/grn`,
+        {
+          method,
+          body: data,
+        },
+      );
+
+      if (!res.ok) {
+        toast.error(
+          `${isDelete ? "Delete" : isEdit ? "Update" : "Create"} failed !`,
+        );
+        return;
+      }
+
+      toast.success(
+        `${
+          isDelete ? "Deleted" : isEdit ? "Updated" : "Created"
+        } successfully !`,
+      );
+
+      router.refresh();
+      close_drawer(true);
+    } catch (err) {
+      console.log("Operation Failed:", err);
+      toast.error("Something went wrong !");
+    } finally {
+      setPending(false);
+    }
   };
+
   return (
     <div className="flex flex-col gap-6">
       <FormHeader defaultData={defaultData} title={`Grn Note`} />
@@ -127,7 +174,7 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
               click={() => {
                 handleCrud();
               }}
-              disabled={pending}
+              // disabled={pending}
             />
           </div>
 

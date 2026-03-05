@@ -1,7 +1,8 @@
 import Button from "@/components/common/button/Button";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
-import { Pencil, Trash, Plus } from "lucide-react";
+import { InputStyle } from "@/constant/Forms";
+import { Pencil, Trash, Plus, Barcode } from "lucide-react";
 import React, { useState } from "react";
 
 const GrnRow = ({ item_list, grn_rows }) => {
@@ -17,7 +18,6 @@ const GrnRow = ({ item_list, grn_rows }) => {
     },
   ]);
 
-  // Helper to update rows and notify parent
   const updateRows = (newRows) => {
     setRows(newRows);
     if (grn_rows) grn_rows(newRows);
@@ -55,20 +55,23 @@ const GrnRow = ({ item_list, grn_rows }) => {
       if (selected?.is_serial === 0) updated[index].serials = [];
     }
 
+    // Update total when quantity OR cost changes
     if (field === "quantity" || field === "cost") {
       updated[index].total = updated[index].quantity * updated[index].cost;
+    }
 
-      // Adjust serials length if needed
-      if (updated[index].is_serial === 1) {
-        const currentLength = updated[index].serials.length;
-        if (value > currentLength) {
-          updated[index].serials = [
-            ...updated[index].serials,
-            ...Array(value - currentLength).fill(""),
-          ];
-        } else if (value < currentLength) {
-          updated[index].serials = updated[index].serials.slice(0, value);
-        }
+    // Adjust serials ONLY when quantity changes
+    if (field === "quantity" && updated[index].is_serial === 1) {
+      const qty = updated[index].quantity;
+      const currentLength = updated[index].serials.length;
+
+      if (qty > currentLength) {
+        updated[index].serials = [
+          ...updated[index].serials,
+          ...Array(qty - currentLength).fill(""),
+        ];
+      } else if (qty < currentLength) {
+        updated[index].serials = updated[index].serials.slice(0, qty);
       }
     }
 
@@ -153,12 +156,18 @@ const GrnRow = ({ item_list, grn_rows }) => {
                     placeholder={`0`}
                   />
                 </td>
-                <td className="pl-2 pb-2">{row.total}</td>
+                <td className="pl-2 pb-2 min-w-20">
+                  <div
+                    className={`outline-none w-full rounded-xl bg-gray-100 py-2 px-4`}
+                  >
+                    {row.total}
+                  </div>
+                </td>
                 <td className="pl-2 pb-2">
                   <div className="flex flex-col gap-2">
                     <div className="flex gap-2 w-fit">
                       <Button
-                        name={<Pencil size={15} />}
+                        name={<Barcode size={15} />}
                         pd={`px-3 py-3`}
                         disabled={row.is_serial === 0}
                         click={() => handleToggleSerials(index)}
@@ -199,7 +208,7 @@ const GrnRow = ({ item_list, grn_rows }) => {
       </table>
 
       <div className="mt-2">
-        <Button name={<Plus size={15} />} pd="px-4 py-2" click={handleAddRow} />
+        <Button name={<Plus size={15} />} pd="px-3 py-3" click={handleAddRow} />
       </div>
     </div>
   );
