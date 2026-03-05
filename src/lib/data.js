@@ -32,3 +32,35 @@ export const get_categories = async () => {
     return [];
   }
 };
+export const get_suppliers = async () => {
+  try {
+    const sql = `SELECT id AS value, name AS label FROM mst_suppliers WHERE state = 1`;
+
+    const data = await query(sql);
+
+    if (!data || data.length == 0) {
+      return [];
+    }
+
+    return data;
+  } catch (err) {
+    console.log(`Error Loading Suppliers List !`, err);
+    return [];
+  }
+};
+export const get_items = async () => {
+  try {
+    const sql = `SELECT id AS value, name AS label, is_serial FROM mst_items WHERE state = 1`;
+
+    const data = await query(sql);
+
+    if (!data || data.length == 0) {
+      return [];
+    }
+
+    return data;
+  } catch (err) {
+    console.log(`Error Loading Items List !`, err);
+    return [];
+  }
+};

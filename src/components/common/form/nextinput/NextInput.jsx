@@ -28,6 +28,7 @@ const NextInput = ({
   onComboboxChange, // pass selected value handler
   textarea = false, // new prop
   textareaRows = 4, // default rows
+  disabled,
 }) => {
   if (combo) {
     return (
@@ -77,6 +78,7 @@ const NextInput = ({
           value={value}
           onChange={onChange}
           className={cn(InputStyle, inputClassName)}
+          disabled={disabled}
         />
       </div>
     );
@@ -97,6 +99,7 @@ const NextInput = ({
           onChange={onChange}
           className={cn(InputStyle, inputClassName)}
           placeholder={placeholder}
+          disabled={disabled}
         />
       </div>
     );

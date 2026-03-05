@@ -1,5 +1,6 @@
 import GrnInventoryForm from "@/components/admin/forms/inventory/grn/GrnInventoryForm";
 import Table from "@/components/common/table/Table";
+import { get_items, get_suppliers } from "@/lib/data";
 
 async function get_grn_inventory_list() {
   try {
@@ -64,7 +65,8 @@ const InventoryGoodReceiveNote = async () => {
     },
   ];
   const data = await get_grn_inventory_list();
-  // console.log(`grn data : `, data);
+  const suppliers = await get_suppliers();
+  const items = await get_items();
   return (
     <div className="">
       <Table
@@ -72,7 +74,7 @@ const InventoryGoodReceiveNote = async () => {
         tablename={`Grn Notes`}
         rows={data}
         form={GrnInventoryForm}
-        form_props={{ suppliers: true }}
+        form_props={{ suppliers: suppliers, items: items }}
         action
       />
     </div>

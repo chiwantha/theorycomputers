@@ -158,7 +158,8 @@ export const PUT = async (request) => {
 
 export const DELETE = async (request) => {
   try {
-    const { id } = await request.json();
+    const data = await request.formData();
+    const id = data.get("id") || null;
 
     if (!id || id == "") {
       return NextResponse.json({ error: `Id Not Found !` }, { status: 404 });

@@ -9,6 +9,7 @@ const Loading = () => {
           src={`/app/loading.gif`}
           alt="loading.gif"
           fill
+          unoptimized
           className="object-center object-contain"
         />
       </div>
