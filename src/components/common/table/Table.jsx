@@ -158,6 +158,7 @@ const Table = ({
                         setChangeData={setChangeData}
                         setOpen={setOpen}
                         row={row}
+                        action={action}
                       />
                     </td>
                   )}

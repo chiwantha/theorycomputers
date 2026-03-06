@@ -29,12 +29,12 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
     setPending(false);
     if (defaultData) {
       setformdata({
-        id: ``,
-        grn_no: ``,
-        supplier_id: ``,
-        po_id: ``,
-        invoice_no: ``,
-        total: ``,
+        id: defaultData?.row?.id,
+        grn_no: defaultData?.row?.grn_no,
+        supplier_id: defaultData?.row?.supplier_id,
+        po_id: defaultData?.row?.po_id,
+        invoice_no: defaultData?.row?.invoice_no,
+        total: defaultData?.row?.total,
         grn_items: [],
       });
     } else {
@@ -155,7 +155,7 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
             </div>
             <Separator title={`Grn Products`} />
             {/* grn products */}
-            <div className="flex flex-col gap-4">
+            <div className={`flex flex-col gap-4`}>
               <GrnRow
                 item_list={items}
                 grn_rows={(val) =>

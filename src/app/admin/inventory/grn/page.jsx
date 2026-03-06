@@ -75,7 +75,7 @@ const InventoryGoodReceiveNote = async () => {
         rows={data}
         form={GrnInventoryForm}
         form_props={{ suppliers: suppliers, items: items }}
-        action
+        action={{ view: true, edit: false, delete: false }}
       />
     </div>
   );
