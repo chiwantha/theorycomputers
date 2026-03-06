@@ -19,7 +19,7 @@ GROUP BY gh.id;`;
     const res = await query(sql);
 
     if (!res || res.length == 0) {
-      return NextResponse.json({ error: `No Grn Found !` }, { status: 200 });
+      return NextResponse.json({ error: `No Grn Found !` }, { status: 404 });
     }
 
     return NextResponse.json(res, { status: 200 });
@@ -109,6 +109,23 @@ export const POST = async (request) => {
          VALUES ${placeholders_stock}
          ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)`,
         stock_rows.flat(),
+      );
+    }
+
+    // 2️⃣ Insert GRN details
+    if (grn_items.length > 0) {
+      const values_movements = grn_items.flatMap((item) => [
+        item.item_id,
+        "IN",
+        item.quantity,
+        `GRN`,
+        grn_header_id,
+      ]);
+      const placeholders_movements = generatePlaceholders(grn_items.length, 5);
+      await connection.execute(
+        `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id)
+         VALUES ${placeholders_movements}`,
+        values_movements,
       );
     }
 
