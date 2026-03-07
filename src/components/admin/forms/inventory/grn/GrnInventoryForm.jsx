@@ -168,7 +168,7 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
               name={
                 pending
                   ? `Processing !`
-                  : `${defaultData ? `Update` : `Save`} Brand`
+                  : `${defaultData ? `Update` : `Save`} Grn`
               }
               bg={`bg-green-400 hover:bg-green-500 text-white col-span-full`}
               click={() => {
