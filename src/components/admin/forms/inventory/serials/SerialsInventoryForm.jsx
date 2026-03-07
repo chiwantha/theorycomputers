@@ -4,15 +4,16 @@ import Button from "@/components/common/button/Button";
 import FormHeader from "@/components/common/form/formheader/FormHeader";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import { validateFields } from "@/lib/validation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const SerialsInventoryForm = ({ defaultData, form_props, close_drawer }) => {
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [formData, setformData] = useState({
     id: ``,
     serial: ``,
-    stock: ``,
   });
 
   useEffect(() => {
@@ -21,13 +22,11 @@ const SerialsInventoryForm = ({ defaultData, form_props, close_drawer }) => {
       setformData({
         id: defaultData?.row?.id,
         serial: defaultData?.row?.serial,
-        stock: defaultData?.row?.stock,
       });
     } else {
       setformData({
         id: ``,
         serial: ``,
-        stock: ``,
       });
     }
   }, [defaultData]);
@@ -57,7 +56,6 @@ const SerialsInventoryForm = ({ defaultData, form_props, close_drawer }) => {
       const data = new FormData();
       data.append(`id`, formData.id);
       data.append(`serial`, formData.serial);
-      data.append(`stock`, formData.stock);
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/serials`,

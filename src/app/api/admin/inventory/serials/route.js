@@ -45,7 +45,7 @@ export const PUT = async (request) => {
       return NextResponse.json({ error: `Id Not Found !` }, { status: 404 });
     }
 
-    const sql = `UPDATE TABLE stock_items_serials SET serial=? WHERE id=?`;
+    const sql = `UPDATE stock_items_serials SET serial=? WHERE id=?`;
     const values = [serial, id];
     const res = await query(sql, values);
 

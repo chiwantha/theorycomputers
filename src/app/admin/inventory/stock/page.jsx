@@ -60,7 +60,12 @@ const InventoryStock = async () => {
   const data = await get_stock_inventory_list();
   return (
     <div>
-      <Table colunms={colunms} rows={data} searchkeys={[`stock`, `name`]} />
+      <Table
+        colunms={colunms}
+        rows={data}
+        searchkeys={[`stock`, `name`]}
+        tablename={`Stock View`}
+      />
     </div>
   );
 };

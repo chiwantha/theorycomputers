@@ -63,6 +63,7 @@ const InventorySerials = async () => {
         form_props={true}
         searchkeys={[`serial`, `name`, `stock_status`]}
         action={{ view: false, edit: true, delete: false }}
+        tablename={`Stock Serials`}
       />
     </div>
   );
