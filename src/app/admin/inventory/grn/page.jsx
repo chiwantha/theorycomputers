@@ -2,6 +2,8 @@ import GrnInventoryForm from "@/components/admin/forms/inventory/grn/GrnInventor
 import Table from "@/components/common/table/Table";
 import { get_items, get_suppliers } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+
 async function get_grn_inventory_list() {
   try {
     const res = await fetch(
@@ -76,6 +78,7 @@ const InventoryGoodReceiveNote = async () => {
         form={GrnInventoryForm}
         form_props={{ suppliers: suppliers, items: items }}
         action={{ view: true, edit: false, delete: false }}
+        searchkeys={[`grn_no`, `supplier_name`, `date`]}
       />
     </div>
   );

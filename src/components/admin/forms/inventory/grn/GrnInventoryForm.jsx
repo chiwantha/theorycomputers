@@ -7,6 +7,7 @@ import FormHeader from "@/components/common/form/formheader/FormHeader";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import Separator from "@/components/common/separator/Separator";
+import { validateFields } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -56,6 +57,34 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
       const isEdit = defaultData?.type === "edit";
       const isDelete = defaultData?.type === "delete";
       const method = isDelete ? `DELETE` : isEdit ? `PUT` : `POST`;
+
+      let validation;
+
+      if (method === "POST") {
+        validation = validateFields(formData, [
+          "grn_no",
+          "supplier_id",
+          "po_id",
+          "invoice_no",
+          "grn_items",
+        ]);
+      } else if (method === "PUT") {
+        validation = validateFields(formData, [
+          "id",
+          "grn_no",
+          "supplier_id",
+          "po_id",
+          "invoice_no",
+          "grn_items",
+        ]);
+      } else {
+        validation = validateFields(formData, ["id"]);
+      }
+
+      if (!validation.isValid) {
+        toast.error(`Missing: ${validation.emptyFields.join(", ")}`);
+        return;
+      }
 
       const data = new FormData();
       data.append(`id`, formData.id);
@@ -174,7 +203,7 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
               click={() => {
                 handleCrud();
               }}
-              // disabled={pending}
+              disabled={pending}
             />
           </div>
 
