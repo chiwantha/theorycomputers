@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 import SidebarItem from "./sidebarItem/SidebarItem";
-import GreetingCard from "../../cards/greetingCard/GreetingCard";
+import GreetingCard from "../../cards/greetingcard/GreetingCard";
 import { useSidebar } from "@/context/SidebarContext";
 
 const admin_links = [

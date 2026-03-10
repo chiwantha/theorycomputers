@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
+import WidthDisplay from "@/components/common/widthdisplay/WidthDisplay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
       >
         {children}
         <ToastContainer />
+        <WidthDisplay />
       </body>
     </html>
   );
