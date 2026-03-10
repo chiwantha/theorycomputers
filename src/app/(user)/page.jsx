@@ -1,5 +1,5 @@
-const ShopUserDashboard = () => {
-  return <div>ShopUserDashboard</div>;
+const ShopUserDashMenu = () => {
+  return <div className="">ShopUserDashMenu</div>;
 };
 
-export default ShopUserDashboard;
+export default ShopUserDashMenu;
