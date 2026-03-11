@@ -17,3 +17,24 @@ export function calculateGrnTotal(grn_items) {
 
   return total;
 }
+
+export function getTimeSince(createdAt) {
+  const created = new Date(createdAt);
+  const now = new Date();
+
+  const diffMs = now - created;
+  const totalMinutes = Math.floor(diffMs / (1000 * 60));
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours === 0) {
+    return `${minutes}Min`;
+  }
+
+  if (minutes === 0) {
+    return `${hours}H`;
+  }
+
+  return `${hours}H ${minutes}Min`;
+}

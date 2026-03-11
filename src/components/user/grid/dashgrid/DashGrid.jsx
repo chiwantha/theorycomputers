@@ -2,10 +2,54 @@ import React from "react";
 import DashCard from "../../cards/dashcard/DashCard";
 
 const DashGrid = () => {
+  const cards = [
+    {
+      title: `Today Sales`,
+      image: `/dashboard/sales.png`,
+      link: ``,
+      value: 1256.0,
+      className: ``,
+    },
+    {
+      title: `Pending Jobs`,
+      image: `/dashboard/jobs.png`,
+      link: ``,
+      value: 6,
+      className: ``,
+    },
+    {
+      title: `Low Stock`,
+      image: `/dashboard/stock.png`,
+      link: ``,
+      value: 14,
+      className: ``,
+    },
+    {
+      title: `New Customers`,
+      image: `/dashboard/customers.png`,
+      link: ``,
+      value: 3,
+      className: ``,
+    },
+    {
+      title: `Sms Balance`,
+      image: `/dashboard/sms.png`,
+      link: ``,
+      value: 3259,
+      className: `hidden xl:flex`,
+    },
+  ];
   return (
-    <div className="h-50 grid-cols-5 grid gap-4 overflow-x-auto p-4 border-b border-gray-200">
-      {Array.from({ length: 5 }).map((_, index) => (
-        <DashCard key={index} />
+    <div className=" flex items-center gap-4 p-4 md:p-6  border-b border-gray-200 ">
+      {cards.map((card, index) => (
+        <DashCard
+          key={index}
+          className={card.className}
+          icon={card.image}
+          title={card.title}
+          link={card.link}
+          value={card.value}
+        />
       ))}
     </div>
   );
