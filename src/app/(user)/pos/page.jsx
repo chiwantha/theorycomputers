@@ -4,19 +4,16 @@ import React from "react";
 
 const Pos = () => {
   return (
-    <div className="flex-col flex h-screen">
+    <div className="flex-col flex gap-4">
       {/* Top Cards */}
       <DashGrid />
 
       {/* Content */}
-      <div className="flex flex-1 min-h-0 flex-col md:flex-row">
+      <div className=" flex-1 ">
         {/* Grid Area */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="">
           <JobGrid />
         </div>
-
-        {/* Right Cart Panel */}
-        <div className="w-80 bg-blue-400"></div>
       </div>
     </div>
   );
