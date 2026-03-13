@@ -2,21 +2,13 @@ import DashGrid from "@/components/user/grid/dashgrid/DashGrid";
 import JobGrid from "@/components/user/grid/jobgrid/JobGrid";
 import React from "react";
 
-const Pos = () => {
+const PosPage = () => {
   return (
-    <div className="flex-col flex gap-4">
-      {/* Top Cards */}
+    <div className="bg-red-400 min-h-[calc(100vh-60px)] p-4 space-y-4">
       <DashGrid />
-
-      {/* Content */}
-      <div className=" flex-1 ">
-        {/* Grid Area */}
-        <div className="">
-          <JobGrid />
-        </div>
-      </div>
+      <JobGrid />
     </div>
   );
 };
 
-export default Pos;
+export default PosPage;
