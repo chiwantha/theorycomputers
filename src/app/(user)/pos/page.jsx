@@ -4,8 +4,7 @@ import React from "react";
 
 const PosPage = () => {
   return (
-    <div className="bg-red-400 min-h-[calc(100vh-60px)] p-4 space-y-4">
-      <DashGrid />
+    <div className="min-h-[calc(100vh-60px)] p-4 space-y-4">
       <JobGrid />
     </div>
   );

@@ -7,7 +7,7 @@ import React from "react";
 const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
   return (
     <div
-      className={`min-h-54 p-4 md:p-6 bg-gray-50 rounded-xl  border-gray-200 hover:border-blue-300 transition-all duration-300 flex
+      className={`min-h-50 p-4 md:p-6 bg-gray-50 rounded-xl  border-gray-200 hover:border-blue-300 transition-all duration-300 flex
         ${add ? `justify-center items-center border-6 border-dashed text-blue-400` : ` border`}`}
     >
       {add ? (

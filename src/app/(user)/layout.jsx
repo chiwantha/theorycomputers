@@ -16,7 +16,7 @@ const ShopUserLayout = ({ children }) => {
         </div>
 
         {/* Content */}
-        <main className="flex-1 bg-gray-100">{children}</main>
+        <main className="flex-1 bg-gray-100 overflow-y-auto">{children}</main>
       </div>
     </div>
   );
