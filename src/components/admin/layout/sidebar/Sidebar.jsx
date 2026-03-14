@@ -18,8 +18,10 @@ import {
 } from "lucide-react";
 
 import SidebarItem from "./sidebarItem/SidebarItem";
-import GreetingCard from "../../cards/greetingcard/GreetingCard";
+import GreetingCard from "../../../common/cards/greetingcard/GreetingCard";
 import { useSidebar } from "@/context/SidebarContext";
+import Button from "@/components/common/button/Button";
+import { signOut } from "next-auth/react";
 
 const admin_links = [
   {
@@ -97,6 +99,11 @@ const admin_links = [
 ];
 
 const Sidebar = () => {
+  const user = {
+    id: 10,
+    name: `Charindu Janith`,
+    role: 1,
+  };
   const [openIndex, setOpenIndex] = useState(null);
 
   const handleToggle = (index) => {
@@ -112,7 +119,7 @@ const Sidebar = () => {
       transform transition-transform duration-300 bg-white flex flex-col gap-4
       ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} md:translate-x-0`}
     >
-      <GreetingCard />
+      <GreetingCard user={user} />
       <div className="flex flex-col gap-2">
         {admin_links.map((link, index) => (
           <SidebarItem
@@ -123,6 +130,10 @@ const Sidebar = () => {
             {...link}
           />
         ))}
+        <Button
+          name={`Logout`}
+          click={() => signOut({ callbackUrl: `/auth/usr-login` })}
+        />
       </div>
     </div>
   );

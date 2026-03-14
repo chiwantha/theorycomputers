@@ -1,5 +1,5 @@
 const ShopUserDashMenu = () => {
-  return <div className="flex">ShopUserDashMenu</div>;
+  return <div className="">ShopUserDashMenu</div>;
 };
 
 export default ShopUserDashMenu;

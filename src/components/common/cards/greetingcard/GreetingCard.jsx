@@ -1,11 +1,11 @@
 "use client";
 
 import Button from "@/components/common/button/Button";
-import { Power, User } from "lucide-react";
+import { Crown, Power, User } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-const GreetingCard = () => {
+const GreetingCard = ({ user }) => {
   // Get current hour
   const hour = new Date().getHours();
 
@@ -23,14 +23,19 @@ const GreetingCard = () => {
     <div className="border-b border-gray-200 px-4 pb-2 pt-6 flex flex-col space-y-4 justify-center items-center">
       <div
         className="rounded-full w-[60%]  items-center justify-center flex  
-      aspect-square bg-gray-100 text-blue-600"
+      aspect-square bg-gray-100 text-blue-600 relative"
       >
         <User size={80} className="animate-pulse" />
+        {user?.role == 1 && (
+          <div className="absolute z-50 bg-amber-500 top-0 right-0 p-1.5 rounded-xl">
+            <Crown color="white" size={20} />
+          </div>
+        )}
       </div>
       <div className="text-center font-light capitalize text-gray-700 flex flex-col -space-y-1">
         <span className="text-sm">{greeting}</span>
         <h2 className="line-clamp-1 uppercase text-ellipsis text-xl text-gray-700 font-bold">
-          Mr. Chiwantha
+          Mr. {user?.name.split(" ")[1]}
         </h2>
       </div>
       <div className="items-center justify-center gap-2 hidden">
