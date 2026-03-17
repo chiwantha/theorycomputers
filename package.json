@@ -12,6 +12,7 @@
     "@base-ui/react": "^1.2.0",
     "@radix-ui/react-dismissable-layer": "^1.1.11",
     "@radix-ui/react-primitive": "^2.1.4",
+    "bcrypt": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "fs": "^0.0.1-security",

@@ -99,11 +99,6 @@ const admin_links = [
 ];
 
 const Sidebar = () => {
-  const user = {
-    id: 10,
-    name: `Charindu Janith`,
-    role: 1,
-  };
   const [openIndex, setOpenIndex] = useState(null);
 
   const handleToggle = (index) => {
@@ -119,7 +114,7 @@ const Sidebar = () => {
       transform transition-transform duration-300 bg-white flex flex-col gap-4
       ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} md:translate-x-0`}
     >
-      <GreetingCard user={user} />
+      <GreetingCard />
       <div className="flex flex-col gap-2">
         {admin_links.map((link, index) => (
           <SidebarItem

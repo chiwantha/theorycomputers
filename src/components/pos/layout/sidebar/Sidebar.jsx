@@ -30,12 +30,6 @@ const paths = [
 ];
 
 const Sidebar = () => {
-  const user = {
-    id: 12,
-    name: `Kasun Chiwantha`,
-    role: 0,
-  };
-
   const { isSidebarOpen } = useSidebar();
 
   const [openIndex, setOpenIndex] = useState(null);
@@ -51,7 +45,7 @@ const Sidebar = () => {
       ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} md:translate-x-0`}
     >
       <div className="flex flex-col gap-2">
-        <GreetingCard user={user} />
+        <GreetingCard />
         {paths.map((path, index) => (
           <SidebarItem
             key={index}

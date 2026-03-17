@@ -11,7 +11,7 @@ export const metadata = {
 
 const AdminLayout = async ({ children }) => {
   const session = await getServerSession(authOptions);
-  console.log(session);
+  // console.log(session);
   if (!session || session?.user?.role !== 1) {
     redirect(`/auth/usr-login`);
   }

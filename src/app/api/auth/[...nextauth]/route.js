@@ -1,7 +1,10 @@
 // app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import { query } from "@/lib/db";
 
+const saltRounds = 10;
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -10,16 +13,41 @@ export const authOptions = {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials) {
-        console.log(credentials);
-        if (
-          credentials.username === "chiwanthakasun" &&
-          credentials.password === "Kchordgroup*789789"
-        ) {
-          // return user object with custom keys
-          return { id: "1", name: "Kasun Chiwantha", role: 1 };
+        try {
+          const sql = `SELECT * FROM mst_users WHERE username=?`;
+          const data = await query(sql, [credentials.username]);
+
+          if (!data || data.length <= 0) {
+            return null;
+          }
+
+          const userData = data[0];
+
+          const isMatch = await bcrypt.compare(
+            credentials.password,
+            userData.password,
+          );
+
+          if (!isMatch) {
+            return null;
+          }
+
+          const { password, first_name, last_name, ...rest } = userData;
+
+          const safeUser = {
+            ...rest,
+            first_name,
+            last_name,
+            name: `${first_name} ${last_name}`,
+          };
+
+          return safeUser;
+        } catch (err) {
+          console.log(err);
+          return null;
         }
-        return null;
       },
     }),
   ],
