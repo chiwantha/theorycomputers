@@ -2,8 +2,10 @@
 import GreetingCard from "@/components/common/cards/greetingcard/GreetingCard";
 import SidebarItem from "@/components/admin/layout/sidebar/sidebarItem/SidebarItem";
 import { useSidebar } from "@/context/SidebarContext";
-import { BadgeDollarSign, Hammer, Menu, ReceiptEuro } from "lucide-react";
+import { BadgeDollarSign, Hammer, Menu, ReceiptEuro, User } from "lucide-react";
 import { useState } from "react";
+import Button from "@/components/common/button/Button";
+import { signOut, useSession } from "next-auth/react";
 
 const paths = [
   {
@@ -30,6 +32,7 @@ const paths = [
 ];
 
 const Sidebar = () => {
+  const { data, status } = useSession();
   const { isSidebarOpen } = useSidebar();
 
   const [openIndex, setOpenIndex] = useState(null);
@@ -46,6 +49,9 @@ const Sidebar = () => {
     >
       <div className="flex flex-col gap-2">
         <GreetingCard />
+        {data?.user?.role === 1 && (
+          <SidebarItem icon={<User />} path={`/admin`} name={`Admin`} />
+        )}
         {paths.map((path, index) => (
           <SidebarItem
             key={index}
@@ -55,6 +61,11 @@ const Sidebar = () => {
             {...path}
           />
         ))}
+        <Button
+          name={`Logout`}
+          wfull={true}
+          click={() => signOut({ callbackUrl: `/auth/usr-login` })}
+        />
       </div>
     </div>
   );

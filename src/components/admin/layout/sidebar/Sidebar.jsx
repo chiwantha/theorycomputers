@@ -32,7 +32,7 @@ const admin_links = [
   {
     name: `Pos`,
     icon: <ShoppingCart size={20} />,
-    path: `/`,
+    path: `/pos`,
   },
   {
     name: "Master",
