@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import JobCard from "../../cards/jobcard/JobCard";
 import { DummyJobList } from "@/constant/DummyJobs";
 
-const JobGrid = ({ gridName }) => {
+const JobGrid = ({ gridName, grid }) => {
   const [search, setSearch] = useState("");
   const data = DummyJobList;
 
   const filteredJobs = data.filter((job) =>
-    `${job.customer_name} ${job.device_name} ${job.phone}`
+    `${job.customer_name} ${job.device_name} ${job.phone} `
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
@@ -18,7 +18,7 @@ const JobGrid = ({ gridName }) => {
       {/* Search */}
       <div className="flex justify-between items-center sm:flex-row flex-col">
         <h2 className="text-xl font-semibold text-gray-700 px-2 sm:block hidden">
-          {gridName || "View Your Jobs"}
+          {gridName || "Your Jobs"}
         </h2>
 
         <input
@@ -31,7 +31,9 @@ const JobGrid = ({ gridName }) => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+      <div
+        className={`grid gap-4 ${grid ? grid : ` grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 `}`}
+      >
         <JobCard add={true} />
 
         {filteredJobs.length > 0 ? (

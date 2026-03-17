@@ -7,7 +7,7 @@ const DashCard = ({ title, icon, value, link, className }) => {
     <div
       className={cn(
         `justify-center relative rounded-xl flex flex-col overflow-hidden
-         shadow-xs border-gray-200 hover:border-blue-300 bg-gray-100
+         shadow-xs border-gray-200 hover:border-blue-300 bg-white
            border transition-all duration-300 min-h-37.5 p-4 lg:p-6 w-full`,
         className,
       )}

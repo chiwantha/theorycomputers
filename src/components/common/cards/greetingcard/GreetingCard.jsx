@@ -20,7 +20,7 @@ const GreetingCard = () => {
   else greeting = "Good Evening";
 
   return (
-    <div className="border-b border-gray-200 px-4 pb-2 pt-6 flex flex-col space-y-4 justify-center items-center">
+    <div className="border-b border-gray-200 px-4 py-6 flex flex-col space-y-4 justify-center items-center">
       <div className="rounded-full w-[60%] items-center justify-center flex aspect-square bg-gray-100 text-blue-600 relative">
         <User size={80} className="animate-pulse" />
         {session?.user?.role === 1 && (

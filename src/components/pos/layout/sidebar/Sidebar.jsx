@@ -32,7 +32,7 @@ const paths = [
 ];
 
 const Sidebar = () => {
-  const { data, status } = useSession();
+  const { data } = useSession();
   const { isSidebarOpen } = useSidebar();
 
   const [openIndex, setOpenIndex] = useState(null);
@@ -47,7 +47,7 @@ const Sidebar = () => {
       transform transition-transform duration-300 bg-white flex flex-col gap-4
       ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} md:translate-x-0`}
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <GreetingCard />
         {data?.user?.role === 1 && (
           <SidebarItem icon={<User />} path={`/admin`} name={`Admin`} />

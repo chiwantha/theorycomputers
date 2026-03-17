@@ -115,7 +115,7 @@ const Sidebar = () => {
       ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} md:translate-x-0`}
     >
       <GreetingCard />
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         {admin_links.map((link, index) => (
           <SidebarItem
             key={index}
@@ -126,6 +126,7 @@ const Sidebar = () => {
           />
         ))}
         <Button
+          wfull={true}
           name={`Logout`}
           click={() => signOut({ callbackUrl: `/auth/usr-login` })}
         />
