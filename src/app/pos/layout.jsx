@@ -3,6 +3,7 @@ import { SidebarProvider } from "@/context/SidebarContext";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import Navbar from "@/components/pos/layout/navbar/Navbar";
 
 const ShopUserLayout = async ({ children }) => {
   const session = await getServerSession(authOptions);
@@ -20,6 +21,7 @@ const ShopUserLayout = async ({ children }) => {
 
         {/* Right Side */}
         <div className="flex flex-col flex-1 overflow-hidden">
+          <Navbar />
           {/* Content */}
           <main className="flex-1 bg-gray-100 overflow-y-auto">{children}</main>
         </div>

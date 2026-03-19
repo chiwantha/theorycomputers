@@ -1,7 +1,7 @@
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { getTimeSince } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Phone, Plus, User } from "lucide-react";
 import React from "react";
 
 const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
@@ -31,15 +31,15 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
             )}
           </div>
           <Separator />
-          <div className="flex flex-col">
-            <span className="line-clamp-1 text-ellipsis text-nowrap capitalize text-gray-700 font-semibold">
-              Customer :{" "}
+          <div className="flex flex-col gap-0.5">
+            <span className="line-clamp-1 text-ellipsis text-nowrap capitalize flex gap-2 flex-row text-gray-700 font-semibold items-center">
+              <User size={20} strokeWidth={3} color="gray" />
               <span className=" font-normal text-gray-500">
                 {customer_name}
               </span>
             </span>
-            <span className="line-clamp-1 text-ellipsis text-nowrap capitalize text-gray-700 font-semibold">
-              Phone :{" "}
+            <span className="line-clamp-1 text-ellipsis text-nowrap capitalize flex gap-2 flex-row text-gray-700 font-semibold items-center">
+              <Phone size={18} strokeWidth={3} color="gray" />
               <span className=" font-normal text-gray-500">{phone}</span>
             </span>
           </div>

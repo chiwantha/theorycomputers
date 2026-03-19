@@ -110,7 +110,7 @@ const Sidebar = () => {
   return (
     <div
       className={`w-70 p-4 overflow-y-auto border-r shadow-sm border-gray-100
-      md:translate-x-0 fixed md:relative top-0 left-0 h-full z-51
+      md:translate-x-0 fixed md:relative top-0 left-0 h-full z-51 thin-scrollbar
       transform transition-transform duration-300 bg-white flex flex-col gap-4
       ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} md:translate-x-0`}
     >
