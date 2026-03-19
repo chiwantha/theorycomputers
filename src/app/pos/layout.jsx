@@ -23,7 +23,9 @@ const ShopUserLayout = async ({ children }) => {
         <div className="flex flex-col flex-1 overflow-hidden">
           <Navbar />
           {/* Content */}
-          <main className="flex-1 bg-gray-100 overflow-y-auto">{children}</main>
+          <main className="flex-1 bg-gray-100 overflow-y-auto p-4">
+            {children}
+          </main>
         </div>
       </div>
     </SidebarProvider>

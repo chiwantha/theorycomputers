@@ -3,7 +3,7 @@ import React from "react";
 
 const PosJobPage = () => {
   return (
-    <div className="p-4 md:p-6">
+    <div className="">
       <JobGrid />
     </div>
   );

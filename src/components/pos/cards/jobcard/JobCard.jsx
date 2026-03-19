@@ -56,7 +56,7 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
                   ? `bg-green-500 hover:bg-green-600 text-white`
                   : false
               }
-              link={`/jobs/${id}`}
+              link={`/pos/business/jobs/${id}`}
             />
           </div>
         </div>
