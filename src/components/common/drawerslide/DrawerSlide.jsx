@@ -91,7 +91,7 @@ function DrawerContent({
       {/* Drawer */}
       <div
         className={cn(
-          "fixed z-50 bg-white shadow-lg transition-transform duration-300 flex overflow-y-auto flex-col",
+          "fixed z-51 bg-white shadow-lg transition-transform duration-300 flex overflow-y-auto flex-col",
           side === "right" &&
             `top-0 right-0 h-full transform ${
               open ? "translate-x-0" : "translate-x-full"
@@ -116,7 +116,7 @@ function DrawerContent({
         {showCloseButton && (
           <button
             onClick={() => setOpen(false)}
-            className="absolute top-4 right-4 opacity-70 hover:opacity-100"
+            className="absolute top-4 right-4 opacity-70 text-red-600 bg-red-200 rounded-xl p-2 hover:opacity-100"
           >
             <XIcon className="size-4" />
           </button>
