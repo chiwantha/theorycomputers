@@ -2,7 +2,17 @@
 import GreetingCard from "@/components/common/cards/greetingcard/GreetingCard";
 import SidebarItem from "@/components/admin/layout/sidebar/sidebarItem/SidebarItem";
 import { useSidebar } from "@/context/SidebarContext";
-import { BadgeDollarSign, Hammer, Menu, ReceiptEuro, User } from "lucide-react";
+import {
+  BanknoteArrowUp,
+  BarChart2,
+  Hammer,
+  Menu,
+  ReceiptEuro,
+  ReceiptText,
+  ShelvingUnit,
+  User,
+  Wrench,
+} from "lucide-react";
 import { useState } from "react";
 import Button from "@/components/common/button/Button";
 import { signOut, useSession } from "next-auth/react";
@@ -14,18 +24,33 @@ const paths = [
     icon: <Menu size={20} />,
   },
   {
-    name: `Business`,
-    icon: <BadgeDollarSign size={20} />,
+    name: `Terminal`,
+    path: `/pos/terminal`,
+    icon: <BanknoteArrowUp size={20} />,
+  },
+  {
+    name: `Jobs`,
+    path: `/pos/jobs`,
+    icon: <Hammer size={20} />,
+  },
+  {
+    name: `Reports`,
+    icon: <BarChart2 size={20} />,
     sub: [
       {
-        name: `Jobs`,
-        path: `/pos/business/jobs`,
-        icon: <Hammer size={20} />,
+        name: `Sales`,
+        path: `/pos/reports/sales`,
+        icon: <ReceiptText size={20} />,
       },
       {
-        name: `Invoice`,
-        path: `/pos/business/invoice`,
-        icon: <ReceiptEuro size={20} />,
+        name: `Jobs`,
+        path: `/pos/reports/jobs`,
+        icon: <Wrench size={20} />,
+      },
+      {
+        name: `Inventory`,
+        path: `/pos/reports/inventory`,
+        icon: <ShelvingUnit size={20} />,
       },
     ],
   },

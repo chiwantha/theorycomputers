@@ -1,30 +1,69 @@
 import mysql from "mysql2/promise";
 
+// DB Config
 const dbConfig = {
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "seo_blog_2025",
+
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+
   timezone: "+00:00",
   charset: "utf8mb4_unicode_ci",
-  connectTimeout: 10000,
+
+  connectTimeout: 20000,
+
+  // 🔥 important
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
 };
 
-// Create a connection pool
-const pool = mysql.createPool(dbConfig);
+// 🔥 Singleton (VERY IMPORTANT for Next.js)
+let pool;
 
-// Utility function to execute queries
+if (!global._mysqlPool) {
+  global._mysqlPool = mysql.createPool(dbConfig);
+}
+
+pool = global._mysqlPool;
+
+// ✅ Query function with retry + safe connection handling
 export async function query(sql, params = []) {
+  let connection;
+
   try {
-    const [results] = await pool.execute(sql, params);
+    connection = await pool.getConnection();
+
+    const [results] = await connection.execute(sql, params);
     return results;
   } catch (error) {
     console.error("Database query error:", error);
+
+    // 🔁 Retry once for connection-related errors
+    if (
+      error.code === "PROTOCOL_CONNECTION_LOST" ||
+      error.code === "ECONNRESET" ||
+      error.code === "ETIMEDOUT"
+    ) {
+      try {
+        console.log("Retrying database query...");
+
+        const [results] = await pool.execute(sql, params);
+        return results;
+      } catch (retryError) {
+        console.error("Retry failed:", retryError);
+        throw retryError;
+      }
+    }
+
     throw error;
+  } finally {
+    if (connection) connection.release();
   }
 }
 
+// Optional: direct pool export
 export default pool;

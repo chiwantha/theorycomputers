@@ -84,6 +84,7 @@ const NextDropdown = ({
       <div
         className={cn(
           "outline-none w-full rounded-xl bg-gray-100 py-2 flex justify-between relative",
+          className,
         )}
         ref={containerRef}
       >

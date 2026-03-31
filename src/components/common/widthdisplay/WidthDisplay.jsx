@@ -1,6 +1,6 @@
 const WidthDisplay = () => {
   return (
-    <div className="fixed bottom-4 right-4 z-50 bg-white bg-opacity-70 text-black text-xs sm:text-sm font-mono px-2 py-1 rounded shadow-lg pointer-events-none">
+    <div className="fixed bottom-4 right-4 z-52 bg-white bg-opacity-70 text-black text-xs sm:text-sm font-mono px-2 py-1 rounded shadow-lg pointer-events-none">
       <span className="block sm:hidden">xs</span>
       <span className="hidden sm:block md:hidden">sm</span>
       <span className="hidden md:block lg:hidden">md</span>

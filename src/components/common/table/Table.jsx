@@ -13,6 +13,7 @@ const Table = ({
   form: FormComponent,
   form_props,
   action = false,
+  newButtonLink,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortKey, setSortKey] = useState(null);
@@ -72,22 +73,26 @@ const Table = ({
         </h2>
 
         <div className="flex gap-2">
-          {form_props && (
-            <Drawer
-              form={
-                <FormComponent
-                  defaultData={changeData}
-                  form_props={form_props}
-                  close_drawer={() => setOpen(false)}
-                />
-              }
-              open={open}
-              setOpen={setOpen}
-              rounded={`rounded-lg`}
-              callback={() => {
-                setChangeData(null);
-              }}
-            />
+          {!newButtonLink ? (
+            form_props && (
+              <Drawer
+                form={
+                  <FormComponent
+                    defaultData={changeData}
+                    form_props={form_props}
+                    close_drawer={() => setOpen(false)}
+                  />
+                }
+                open={open}
+                setOpen={setOpen}
+                rounded={`rounded-lg`}
+                callback={() => {
+                  setChangeData(null);
+                }}
+              />
+            )
+          ) : (
+            <Button name={`New `} rounded={`rounded-lg`} link={newButtonLink} />
           )}
           <input
             type="text"
