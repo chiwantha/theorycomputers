@@ -81,12 +81,18 @@ const SelectCustomer = ({ customersList, setCustomer, defaultData }) => {
         onValueChange={handleTabChange}
         className="w-full space-y-2"
       >
-        <TabsList>
+        <TabsList className={`w-full sm:w-fit`}>
           <TabsTrigger className={`rounded-lg`} value="our_customer">
-            Select Customer
+            <span className="flex flex-nowrap gap-2">
+              Select
+              <span className="sm:block hidden">Customer</span>
+            </span>
           </TabsTrigger>
           <TabsTrigger className={`rounded-lg`} value="new_customer">
-            New Customer
+            <span className="flex flex-nowrap gap-2">
+              New
+              <span className="sm:block hidden">Customer</span>
+            </span>
           </TabsTrigger>
         </TabsList>
 
@@ -103,7 +109,7 @@ const SelectCustomer = ({ customersList, setCustomer, defaultData }) => {
 
         {/* NEW */}
         <TabsContent value="new_customer">
-          <div className="grid-cols-2 grid gap-4">
+          <div className="grid-cols-1 sm:grid-cols-2 grid gap-2 sm:gap-4 mb-2">
             <NextInput
               name="customer_name"
               placeholder="Customer Name"

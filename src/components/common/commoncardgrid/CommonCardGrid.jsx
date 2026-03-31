@@ -2,10 +2,12 @@
 
 import { useState, useMemo } from "react";
 import NextInput from "@/components/common/form/nextinput/NextInput";
+import Button from "../button/Button";
 
 const CommonCardGrid = ({
   itemsList = [],
   children,
+  grid,
   searchPlaceholder = "Search...",
   searchKeys = [], // new prop: ["name", "description"]
   itemsPerPageOptions = [10, 15, 20],
@@ -44,21 +46,55 @@ const CommonCardGrid = ({
   return (
     <div className="min-h-62.5 h-[calc(100vh-240px)] p-4 bg-white shadow rounded-xl overflow-y-auto flex flex-col gap-4">
       {/* Search input */}
-      {searchKeys.length > 0 && (
-        <NextInput
-          type="search"
-          placeholder={searchPlaceholder}
-          className="w-full"
-          value={searchKeyword}
-          onChange={(e) => {
-            setSearchKeyword(e.target.value);
-            setCurrentPage(1);
-          }}
-        />
-      )}
+      <div className="flex gap-4">
+        {searchKeys.length > 0 && (
+          <NextInput
+            type="search"
+            placeholder={searchPlaceholder}
+            className="w-full"
+            value={searchKeyword}
+            inputClassName={`rounded-lg`}
+            onChange={(e) => {
+              setSearchKeyword(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        )}
+
+        {/* Pagination buttons */}
+        <div className="flex items-center gap-2">
+          <Button
+            click={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            name={`Prev`}
+            rounded={`rounded-lg`}
+            bg={
+              currentPage === 1
+                ? `bg-gray-100 cursor-not-allowed`
+                : `bg-blue-500 hover:bg-blue-400 text-white font-semibold`
+            }
+          />
+          <span className="text-nowrap text-gray-600 font-semibold tracking-tighter mr-1 ml-0.5">
+            {currentPage} / {totalPages || 1}
+          </span>
+          <Button
+            click={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages || totalPages === 0}
+            name={`Next`}
+            rounded={`rounded-lg`}
+            bg={
+              currentPage === totalPages || totalPages === 0
+                ? `bg-gray-100 cursor-not-allowed`
+                : `bg-blue-500 hover:bg-blue-400 text-white font-semibold`
+            }
+          />
+        </div>
+      </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div
+        className={`grid ${grid || "grid-cols-2 md:grid-cols-3 xl:grid-cols-4"} gap-4`}
+      >
         {paginatedItems.length > 0 ? (
           paginatedItems.map((item) => (
             <div key={item.id}>{children(item)}</div>
@@ -71,44 +107,25 @@ const CommonCardGrid = ({
       {/* Items per page selector & pagination */}
       <div className="flex justify-between items-center mt-2">
         {/* Items per page */}
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Items per page:</label>
-          <select
-            value={itemsPerPage}
-            onChange={(e) => {
-              setItemsPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}
-            className="border rounded px-2 py-1"
-          >
-            {itemsPerPageOptions.map((num) => (
-              <option key={num} value={num}>
-                {num}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Pagination buttons */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
-          >
-            Prev
-          </button>
-          <span>
-            {currentPage} / {totalPages || 1}
-          </span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages || totalPages === 0}
-            className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
+        {!defaultItemsPerPage && (
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium">Items per page:</label>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="border rounded px-2 py-1"
+            >
+              {itemsPerPageOptions.map((num) => (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
     </div>
   );

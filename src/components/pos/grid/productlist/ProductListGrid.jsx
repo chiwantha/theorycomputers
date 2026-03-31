@@ -5,8 +5,9 @@ const ProductListGrid = ({ itemsList, addToCart }) => {
   return (
     <CommonCardGrid
       itemsList={itemsList}
-      searchKeys={["name", "description"]} // ✅ search across name & description
-      defaultItemsPerPage={12}
+      searchKeys={["name", "description"]}
+      defaultItemsPerPage={15}
+      grid={`grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4`}
     >
       {(item) => <ProductCard {...item} onClick={() => addToCart(item)} />}
     </CommonCardGrid>
