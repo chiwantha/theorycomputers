@@ -45,7 +45,7 @@ const CartCard = ({
 
           <Button
             name={<Trash size={20} />}
-            click={quantityPlus}
+            click={removeItem}
             pd={`p-1.5`}
             rounded={`rounded-lg`}
             bg={`bg-red-400 hover:bg-red-600 text-white`}

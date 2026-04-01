@@ -44,7 +44,7 @@ const CommonCardGrid = ({
   };
 
   return (
-    <div className="min-h-62.5 h-[calc(100vh-240px)] p-4 bg-white shadow rounded-xl overflow-y-auto flex flex-col gap-4">
+    <div className="min-h-62.5 h-[calc(100vh-240px)] p-4   overflow-y-auto flex flex-col gap-4">
       {/* Search input */}
       <div className="flex gap-4">
         {searchKeys.length > 0 && (

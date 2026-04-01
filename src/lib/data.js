@@ -50,7 +50,19 @@ export const get_suppliers = async () => {
 };
 export const get_items = async () => {
   try {
-    const sql = `SELECT mst_items.id AS value, mst_items.name AS label, mst_items.*, mst_items.is_serial FROM mst_items WHERE state = 1`;
+    const sql = `SELECT 
+    mst_items.id AS value,
+    mst_items.name AS label,
+    mst_items.*,
+    mst_category.name AS category,
+    mst_items.is_serial,
+    COALESCE(stock.quantity, 0) AS stock
+FROM mst_items
+LEFT JOIN stock 
+    ON mst_items.id = stock.item_id
+    INNER JOIN mst_category
+    ON mst_items.category_id = mst_category.id
+WHERE mst_items.state = 1 ORDER BY stock DESC;`;
 
     const data = await query(sql);
 
