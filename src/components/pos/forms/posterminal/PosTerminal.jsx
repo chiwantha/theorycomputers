@@ -1,106 +1,170 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import ProductListGrid from "../../grid/productlist/ProductListGrid";
 import SelectCustomer from "../customer/SelectCustomer";
 import CartCard from "../../cards/cartcard/CartCard";
 import Button from "@/components/common/button/Button";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import Separator from "@/components/common/separator/Separator";
+import NextInput from "@/components/common/form/nextinput/NextInput";
+import { toast } from "react-toastify";
 
 const PosTerminal = ({ customersList, itemsList, quotationList }) => {
   const [customer, setCustomer] = useState(null);
   const [cart, setCart] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState("cash"); // cash | card | mix
-  const [tab, setTab] = useState("invoice"); // invoice | quotation
-  const [payment, setPayment] = useState({
-    document: tab,
-    method: null,
+  const [tab, setTab] = useState("invoice");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+
+  // 🔥 ONLY RAW USER INPUT
+  const [paymentInput, setPaymentInput] = useState({
+    cash_received: 0,
+    card: 0,
+    bank: 0,
   });
 
+  // 🧮 TOTALS (DERIVED)
+  const totals = useMemo(() => {
+    const gross = cart.reduce((s, i) => s + i.selling * i.qty, 0);
+    const discount = cart.reduce((s, i) => s + (i.discount || 0) * i.qty, 0);
+    const net = gross - discount;
+
+    return { gross, discount, net };
+  }, [cart]);
+
+  // 💳 PAYMENT (DERIVED)
+  const paymentData = useMemo(() => {
+    if (tab !== "invoice") return null;
+
+    const net = totals.net;
+
+    if (paymentMethod === "cash") {
+      return {
+        paid_amount: net,
+        cash_received: paymentInput.cash_received || 0,
+        cash: net,
+        card: null,
+        bank: null,
+        balance: (paymentInput.cash_received || 0) - net,
+        method: "cash",
+      };
+    }
+
+    if (paymentMethod === "card") {
+      return {
+        paid_amount: net,
+        cash_received: null,
+        cash: null,
+        card: net,
+        bank: null,
+        balance: 0,
+        method: "card",
+      };
+    }
+
+    if (paymentMethod === "mix") {
+      const cash = paymentInput.cash_received || 0;
+      const card = paymentInput.card || 0;
+      const bank = paymentInput.bank || 0;
+
+      const totalPaid = cash + card + bank;
+      const balance = totalPaid - net;
+
+      return {
+        paid_amount: net,
+        cash_received: cash,
+        cash,
+        card,
+        bank,
+        balance,
+        method: "mix",
+      };
+    }
+
+    return null;
+  }, [paymentMethod, paymentInput, totals.net, tab]);
+
+  // 🔄 RESET INPUTS WHEN METHOD CHANGES
+  useEffect(() => {
+    setPaymentInput({
+      cash_received: 0,
+      card: 0,
+      bank: 0,
+    });
+  }, [paymentMethod]);
+
+  // 🛒 CART OPS
   const addToCart = (item) => {
     setCart((prev) => {
       const exist = prev.find((p) => p.id === item.id);
-
-      if (exist) {
-        return prev.map((p) =>
-          p.id === item.id ? { ...p, qty: p.qty + 1 } : p,
-        );
-      }
-
-      return [...prev, { ...item, qty: 1 }];
+      return exist
+        ? prev.map((p) => (p.id === item.id ? { ...p, qty: p.qty + 1 } : p))
+        : [...prev, { ...item, qty: 1 }];
     });
   };
-  const increaseQty = (id) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, qty: item.qty + 1 } : item,
-      ),
-    );
-  };
 
-  const decreaseQty = (id) => {
+  const increaseQty = (id) =>
     setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, qty: Math.max(1, item.qty - 1) } : item,
+      prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i)),
+    );
+
+  const decreaseQty = (id) =>
+    setCart((prev) =>
+      prev.map((i) =>
+        i.id === id ? { ...i, qty: Math.max(1, i.qty - 1) } : i,
       ),
     );
-  };
-  const removeItem = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
-  };
+
+  const removeItem = (id) => setCart((prev) => prev.filter((i) => i.id !== id));
+
+  // 💾 SAVE
   const handleSave = () => {
-    if (!customer) {
-      alert("Please select a customer");
-      return;
+    if (!customer) return alert("Select customer");
+    if (!cart.length) return alert("Cart empty");
+    if (paymentMethod === `cash` || paymentMethod === `mix`) {
+      if (paymentData.balance >= 0) {
+        toast.error("Insufficient payment");
+        return;
+      }
     }
 
-    if (cart.length === 0) {
-      alert("Cart is empty");
-      return;
-    }
-
-    const cleanItems = cart.map((item) => ({
-      id: item.id,
-      name: item.name,
-      qty: item.qty,
-      cost: item.cost,
-      selling: item.selling,
-      total: item.selling * item.qty,
+    const items = cart.map((i) => ({
+      id: i.id,
+      qty: i.qty,
+      selling: i.selling,
+      total: i.selling * i.qty,
     }));
 
-    const total = cleanItems.reduce((sum, item) => sum + item.total, 0);
-
     const data = {
-      type: tab, // 🔥 invoice | quotation
+      type: tab,
       customer,
-      paymentMethod: tab === "invoice" ? paymentMethod : null,
-      items: cleanItems,
-      total,
+      items,
+      totals,
+      payment: paymentData,
       date: new Date().toISOString(),
     };
 
-    alert(JSON.stringify(data, null, 2));
-    console.log("Saved Data:", data);
+    console.log(data);
+    // alert(JSON.stringify(data, null, 2));
   };
 
   return (
     <div className="flex flex-col md:flex-row gap-4">
       {/* LEFT */}
-      <div className="col-span-2 flex flex-col gap-4 w-full  h-[calc(100vh-92px)]">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded-xl shadow w-full bg-white p-4">
+      <div className="flex flex-col gap-4 w-full h-[calc(100vh-92px)]">
+        <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
+          <div className="bg-white p-4 rounded-xl shadow">
             <NextDropdown
               items={quotationList || []}
-              label={`Select Qoutation`}
+              label="Select Quotation"
             />
             <Button
-              name={`Load Quotation`}
-              wfull={true}
-              bg={`bg-blue-500 text-white mt-2`}
-              click={() => alert("Load Quotation - To be implemented")}
+              name="Load Quotation"
+              wfull
+              bg="bg-blue-500 text-white mt-2"
             />
           </div>
+
           <SelectCustomer
             customersList={customersList}
             customer={customer}
@@ -112,122 +176,165 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
       </div>
 
       {/* RIGHT */}
-      <div className="bg-white rounded-xl shadow p-4 flex flex-col min-w-72 w-full lg:max-w-110 h-[calc(100vh-92px)] overflow-y-auto">
-        {/* 🔥 TAB SWITCH */}
-        <div className="flex mb-3 bg-gray-100 rounded-lg p-1">
-          <button
-            onClick={() => setTab("invoice")}
-            className={`flex-1 py-1 rounded-md ${
-              tab === "invoice" ? "bg-white shadow font-semibold" : ""
-            }`}
-          >
-            Invoice
-          </button>
-          <button
-            onClick={() => setTab("quotation")}
-            className={`flex-1 py-1 rounded-md ${
-              tab === "quotation" ? "bg-white shadow font-semibold" : ""
-            }`}
-          >
-            Quotation
-          </button>
+      <div className="bg-white p-4 rounded-xl shadow w-full lg:max-w-110 h-[calc(100vh-92px)] flex flex-col">
+        {/* TAB */}
+        <div className="flex mb-3 bg-gray-100 p-1 rounded-lg">
+          {["invoice", "quotation"].map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`flex-1 py-1 rounded ${
+                tab === t ? "bg-white shadow font-bold" : ""
+              }`}
+            >
+              {t}
+            </button>
+          ))}
         </div>
 
-        {/* <h2 className="font-bold mb-4">Cart</h2> */}
-
-        {/* 🧾 CART */}
+        {/* CART */}
         <div className="flex-1 overflow-y-auto space-y-2">
           {cart.map((item) => (
             <CartCard
               key={item.id}
-              removeItem={() => removeItem(item.id)}
+              name={item.name}
+              selling={item.selling}
               quantity={item.qty}
               quantityPlus={() => increaseQty(item.id)}
               quantityMinus={() => decreaseQty(item.id)}
-              name={item.name}
-              selling={item.selling}
+              removeItem={() => removeItem(item.id)}
             />
           ))}
         </div>
 
-        {/* 💰 FOOTER */}
-        <div className="flex flex-col gap-2 mt-4">
-          <Separator />
-          <div className="flex flex-col mb-2 capitalize ">
-            <div className="flex items-center justify-between text-lg ">
-              <span className="font-bold text-gray-600">Gross Total</span>
-              <span>
-                LKR{" "}
-                {cart.reduce((sum, i) => sum + i.selling * i.qty, 0).toFixed(2)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-lg ">
-              <span className="font-bold text-red-400">Discount</span>
-              <span className="text-red-400">
-                LKR -
-                {cart
-                  .reduce((sum, i) => sum + (i.discount || 0) * i.qty, 0)
-                  .toFixed(2)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-lg ">
-              <span className="font-bold text-gray-600">Net Total</span>
-              <span>
-                LKR{" "}
-                {(
-                  cart.reduce((sum, i) => sum + i.selling * i.qty, 0) -
-                  cart.reduce((sum, i) => sum + (i.discount || 0) * i.qty, 0)
-                ).toFixed(2)}
-              </span>
-            </div>
+        {/* TOTALS */}
+        <Separator />
+        <div className="space-y-1">
+          <div className="flex justify-between">
+            <span>Gross</span>
+            <span>LKR {totals.gross.toFixed(2)}</span>
           </div>
+          <div className="flex justify-between text-red-400">
+            <span>Discount</span>
+            <span>-{totals.discount.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between font-bold">
+            <span>Net</span>
+            <span>LKR {totals.net.toFixed(2)}</span>
+          </div>
+        </div>
 
-          {/* 💳 PAYMENT METHODS (ONLY INVOICE) */}
-          {tab === "invoice" && (
-            <div className="">
-              <div className="flex gap-2 mb-2">
-                {["cash", "card", "mix"].map((method) => (
-                  <Button
-                    key={method}
-                    click={() => setPaymentMethod(method)}
-                    fg={`capitalize w-full font-bold `}
-                    bg={`${
-                      paymentMethod === method
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-200 text-gray-500"
-                    }`}
-                    name={method}
-                  />
-                ))}
+        {/* PAYMENT */}
+        {tab === "invoice" && (
+          <>
+            <Separator />
+
+            <div className="flex gap-2">
+              {["cash", "card", "mix"].map((m) => (
+                <Button
+                  key={m}
+                  name={m}
+                  click={() => setPaymentMethod(m)}
+                  bg={
+                    paymentMethod === m
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-200"
+                  }
+                  wfull
+                />
+              ))}
+            </div>
+
+            {/* CASH */}
+            {paymentMethod === "cash" && (
+              <div className="flex flex-col gap-2 mt-2">
+                <NextInput
+                  label={`Cash Received`}
+                  placeholder="Cash Received"
+                  value={paymentInput.cash_received}
+                  onChange={(e) =>
+                    setPaymentInput((p) => ({
+                      ...p,
+                      cash_received: +e.target.value || 0,
+                    }))
+                  }
+                />
+
+                <div className="flex justify-between">
+                  <span>Balance</span>
+                  <span>LKR {(paymentData?.balance || 0).toFixed(2)}</span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          <div className="flex items-center gap-4">
-            {/* ✅ SAVE BUTTON */}
-            <Button
-              name={tab === "invoice" ? "Save & Pay" : "Save Quotation"}
-              disabled={!customer || cart.length === 0}
-              wfull={true}
-              bg={
-                !customer || cart.length === 0
-                  ? `bg-gray-400 cursor-not-allowed`
-                  : tab === "invoice"
-                    ? `bg-green-500 text-white`
-                    : `bg-blue-500 text-white`
-              }
-              click={handleSave}
-            />
-            <Button
-              name={`Reset`}
-              bg={`bg-red-400 text-white`}
-              fg={`text-nowrap`}
-              click={() => {
-                setCart([]);
-                setCustomer(null);
-              }}
-            />
-          </div>
+            {/* MIX */}
+            {paymentMethod === "mix" && (
+              <div className="flex flex-col gap-2 mt-2">
+                <NextInput
+                  label={`Cash Amount`}
+                  placeholder="Cash"
+                  value={paymentInput.cash_received}
+                  onChange={(e) =>
+                    setPaymentInput((p) => ({
+                      ...p,
+                      cash_received: +e.target.value || 0,
+                    }))
+                  }
+                />
+                <NextInput
+                  label={`Card Amount`}
+                  placeholder="Card"
+                  value={paymentInput.card}
+                  onChange={(e) =>
+                    setPaymentInput((p) => ({
+                      ...p,
+                      card: +e.target.value || 0,
+                    }))
+                  }
+                />
+                <NextInput
+                  label={`Bank Amount`}
+                  placeholder="Bank"
+                  value={paymentInput.bank}
+                  onChange={(e) =>
+                    setPaymentInput((p) => ({
+                      ...p,
+                      bank: +e.target.value || 0,
+                    }))
+                  }
+                />
+
+                <div className="flex justify-between">
+                  <span>Balance</span>
+                  <span>LKR {(paymentData?.balance || 0).toFixed(2)}</span>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ACTIONS */}
+        <div className="flex gap-2 mt-3">
+          <Button
+            name={tab === "invoice" ? "Save & Pay" : "Save Quote"}
+            click={handleSave}
+            wfull
+            bg="bg-green-500 text-white"
+            disabled={!customer || !cart.length}
+          />
+          <Button
+            name="Reset"
+            click={() => {
+              setCart([]);
+              setCustomer(null);
+              setPaymentInput({
+                cash_received: 0,
+                card: 0,
+                bank: 0,
+              });
+            }}
+            bg="bg-red-400 text-white"
+          />
         </div>
       </div>
     </div>
