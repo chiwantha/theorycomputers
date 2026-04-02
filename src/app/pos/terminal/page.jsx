@@ -1,11 +1,21 @@
 import PosTerminal from "@/components/pos/forms/posterminal/PosTerminal";
-import { get_customers, get_items } from "@/lib/data";
+import { get_customers, get_items, get_quotations } from "@/lib/data";
 
 const TerminalPage = async () => {
   const customersList = await get_customers();
   const itemsList = await get_items();
+  const quotationList = await get_quotations();
+  // console.log("Customers List:", customersList);
+  // console.log("Items List:", itemsList);
+  console.log("Quotations List:", quotationList);
 
-  return <PosTerminal customersList={customersList} itemsList={itemsList} />;
+  return (
+    <PosTerminal
+      customersList={customersList}
+      itemsList={itemsList}
+      quotationList={quotationList}
+    />
+  );
 };
 
 export default TerminalPage;

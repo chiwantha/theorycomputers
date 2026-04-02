@@ -92,3 +92,21 @@ export const get_customers = async () => {
     return [];
   }
 };
+export const get_quotations = async () => {
+  try {
+    const sql = `SELECT inv_header.id AS value, CONCAT(inv_header.inv_no, " - ", CONCAT(customers.first_name, " ", customers.last_name), " - ", customers.phone) AS label FROM inv_header 
+    INNER JOIN customers ON inv_header.customer_id = customers.id
+    WHERE inv_header.is_qoute = 1 AND inv_header.state = 1`;
+
+    const data = await query(sql);
+
+    if (!data || data.length == 0) {
+      return [];
+    }
+
+    return data;
+  } catch (err) {
+    console.log(`Error Loading Quotations List !`, err);
+    return [];
+  }
+};
