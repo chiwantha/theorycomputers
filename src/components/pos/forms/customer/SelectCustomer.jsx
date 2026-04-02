@@ -1,77 +1,85 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useState, useEffect } from "react";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const SelectCustomer = ({ customersList, setCustomer, defaultData }) => {
+const SelectCustomer = ({
+  customersList,
+  customer, // centralized customer object
+  setCustomer, // centralized setter
+  defaultCustomerId = null, // optional default
+}) => {
   const [tab, setTab] = useState("our_customer");
 
-  // Single state for both existing & new
+  // Local input states (controlled by centralized customer)
   const [customerData, setCustomerData] = useState({
-    type: null, // "existing" or "new"
-    id: null, // existing customer id
-    name: null, // new customer name
-    phone: null, // new customer phone
+    type: null,
+    id: null,
+    name: "",
+    phone: "",
   });
 
-  // Reset state when defaultData is null or drawer/form reload
+  // Sync centralized customer with local state
   useEffect(() => {
-    if (!defaultData) {
-      setTab("our_customer"); // reset tab
+    if (customer) {
       setCustomerData({
-        type: null,
-        id: null,
-        name: null,
-        phone: null,
+        type: customer.type,
+        id: customer.id || null,
+        name: customer.name || "",
+        phone: customer.phone || "",
       });
-      setCustomer(null);
+      setTab(customer.type === "new" ? "new_customer" : "our_customer");
+    } else if (defaultCustomerId) {
+      // Preload default customer if provided
+      const found = customersList.find((c) => c.id === defaultCustomerId);
+      if (found) {
+        setCustomer({
+          type: "existing",
+          id: found.id,
+        });
+      }
+    } else {
+      // reset
+      setCustomerData({ type: null, id: null, name: "", phone: "" });
+      setTab("our_customer");
     }
-  }, [defaultData, setCustomer]);
+  }, [customer, defaultCustomerId, customersList, setCustomer]);
 
-  // Tab change
+  // Handle tab change
   const handleTabChange = (value) => {
     setTab(value);
-
-    // Reset state when switching tab
     setCustomerData({
-      type: "",
-      id: "",
+      type: value === "new_customer" ? "new" : null,
+      id: null,
       name: "",
       phone: "",
     });
-    setCustomer(null);
+    setCustomer(null); // clear centralized customer
   };
 
-  // Existing customer selection
   const handleExistingSelect = (id) => {
-    setCustomerData({
-      type: "existing",
-      id,
-      name: "",
-      phone: "",
-    });
-    setCustomer({
-      type: "existing",
-      id,
-    });
+    setCustomerData({ type: "existing", id, name: "", phone: "" });
+    setCustomer({ type: "existing", id });
   };
 
-  // New customer input change
   const handleNewChange = (field, value) => {
-    const updated = { ...customerData, [field]: value, type: "new", id: "" };
+    const updated = { ...customerData, [field]: value, type: "new", id: null };
     setCustomerData(updated);
 
-    // Simple validation
     if (updated.name && updated.phone) {
-      setCustomer({
-        type: "new",
-        name: updated.name,
-        phone: updated.phone,
-      });
+      setCustomer({ type: "new", name: updated.name, phone: updated.phone });
     } else {
       setCustomer(null);
     }
+  };
+
+  // Function to externally reset the form
+  const resetCustomer = () => {
+    setCustomer(null);
+    setCustomerData({ type: null, id: null, name: "", phone: "" });
+    setTab("our_customer");
   };
 
   return (
@@ -82,48 +90,47 @@ const SelectCustomer = ({ customersList, setCustomer, defaultData }) => {
         className="w-full space-y-2"
       >
         <TabsList className={`w-full sm:w-fit`}>
-          <TabsTrigger className={`rounded-lg`} value="our_customer">
-            <span className="flex flex-nowrap gap-2">
-              Select
-              <span className="sm:block hidden">Customer</span>
+          <TabsTrigger value="our_customer" className="rounded-lg">
+            <span className="flex gap-2">
+              Select<span className="sm:block hidden">Customer</span>
             </span>
           </TabsTrigger>
-          <TabsTrigger className={`rounded-lg`} value="new_customer">
-            <span className="flex flex-nowrap gap-2">
-              New
-              <span className="sm:block hidden">Customer</span>
+          <TabsTrigger value="new_customer" className="rounded-lg">
+            <span className="flex gap-2">
+              New<span className="sm:block hidden">Customer</span>
             </span>
           </TabsTrigger>
         </TabsList>
 
-        {/* EXISTING */}
+        {/* Existing customer */}
         <TabsContent value="our_customer">
           <NextDropdown
             name="customers"
             items={customersList}
-            defaultValue={customerData.id}
+            value={customerData.id || ""}
             onChange={handleExistingSelect}
-            className={`rounded-lg`}
+            className="rounded-lg"
           />
         </TabsContent>
 
-        {/* NEW */}
+        {/* New customer */}
         <TabsContent value="new_customer">
-          <div className="grid-cols-1 sm:grid-cols-2 grid gap-2 sm:gap-4 mb-2">
+          <div className="grid gap-2 sm:gap-4 mb-2 sm:grid-cols-2">
             <NextInput
               name="customer_name"
               placeholder="Customer Name"
               value={customerData.name}
-              required
-              className={`rounded-lg`}
               onChange={(e) => handleNewChange("name", e.target.value)}
+              required
+              className="rounded-lg"
             />
             <NextInput
               name="customer_phone"
               placeholder="Customer Phone"
               value={customerData.phone}
-              required
               onChange={(e) => handleNewChange("phone", e.target.value)}
+              required
+              className="rounded-lg"
             />
           </div>
         </TabsContent>

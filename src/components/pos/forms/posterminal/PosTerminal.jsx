@@ -6,16 +6,18 @@ import SelectCustomer from "../customer/SelectCustomer";
 import CartCard from "../../cards/cartcard/CartCard";
 import Button from "@/components/common/button/Button";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
+import Separator from "@/components/common/separator/Separator";
 
 const PosTerminal = ({ customersList, itemsList, quotationList }) => {
   const [customer, setCustomer] = useState(null);
   const [cart, setCart] = useState([]);
-
-  // 🔥 NEW STATES
-  const [tab, setTab] = useState("invoice"); // invoice | quotation
   const [paymentMethod, setPaymentMethod] = useState("cash"); // cash | card | mix
+  const [tab, setTab] = useState("invoice"); // invoice | quotation
+  const [payment, setPayment] = useState({
+    document: tab,
+    method: null,
+  });
 
-  // 🛒 ADD TO CART
   const addToCart = (item) => {
     setCart((prev) => {
       const exist = prev.find((p) => p.id === item.id);
@@ -29,8 +31,6 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
       return [...prev, { ...item, qty: 1 }];
     });
   };
-
-  // ➕➖ QTY
   const increaseQty = (id) => {
     setCart((prev) =>
       prev.map((item) =>
@@ -46,13 +46,9 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
       ),
     );
   };
-
-  // ❌ REMOVE
   const removeItem = (id) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
-
-  // 💾 SAVE (INVOICE / QUOTATION)
   const handleSave = () => {
     if (!customer) {
       alert("Please select a customer");
@@ -91,7 +87,7 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
   return (
     <div className="flex flex-col md:flex-row gap-4">
       {/* LEFT */}
-      <div className="col-span-2 flex flex-col gap-4 w-full">
+      <div className="col-span-2 flex flex-col gap-4 w-full  h-[calc(100vh-92px)]">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="rounded-xl shadow w-full bg-white p-4">
             <NextDropdown
@@ -107,6 +103,7 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
           </div>
           <SelectCustomer
             customersList={customersList}
+            customer={customer}
             setCustomer={setCustomer}
           />
         </div>
@@ -136,7 +133,7 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
           </button>
         </div>
 
-        <h2 className="font-bold mb-2">Cart</h2>
+        {/* <h2 className="font-bold mb-4">Cart</h2> */}
 
         {/* 🧾 CART */}
         <div className="flex-1 overflow-y-auto space-y-2">
@@ -154,46 +151,83 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
         </div>
 
         {/* 💰 FOOTER */}
-        <div className="flex flex-col gap-2">
-          <hr className="my-2 border-gray-100" />
-
-          <p className="font-bold mb-2">
-            Total: {cart.reduce((sum, i) => sum + i.selling * i.qty, 0)}
-          </p>
+        <div className="flex flex-col gap-2 mt-4">
+          <Separator />
+          <div className="flex flex-col mb-2 capitalize ">
+            <div className="flex items-center justify-between text-lg ">
+              <span className="font-bold text-gray-600">Gross Total</span>
+              <span>
+                LKR{" "}
+                {cart.reduce((sum, i) => sum + i.selling * i.qty, 0).toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-lg ">
+              <span className="font-bold text-red-400">Discount</span>
+              <span className="text-red-400">
+                LKR -
+                {cart
+                  .reduce((sum, i) => sum + (i.discount || 0) * i.qty, 0)
+                  .toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-lg ">
+              <span className="font-bold text-gray-600">Net Total</span>
+              <span>
+                LKR{" "}
+                {(
+                  cart.reduce((sum, i) => sum + i.selling * i.qty, 0) -
+                  cart.reduce((sum, i) => sum + (i.discount || 0) * i.qty, 0)
+                ).toFixed(2)}
+              </span>
+            </div>
+          </div>
 
           {/* 💳 PAYMENT METHODS (ONLY INVOICE) */}
           {tab === "invoice" && (
-            <div className="flex gap-2 mb-2">
-              {["cash", "card", "mix"].map((method) => (
-                <button
-                  key={method}
-                  onClick={() => setPaymentMethod(method)}
-                  className={`flex-1 py-1 rounded ${
-                    paymentMethod === method
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-200"
-                  }`}
-                >
-                  {method}
-                </button>
-              ))}
+            <div className="">
+              <div className="flex gap-2 mb-2">
+                {["cash", "card", "mix"].map((method) => (
+                  <Button
+                    key={method}
+                    click={() => setPaymentMethod(method)}
+                    fg={`capitalize w-full font-bold `}
+                    bg={`${
+                      paymentMethod === method
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-200 text-gray-500"
+                    }`}
+                    name={method}
+                  />
+                ))}
+              </div>
             </div>
           )}
 
-          {/* ✅ SAVE BUTTON */}
-          <Button
-            name={tab === "invoice" ? "Save & Pay" : "Save Quotation"}
-            disabled={!customer || cart.length === 0}
-            wfull={true}
-            bg={
-              !customer || cart.length === 0
-                ? `bg-gray-400 cursor-not-allowed`
-                : tab === "invoice"
-                  ? `bg-green-500 text-white`
-                  : `bg-blue-500 text-white`
-            }
-            click={handleSave}
-          />
+          <div className="flex items-center gap-4">
+            {/* ✅ SAVE BUTTON */}
+            <Button
+              name={tab === "invoice" ? "Save & Pay" : "Save Quotation"}
+              disabled={!customer || cart.length === 0}
+              wfull={true}
+              bg={
+                !customer || cart.length === 0
+                  ? `bg-gray-400 cursor-not-allowed`
+                  : tab === "invoice"
+                    ? `bg-green-500 text-white`
+                    : `bg-blue-500 text-white`
+              }
+              click={handleSave}
+            />
+            <Button
+              name={`Reset`}
+              bg={`bg-red-400 text-white`}
+              fg={`text-nowrap`}
+              click={() => {
+                setCart([]);
+                setCustomer(null);
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
