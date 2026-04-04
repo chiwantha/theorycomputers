@@ -1,8 +1,10 @@
+"use client";
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { getTimeSince } from "@/lib/utils";
 import { Phone, Plus, User } from "lucide-react";
 import React from "react";
+import { toast } from "react-toastify";
 
 const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
   return (
@@ -11,7 +13,12 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
         ${add ? `justify-center items-center border-6 border-dashed text-blue-400` : ` border`}`}
     >
       {add ? (
-        <div className="">
+        <div
+          className=""
+          onClick={() => {
+            toast.warning(`Transation Bloked !`);
+          }}
+        >
           <Plus size={60} />
         </div>
       ) : (
