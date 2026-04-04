@@ -5,9 +5,6 @@ const TerminalPage = async () => {
   const customersList = await get_customers();
   const itemsList = await get_items();
   const quotationList = await get_quotations();
-  // console.log("Customers List:", customersList);
-  // console.log("Items List:", itemsList);
-  console.log("Quotations List:", quotationList);
 
   return (
     <PosTerminal

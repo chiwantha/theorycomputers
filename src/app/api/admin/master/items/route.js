@@ -38,6 +38,8 @@ export const POST = async (request) => {
     const selling = data.get("selling");
     const reorder = data.get("reorder");
     const serial = data.get("serial");
+    const type = data.get("type");
+    const online = data.get("online");
     const image = data.get("image");
 
     let savedImage = null;
@@ -59,7 +61,7 @@ export const POST = async (request) => {
     // console.log(...data, { imagesave: savedImage });
     // return NextResponse.json(true, { status: 200 });
 
-    const save_query = `INSERT INTO mst_items ( code, name, description, image, category_id, brand_id, cost, selling, is_serial, reorder_level ) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+    const save_query = `INSERT INTO mst_items ( code, name, description, image, category_id, brand_id, cost, selling, is_serial, reorder_level, type, online ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     const res = await query(save_query, [
       code,
@@ -72,6 +74,8 @@ export const POST = async (request) => {
       selling,
       serial,
       reorder,
+      type,
+      online,
     ]);
 
     if (!res || res.insertId == null) {
@@ -102,6 +106,8 @@ export const PUT = async (request) => {
     const selling = data.get("selling");
     const reorder = data.get("reorder");
     const serial = data.get("serial");
+    const type = data.get("type");
+    const online = data.get("online");
     const image = data.get("image");
 
     let savedImage = null;
@@ -124,7 +130,7 @@ export const PUT = async (request) => {
       return NextResponse.json({ error: `Id Not Found !` }, { status: 404 });
     }
 
-    const sql = `UPDATE mst_items SET code=?, name=?, description=?, image=?, category_id=?, brand_id=?, cost=?, selling=?, is_serial=?, reorder_level=? WHERE id=?`;
+    const sql = `UPDATE mst_items SET code=?, name=?, description=?, image=?, category_id=?, brand_id=?, cost=?, selling=?, is_serial=?, reorder_level=?, type=?, online=? WHERE id=?`;
 
     const values = [
       code,
@@ -137,6 +143,8 @@ export const PUT = async (request) => {
       selling,
       serial,
       reorder,
+      type,
+      online,
       id,
     ];
 

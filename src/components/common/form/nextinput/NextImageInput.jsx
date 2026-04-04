@@ -13,6 +13,7 @@ const NextImageInput = ({
   size = 120, // width & height of square
   accept = "image/*",
   value, // controlled value: string URL or File object
+  folder,
 }) => {
   const [preview, setPreview] = useState(null);
 
@@ -78,7 +79,7 @@ const NextImageInput = ({
             )}
           >
             <img
-              src={preview}
+              src={`${folder}/${preview}`}
               alt="preview"
               className={cn("object-cover w-full h-full", imageClassName)}
             />

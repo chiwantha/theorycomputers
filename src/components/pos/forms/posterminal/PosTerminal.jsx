@@ -122,7 +122,7 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
     if (!customer) return alert("Select customer");
     if (!cart.length) return alert("Cart empty");
     if (paymentMethod === `cash` || paymentMethod === `mix`) {
-      if (paymentData.balance >= 0) {
+      if (paymentData.balance < 0) {
         toast.error("Insufficient payment");
         return;
       }
@@ -144,7 +144,8 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
       date: new Date().toISOString(),
     };
 
-    console.log(data);
+    // console.log(data);
+    toast.warning(`Trasaction Bloked !`);
     // alert(JSON.stringify(data, null, 2));
   };
 

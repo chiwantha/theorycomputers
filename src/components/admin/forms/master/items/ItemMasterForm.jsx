@@ -29,6 +29,8 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
     selling: ``,
     reorder: ``,
     serial: ``,
+    type: ``,
+    online: ``,
   });
 
   useEffect(() => {
@@ -47,6 +49,8 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         selling: defaultData.row.selling,
         reorder: defaultData.row.reorder_level,
         serial: defaultData.row.is_serial,
+        type: defaultData.row.type,
+        online: defaultData.row.online,
       });
     else
       setFormData({
@@ -61,6 +65,8 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         selling: ``,
         reorder: ``,
         serial: ``,
+        type: ``,
+        online: ``,
       });
   }, [defaultData]);
 
@@ -84,6 +90,8 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
           "selling",
           "reorder",
           "serial",
+          "type",
+          "online",
         ]);
       } else if (method === "PUT") {
         validation = validateFields(formData, [
@@ -95,6 +103,8 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
           "selling",
           "reorder",
           "serial",
+          "type",
+          "online",
         ]);
       } else {
         // delete → only id
@@ -118,6 +128,8 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
       data.append("selling", formData.selling);
       data.append("reorder", formData.reorder);
       data.append("serial", formData.serial);
+      data.append("type", formData.type);
+      data.append("online", formData.online);
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items/`,
@@ -223,6 +235,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
           <NextImageInput
             label={`Image`}
             onChange={(img) => setFormData({ ...formData, image: img })}
+            folder={`/master/items`}
             value={formData.image}
           />
           <Separator />
@@ -270,6 +283,30 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
               ]}
               defaultValue={defaultData ? (formData.serial ? 1 : 0) : null}
               onChange={(value) => setFormData({ ...formData, serial: value })}
+            />
+            <NextDropdown
+              placeholder={`Product / Service`}
+              label={`Type`}
+              id={`type`}
+              required={true}
+              items={[
+                { value: `P`, label: `Product` },
+                { value: `S`, label: `Service` },
+              ]}
+              defaultValue={defaultData ? formData.type : null}
+              onChange={(value) => setFormData({ ...formData, type: value })}
+            />
+            <NextDropdown
+              placeholder={`Yes / No`}
+              label={`Online`}
+              id={`online`}
+              required={true}
+              items={[
+                { value: 1, label: `Yes` },
+                { value: 0, label: `No` },
+              ]}
+              defaultValue={defaultData ? (formData.online ? 1 : 0) : null}
+              onChange={(value) => setFormData({ ...formData, online: value })}
             />
           </div>
           <Separator />
