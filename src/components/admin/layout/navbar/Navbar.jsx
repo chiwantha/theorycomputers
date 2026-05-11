@@ -16,7 +16,7 @@ const Navbar = () => {
       <Button
         click={toggleSidebar}
         name={<Menu />}
-        bg={`bg-gray-100 hover:bg-gray-200 text-gray-700`}
+        bg={`bg-gray-100 hover:bg-gray-200 text-gray-700 md:hidden`}
         pd={`py-2 px-2`}
       />
     </div>

@@ -1,8 +1,7 @@
 import Button from "@/components/common/button/Button";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
-import { InputStyle } from "@/constant/Forms";
-import { Pencil, Trash, Plus, Barcode } from "lucide-react";
+import { Trash, Plus, Barcode } from "lucide-react";
 import React, { useState } from "react";
 
 const GrnRow = ({ item_list, grn_rows }) => {
@@ -142,7 +141,6 @@ const GrnRow = ({ item_list, grn_rows }) => {
                       handleRowChange(index, "quantity", Number(e.target.value))
                     }
                     placeholder={`0`}
-                    className={`max-w-25`}
                   />
                 </td>
                 <td className="pl-2 pb-2">

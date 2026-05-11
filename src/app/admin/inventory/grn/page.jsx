@@ -1,6 +1,6 @@
-import GrnInventoryForm from "@/components/admin/forms/inventory/grn/GrnInventoryForm";
+import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
+import Button from "@/components/common/button/Button";
 import Table from "@/components/common/table/Table";
-import { get_items, get_suppliers } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -67,16 +67,20 @@ const InventoryGoodReceiveNote = async () => {
     },
   ];
   const data = await get_grn_inventory_list();
-  const suppliers = await get_suppliers();
-  const items = await get_items();
   return (
-    <div className="">
+    <div className="flex flex-col space-y-4">
+      <div className="justify-between flex items-center">
+        <BreadCrumb />
+        <Button
+          link={`/admin/inventory/grn/new`}
+          bg={`bg-green-500 hover:bg-green-600 text-white`}
+          name={`New Grn`}
+        />
+      </div>
       <Table
         colunms={colunms}
-        tablename={`Grn Notes`}
+        tablename={`Grn List`}
         rows={data}
-        form={GrnInventoryForm}
-        form_props={{ suppliers: suppliers, items: items }}
         action={{ view: true, edit: false, delete: false }}
         searchkeys={[`grn_no`, `supplier_name`, `date`]}
       />
