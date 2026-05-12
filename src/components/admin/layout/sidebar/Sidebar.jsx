@@ -15,6 +15,8 @@ import {
   Settings,
   Database,
   Barcode,
+  ClipboardMinus,
+  PenTool,
 } from "lucide-react";
 
 import SidebarItem from "./sidebarItem/SidebarItem";
@@ -70,14 +72,9 @@ const admin_links = [
         path: "/admin/inventory/grn",
       },
       {
-        name: "Stock",
-        icon: <Warehouse size={20} />,
-        path: "/admin/inventory/stock",
-      },
-      {
-        name: "Serials",
-        icon: <Barcode size={20} />,
-        path: "/admin/inventory/serials",
+        name: "Adjustment",
+        icon: <PenTool size={20} />,
+        path: "/admin/inventory/adjustments",
       },
       {
         name: "Returns",
@@ -88,6 +85,22 @@ const admin_links = [
         name: "Damages",
         icon: <AlertTriangle size={20} />,
         path: "/admin/inventory/damages",
+      },
+      {
+        name: "Serials",
+        icon: <Barcode size={20} />,
+        path: "/admin/inventory/serials",
+      },
+    ],
+  },
+  {
+    name: "Reports",
+    icon: <ClipboardMinus size={20} />,
+    sub: [
+      {
+        name: "Stock",
+        icon: <Warehouse size={20} />,
+        path: "/admin/inventory/stock",
       },
     ],
   },

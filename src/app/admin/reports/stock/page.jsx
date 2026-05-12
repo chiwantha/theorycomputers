@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 async function get_stock_inventory_list() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/stock`,
+      `${process.env.NEXT_PUBLIC_URL}/api/admin/reports/stock`,
     );
 
     if (!res.ok) {

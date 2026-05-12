@@ -27,13 +27,13 @@ const BreadCrumb = () => {
             <Link
               href={href}
               className={`
-                rounded-xl py-2 px-4 transition
+                rounded-xl py-2 px-4 transition-colors duration-300
                 ${
                   isLast
                     ? "bg-blue-500 text-white hover:bg-blue-600"
                     : isFirst
                       ? "bg-amber-500 text-white hover:bg-amber-600"
-                      : "bg-gray-200 text-gray-600 hover:bg-gray-200"
+                      : "bg-gray-200 text-gray-600 hover:bg-gray-300"
                 }
               `}
             >
