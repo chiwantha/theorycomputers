@@ -24,7 +24,7 @@ const GrnRow = ({ item_list }) => {
 
   return (
     <div className="">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto lg:overflow-visible">
         <table className="min-w-full ">
           <thead>
             <tr>
@@ -145,25 +145,27 @@ const GrnRow = ({ item_list }) => {
                 )}
               </React.Fragment>
             ))}
-            <tr className="">
-              <td colSpan={2}></td>
-              <td colSpan={3} className="pl-2">
-                <div className="flex flex-col py-3 px-4 rounded-xl bg-blue-50  text-gray-600 space-y-1">
-                  <div className="flex justify-between items-center font-semibold ">
-                    <span className="">Gross Total</span>
-                    <span className="">{grossTotal}</span>
+            {rows.length > 0 && (
+              <tr className="">
+                <td colSpan={2}></td>
+                <td colSpan={3} className="pl-2">
+                  <div className="flex flex-col py-3 px-4 rounded-xl bg-blue-50  text-gray-600 space-y-1">
+                    <div className="flex justify-between items-center font-semibold ">
+                      <span className="">Gross Total</span>
+                      <span className="">{grossTotal}</span>
+                    </div>
+                    <div className="flex justify-between items-center font-semibold ">
+                      <span className="">Discount</span>
+                      <span className="">- {discount}</span>
+                    </div>
+                    <div className="flex justify-between items-center font-semibold ">
+                      <span className="">Net Total</span>
+                      <span className="">{netTotal}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center font-semibold ">
-                    <span className="">Discount</span>
-                    <span className="">- {discount}</span>
-                  </div>
-                  <div className="flex justify-between items-center font-semibold ">
-                    <span className="">Net Total</span>
-                    <span className="">{netTotal}</span>
-                  </div>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

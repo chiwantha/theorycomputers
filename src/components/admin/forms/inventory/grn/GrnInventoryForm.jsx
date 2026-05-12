@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
+const GrnInventoryForm = ({ form_props }) => {
   const router = useRouter();
   const { suppliers, items } = form_props || null;
   const [pending, setPending] = useState(false);
@@ -28,70 +28,84 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
   const handleCrud = async () => {
     setPending(true);
     try {
-      const isEdit = defaultData?.type === "edit";
-      const isDelete = defaultData?.type === "delete";
-      const method = isDelete ? `DELETE` : isEdit ? `PUT` : `POST`;
-
       let validation;
+      const stateData = useGRNStore.getState();
+      console.log(stateData);
 
-      if (method === "POST") {
-        validation = validateFields(formData, [
-          "grn_no",
-          "supplier_id",
-          "po_id",
-          "invoice_no",
-          "grn_items",
-        ]);
-      } else if (method === "PUT") {
-        validation = validateFields(formData, [
-          "id",
-          "grn_no",
-          "supplier_id",
-          "po_id",
-          "invoice_no",
-          "grn_items",
-        ]);
-      } else {
-        validation = validateFields(formData, ["id"]);
-      }
+      // fields verification
+      validation = validateFields(stateData, [
+        `grnNo`,
+        `supplierId`,
+        `poId`,
+        `invoiceNo`,
+      ]);
 
       if (!validation.isValid) {
         toast.error(`Missing: ${validation.emptyFields.join(", ")}`);
         return;
       }
 
-      const data = new FormData();
-      data.append(`id`, formData.id);
-      data.append(`grn_no`, formData.grn_no);
-      data.append(`supplier_id`, formData.supplier_id);
-      data.append(`po_id`, formData.po_id);
-      data.append(`invoice_no`, formData.invoice_no);
-      data.append(`total`, formData.total);
-      data.append(`grn_items`, JSON.stringify(formData.grn_items));
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/grn`,
-        {
-          method,
-          body: data,
-        },
-      );
-
-      if (!res.ok) {
-        toast.error(
-          `${isDelete ? "Delete" : isEdit ? "Update" : "Create"} failed !`,
-        );
+      // rows verification
+      if (stateData?.rows.length <= 0) {
+        toast.error(`Please add Items !`);
         return;
+      } else if (stateData.rows.length >= 1) {
+        for (const row of stateData.rows) {
+          if (!row.itemId) {
+            toast.error(`Select Valid Item!`);
+            return;
+          }
+
+          if (!row.quantity) {
+            toast.error(`Missing Quantity!`);
+            return;
+          }
+
+          if (!row.cost) {
+            toast.error(`Missing Item Cost!`);
+            return;
+          }
+
+          if (row.serial) {
+            const validSerials = row.serials.filter(
+              (serial) => serial?.trim() !== "",
+            );
+
+            if (validSerials.length !== row.quantity) {
+              toast.error(`Mismatch in serial and quantity!`);
+              return;
+            }
+          }
+        }
       }
 
-      toast.success(
-        `${
-          isDelete ? "Deleted" : isEdit ? "Updated" : "Created"
-        } successfully !`,
-      );
+      // data posting
 
-      router.refresh();
-      close_drawer(true);
+      // const data = new FormData();
+      // data.append(`id`, formData.id);
+      // data.append(`grn_no`, formData.grn_no);
+      // data.append(`supplier_id`, formData.supplier_id);
+      // data.append(`po_id`, formData.po_id);
+      // data.append(`invoice_no`, formData.invoice_no);
+      // data.append(`total`, formData.total);
+      // data.append(`grn_items`, JSON.stringify(formData.grn_items));
+
+      // const res = await fetch(
+      //   `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/grn`,
+      //   {
+      //     method,
+      //     body: data,
+      //   },
+      // );
+
+      // if (!res.ok) {
+      //   toast.error(`Grn failed !`);
+      //   return;
+      // }
+
+      toast.success(`Saved !`);
+
+      // router.push(`/admin/inventory/grn`);
     } catch (err) {
       console.log("Operation Failed:", err);
       toast.error("Something went wrong !");
@@ -114,6 +128,7 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Id`}
             placeholder={`000000`}
             disabled={true}
+            inputClassName={`bg-red-50`}
           />
           <NextInput
             name={`grn_no`}
@@ -152,13 +167,10 @@ const GrnInventoryForm = ({ defaultData, form_props, close_drawer }) => {
         <GrnRow item_list={items} />
 
         <Button
-          name={
-            pending ? `Processing !` : `${defaultData ? `Update` : `Save`} Grn`
-          }
+          name={pending ? `Processing !` : `Save Grn`}
           bg={`bg-green-400 hover:bg-green-500 text-white col-span-full`}
           click={() => {
-            // handleCrud();
-            console.log(useGRNStore.getState());
+            handleCrud();
           }}
           disabled={pending}
         />
