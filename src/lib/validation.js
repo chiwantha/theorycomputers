@@ -38,7 +38,7 @@ export function validateGrnItems(grn_items) {
   }
 
   for (const product of grn_items) {
-    if (!product.item_id) {
+    if (!product.itemId) {
       return { error: "Invalid item id!" };
     }
 

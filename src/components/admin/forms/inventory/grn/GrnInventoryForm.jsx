@@ -81,27 +81,26 @@ const GrnInventoryForm = ({ form_props }) => {
 
       // data posting
 
-      // const data = new FormData();
-      // data.append(`id`, formData.id);
-      // data.append(`grn_no`, formData.grn_no);
-      // data.append(`supplier_id`, formData.supplier_id);
-      // data.append(`po_id`, formData.po_id);
-      // data.append(`invoice_no`, formData.invoice_no);
-      // data.append(`total`, formData.total);
-      // data.append(`grn_items`, JSON.stringify(formData.grn_items));
+      const data = new FormData();
+      data.append(`grn_no`, stateData.grnNo);
+      data.append(`supplier_id`, stateData.supplierId);
+      data.append(`po_id`, stateData.poId);
+      data.append(`invoice_no`, stateData.invoiceNo);
+      data.append(`total`, stateData.netTotal);
+      data.append(`grn_items`, JSON.stringify(stateData.rows));
 
-      // const res = await fetch(
-      //   `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/grn`,
-      //   {
-      //     method,
-      //     body: data,
-      //   },
-      // );
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/grn`,
+        {
+          method: `POST`,
+          body: data,
+        },
+      );
 
-      // if (!res.ok) {
-      //   toast.error(`Grn failed !`);
-      //   return;
-      // }
+      if (!res.ok) {
+        toast.error(`Grn failed !`);
+        return;
+      }
 
       toast.success(`Saved !`);
 

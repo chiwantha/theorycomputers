@@ -74,10 +74,10 @@ export const POST = async (request) => {
         const insert_details_sql = `INSERT INTO grn_details (header_id, item_id, quantity, unit_cost, line_total) VALUES (?,?,?,?,?)`;
         const values = [
           grn_header_id,
-          item.item_id,
+          item.itemId,
           item.quantity,
           item.cost,
-          item.total,
+          item.lineTotal,
         ];
         const [ResultSetDetails] = await connection.execute(
           insert_details_sql,
@@ -88,7 +88,7 @@ export const POST = async (request) => {
 
         // update stocks
         const update_stock_sql = `INSERT INTO stock (item_id, quantity)  VALUES (?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)`;
-        const stock_values = [item.item_id, item.quantity];
+        const stock_values = [item.itemId, item.quantity];
         const [ResultUpdateStock] = await connection.execute(
           update_stock_sql,
           stock_values,
@@ -98,7 +98,7 @@ export const POST = async (request) => {
 
         // update item cost
         const update_item_cost_sql = `UPDATE mst_items SET cost=? WHERE id=?`;
-        const update_cost_values = [item.cost, item.item_id];
+        const update_cost_values = [item.cost, item.itemId];
         const [ResultUpdateCost] = await connection.execute(
           update_item_cost_sql,
           update_cost_values,
@@ -110,7 +110,7 @@ export const POST = async (request) => {
         if (item.is_serial) {
           const insert_serial_sql = `INSERT INTO stock_items_serials (item_id, serial, stock) VALUES (?,?,?)`;
           for (const serial of item.serials) {
-            const values = [item.item_id, serial, 1];
+            const values = [item.itemId, serial, 1];
             const [ResultSetSerials] = await connection.execute(
               insert_serial_sql,
               values,
@@ -123,7 +123,7 @@ export const POST = async (request) => {
         // insert movements
         const insert_stock_movements_sql = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id) VALUES (?,?,?,?,?)`;
         const movement_values = [
-          item.item_id,
+          item.itemId,
           "IN",
           item.quantity,
           `GRN`,
