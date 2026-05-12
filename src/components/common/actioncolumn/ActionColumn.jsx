@@ -13,33 +13,38 @@ const ActionColumn = ({ setChangeData, setOpen, row, action }) => {
 
   return (
     <div className="flex gap-1 justify-start">
-      <Button
-        name={<Eye size={15} />}
-        pd={`px-2 py-2`}
-        bg={`bg-green-500 hover:bg-green-600 text-white`}
-        link={`${pathname}/${row.id}`}
-        prefetch={true}
-        disabled={!actions.view}
-      />
-      <Button
-        name={<Pencil size={15} />}
-        pd={`px-2 py-2`}
-        click={() => {
-          setChangeData({ type: `edit`, row_id: row.id, row: row });
-          setOpen(true);
-        }}
-        disabled={!actions.edit}
-      />
-      <Button
-        name={<Trash size={15} />}
-        pd={`px-2 py-2`}
-        bg={`bg-red-400 hover:bg-red-600 text-white`}
-        click={() => {
-          setChangeData({ type: `delete`, row_id: row.id, row: row });
-          setOpen(true);
-        }}
-        disabled={!actions.delete}
-      />
+      {actions.view && (
+        <Button
+          name={<Eye size={15} />}
+          pd="px-2 py-2"
+          bg="bg-green-500 hover:bg-green-600 text-white"
+          link={`${pathname}/${row.id}`}
+          prefetch={true}
+        />
+      )}
+
+      {actions.edit && (
+        <Button
+          name={<Pencil size={15} />}
+          pd="px-2 py-2"
+          click={() => {
+            setChangeData({ type: `edit`, row_id: row.id, row: row });
+            setOpen(true);
+          }}
+        />
+      )}
+
+      {actions.delete && (
+        <Button
+          name={<Trash size={15} />}
+          pd="px-2 py-2"
+          bg="bg-red-400 hover:bg-red-600 text-white"
+          click={() => {
+            setChangeData({ type: `delete`, row_id: row.id, row: row });
+            setOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 };
