@@ -58,6 +58,7 @@ const InventoryGoodReceiveNote = async () => {
       data_name: "total",
       className: "sm:table-cell hidden",
       data_className: "text-blue-400 font-medium",
+      type: "money",
     },
     {
       header: "Date",

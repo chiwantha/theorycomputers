@@ -153,7 +153,15 @@ const Table = ({
                         ? col.render(row)
                         : col.data_name == "date"
                           ? format_date(row[col.data_name])
-                          : row[col.data_name]}
+                          : col.type == `money`
+                            ? Number(row[col.data_name] || 0).toLocaleString(
+                                undefined,
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                },
+                              )
+                            : row[col.data_name]}
                     </td>
                   ))}
 

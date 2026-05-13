@@ -51,12 +51,14 @@ const MasterItems = async () => {
       data_name: "cost",
       className: "md:table-cell hidden",
       data_className: "",
+      type: `money`,
     },
     {
       header: "Selling",
       data_name: "selling",
       className: "md:table-cell hidden",
       data_className: "text-blue-400 font-medium",
+      type: `money`,
     },
   ];
 
@@ -64,6 +66,7 @@ const MasterItems = async () => {
     categories: await get_categories(),
     brands: await get_brands(),
   };
+
   const data = await get_master_items_list();
   const search = ["name", "category"];
 

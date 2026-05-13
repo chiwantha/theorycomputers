@@ -103,8 +103,7 @@ const GrnInventoryForm = ({ form_props }) => {
       }
 
       toast.success(`Saved !`);
-
-      // router.push(`/admin/inventory/grn`);
+      router.push(`/admin/inventory/grn`);
     } catch (err) {
       console.log("Operation Failed:", err);
       toast.error("Something went wrong !");

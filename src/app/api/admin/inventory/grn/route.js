@@ -86,6 +86,41 @@ export const POST = async (request) => {
         if (!ResultSetDetails.insertId)
           throw new Error("Insert GRN Details failed");
 
+        // update item cost
+        const get_current_stock = `
+        SELECT 
+          stock.quantity,
+          (mst_items.cost * stock.quantity) AS value
+        FROM stock
+        INNER JOIN mst_items 
+          ON mst_items.id = stock.item_id
+        WHERE stock.item_id=?
+      `;
+        const [resultCurrentStock] = await connection.execute(
+          get_current_stock,
+          [item.itemId],
+        );
+
+        const currentQty = resultCurrentStock[0]?.quantity || 0;
+        const currentValue = resultCurrentStock[0]?.value || 0;
+
+        // weighted average cost
+        const averageCost =
+          (Number(currentValue) + Number(item.lineTotal)) /
+          (Number(currentQty) + Number(item.quantity));
+        const update_item_cost_sql = `
+          UPDATE mst_items 
+          SET cost=? 
+          WHERE id=?
+        `;
+        const update_cost_values = [averageCost, item.itemId];
+        const [ResultUpdateCost] = await connection.execute(
+          update_item_cost_sql,
+          update_cost_values,
+        );
+        if (!ResultUpdateCost.affectedRows)
+          throw new Error("Update Cost failed");
+
         // update stocks
         const update_stock_sql = `INSERT INTO stock (item_id, quantity)  VALUES (?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)`;
         const stock_values = [item.itemId, item.quantity];
@@ -95,16 +130,6 @@ export const POST = async (request) => {
         );
         if (!ResultUpdateStock.affectedRows)
           throw new Error("Update Stock failed");
-
-        // update item cost
-        const update_item_cost_sql = `UPDATE mst_items SET cost=? WHERE id=?`;
-        const update_cost_values = [item.cost, item.itemId];
-        const [ResultUpdateCost] = await connection.execute(
-          update_item_cost_sql,
-          update_cost_values,
-        );
-        if (!ResultUpdateCost.affectedRows)
-          throw new Error("Update Cost failed");
 
         // update serials
         if (item.is_serial) {

@@ -100,7 +100,7 @@ const admin_links = [
       {
         name: "Stock",
         icon: <Warehouse size={20} />,
-        path: "/admin/inventory/stock",
+        path: "/admin/reports/stock",
       },
     ],
   },
