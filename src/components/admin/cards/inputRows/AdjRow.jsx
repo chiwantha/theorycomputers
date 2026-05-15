@@ -50,6 +50,7 @@ const AdjRow = ({ item_list }) => {
                         );
 
                         updateRow(row.tempId, "itemId", val);
+                        updateRow(row.tempId, "itemName", selected?.name);
 
                         updateRow(
                           row.tempId,

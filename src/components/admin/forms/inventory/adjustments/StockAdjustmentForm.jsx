@@ -32,7 +32,7 @@ const StockAdjustmentForm = ({ form_props }) => {
     try {
       let validation;
       const stateData = useADJStore.getState();
-      console.log(stateData);
+      // console.log(stateData);
 
       validation = validateFields(stateData, [`adjNo`, `type`, `reason`]);
 
@@ -52,12 +52,12 @@ const StockAdjustmentForm = ({ form_props }) => {
           }
 
           if (!row.quantity) {
-            toast.error(`Missing Quantity!`);
+            toast.error(`Missing Quantity on ${row?.itemName} !`);
             return;
           }
 
           if (!row.type) {
-            toast.error(`Missing Adj Type!`);
+            toast.error(`Missing Adj Type! on ${row?.itemName} !`);
             return;
           }
 
@@ -67,11 +67,34 @@ const StockAdjustmentForm = ({ form_props }) => {
             );
 
             if (validSerials.length !== row.quantity) {
-              toast.error(`Mismatch in serial and quantity!`);
+              toast.error(
+                `Mismatch in serial and quantity on ${row?.itemName} !`,
+              );
               return;
             }
           }
         }
+      }
+
+      const data = new FormData();
+      data.append(`adjNo`, stateData.adjNo);
+      data.append(`type`, stateData.type);
+      data.append(`reason`, stateData.reason);
+      data.append(`note`, stateData.note);
+      data.append(`adjustment_items`, JSON.stringify(stateData.rows));
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/adjustments`,
+        {
+          method: `POST`,
+          body: data,
+        },
+      );
+
+      if (!res.ok) {
+        toast.error(`Adjustment failed !`);
+        toast.warning((await res.json()).message);
+        return;
       }
 
       toast.success(`Saved !`);

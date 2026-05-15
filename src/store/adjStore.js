@@ -24,6 +24,8 @@ export const useADJStore = create((set, get) => ({
 
       itemId: item.itemId,
 
+      itemName: item.itemName,
+
       type: item.type,
 
       quantity: item.quantity || 0,
@@ -161,7 +163,7 @@ export const useADJStore = create((set, get) => ({
     set({
       adjNo: ``,
       type: null,
-      reason: null,
+      reason: ``,
       note: ``,
       rows: [],
     });
