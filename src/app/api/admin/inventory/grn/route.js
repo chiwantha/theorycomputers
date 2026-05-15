@@ -132,7 +132,7 @@ export const POST = async (request) => {
           throw new Error("Update Stock failed");
 
         // update serials
-        if (item.is_serial) {
+        if (item.serial) {
           const insert_serial_sql = `INSERT INTO stock_items_serials (item_id, serial, stock) VALUES (?,?,?)`;
           for (const serial of item.serials) {
             const values = [item.itemId, serial, 1];

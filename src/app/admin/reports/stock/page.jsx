@@ -43,6 +43,7 @@ const InventoryStock = async () => {
       data_name: "cost",
       className: "md:table-cell hidden",
       data_className: "",
+      type: `money`,
     },
     {
       header: "Stock",
@@ -55,6 +56,7 @@ const InventoryStock = async () => {
       data_name: "stock_average_worth",
       className: "md:table-cell hidden",
       data_className: "text-blue-400 font-medium",
+      type: `money`,
     },
   ];
   const data = await get_stock_inventory_list();

@@ -1,6 +1,6 @@
 "use client";
 
-import GrnRow from "@/components/admin/cards/grnrow/GrnRow";
+import GrnRow from "@/components/admin/cards/inputRows/GrnRow";
 import Button from "@/components/common/button/Button";
 
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";

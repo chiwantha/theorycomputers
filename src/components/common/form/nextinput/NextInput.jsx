@@ -23,6 +23,7 @@ const NextInput = ({
   value,
   required,
   onChange,
+  max,
   combo = false,
   combobox_items = [],
   onComboboxChange, // pass selected value handler
@@ -75,6 +76,7 @@ const NextInput = ({
           name={name}
           placeholder={placeholder}
           rows={textareaRows}
+          maxLength={max}
           value={value}
           onChange={onChange}
           className={cn(InputStyle, inputClassName)}
@@ -95,6 +97,7 @@ const NextInput = ({
           name={name}
           id={id}
           required={true}
+          maxLength={max}
           value={value}
           onChange={onChange}
           className={cn(InputStyle, inputClassName)}

@@ -5,10 +5,8 @@ import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 
 import { Trash, Plus, Barcode } from "lucide-react";
-
-import React from "react";
-
 import { useGRNStore } from "@/store/grnStore";
+import React from "react";
 
 const GrnRow = ({ item_list }) => {
   const rows = useGRNStore((state) => state.rows);
