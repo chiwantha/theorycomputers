@@ -30,7 +30,7 @@ const GrnInventoryForm = ({ form_props }) => {
     try {
       let validation;
       const stateData = useGRNStore.getState();
-      console.log(stateData);
+      // console.log(stateData);
 
       // fields verification
       validation = validateFields(stateData, [

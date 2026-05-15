@@ -1,15 +1,88 @@
 "use client";
 import AdjRow from "@/components/admin/cards/inputRows/AdjRow";
+import Button from "@/components/common/button/Button";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import Separator from "@/components/common/separator/Separator";
+import { validateFields } from "@/lib/validation";
+import { useADJStore } from "@/store/adjStore";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const StockAdjustmentForm = ({ form_props }) => {
   const router = useRouter();
   const { items } = form_props || null;
   const [pending, setPending] = useState(false);
+
+  const setHeaderField = useADJStore((state) => state.setHeaderField);
+  const adjNo = useADJStore((state) => state.adjNo);
+  const type = useADJStore((state) => state.type);
+  const reason = useADJStore((state) => state.reason);
+  const note = useADJStore((state) => state.note);
+
+  const resetAdj = useADJStore((state) => state.resetADJ);
+
+  useEffect(() => {
+    resetAdj();
+  }, []);
+
+  const handleCrud = async () => {
+    setPending(true);
+    try {
+      let validation;
+      const stateData = useADJStore.getState();
+      console.log(stateData);
+
+      validation = validateFields(stateData, [`adjNo`, `type`, `reason`]);
+
+      if (!validation.isValid) {
+        toast.error(`Missing: ${validation.emptyFields.join(", ")}`);
+        return;
+      }
+
+      if (stateData?.rows.length <= 0) {
+        toast.error(`Please add Items !`);
+        return;
+      } else if (stateData.rows.length >= 1) {
+        for (const row of stateData.rows) {
+          if (!row.itemId) {
+            toast.error(`Select Valid Item!`);
+            return;
+          }
+
+          if (!row.quantity) {
+            toast.error(`Missing Quantity!`);
+            return;
+          }
+
+          if (!row.type) {
+            toast.error(`Missing Adj Type!`);
+            return;
+          }
+
+          if (row.serial) {
+            const validSerials = row.serials.filter(
+              (serial) => serial?.trim() !== "",
+            );
+
+            if (validSerials.length !== row.quantity) {
+              toast.error(`Mismatch in serial and quantity!`);
+              return;
+            }
+          }
+        }
+      }
+
+      toast.success(`Saved !`);
+      // router.push(`/admin/inventory/adjustments`);
+    } catch (err) {
+      console.log("Operation Failed:", err);
+      toast.error("Something went wrong !");
+    } finally {
+      setPending(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -23,14 +96,18 @@ const StockAdjustmentForm = ({ form_props }) => {
             inputClassName={`bg-red-50`}
           />
           <NextInput
-            name={`adj_no`}
+            name={`adjNo`}
             label={`Adjustment No`}
             placeholder={`ADJ0001`}
+            value={adjNo}
+            onChange={(e) => setHeaderField(`adjNo`, e.target.value)}
           />
           <NextDropdown
             name={`adj_type`}
             label={`Type`}
             className={` sm:col-span-full lg:col-span-1`}
+            defaultValue={type}
+            onChange={(val) => setHeaderField(`type`, val)}
             items={[
               { value: `GRN`, label: `GRN` },
               { value: `DAMAGE`, label: `DAMAGE` },
@@ -45,18 +122,31 @@ const StockAdjustmentForm = ({ form_props }) => {
               label={`Reason`}
               placeholder={`made a mistake on grn `}
               textarea
+              value={reason}
+              onChange={(e) => setHeaderField(`reason`, e.target.value)}
             />
             <NextInput
               name={`note`}
               label={`note`}
               placeholder={`type your note`}
               textarea
+              value={note}
+              onChange={(e) => setHeaderField(`note`, e.target.value)}
             />
           </div>
         </div>
         <Separator title={`Adjustment List`} />
 
         <AdjRow item_list={items} />
+
+        <Button
+          name={pending ? `Processing !` : `Save Adjustment`}
+          bg={`bg-green-400 hover:bg-green-500 text-white col-span-full`}
+          click={() => {
+            handleCrud();
+          }}
+          disabled={pending}
+        />
       </div>
     </div>
   );

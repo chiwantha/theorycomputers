@@ -5,16 +5,16 @@ import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 
 import { Trash, Plus, Barcode } from "lucide-react";
-import { useGRNStore } from "@/store/grnStore";
 import React from "react";
+import { useADJStore } from "@/store/adjStore";
 
 const AdjRow = ({ item_list }) => {
-  const rows = useGRNStore((state) => state.rows);
-  const addRow = useGRNStore((state) => state.addRow);
-  const updateRow = useGRNStore((state) => state.updateRow);
-  const removeRow = useGRNStore((state) => state.removeRow);
-  const toggleSerials = useGRNStore((state) => state.toggleSerials);
-  const updateSerial = useGRNStore((state) => state.updateSerial);
+  const rows = useADJStore((state) => state.rows);
+  const addRow = useADJStore((state) => state.addRow);
+  const updateRow = useADJStore((state) => state.updateRow);
+  const removeRow = useADJStore((state) => state.removeRow);
+  const toggleSerials = useADJStore((state) => state.toggleSerials);
+  const updateSerial = useADJStore((state) => state.updateSerial);
   return (
     <div className="">
       <div className="overflow-x-auto lg:overflow-visible">
@@ -68,8 +68,8 @@ const AdjRow = ({ item_list }) => {
                         { value: `M`, label: `Minus` },
                       ]}
                       value={row.type}
-                      placeholder="Adjustment Type"
-                      className="max-w-75"
+                      placeholder="Type"
+                      className="min-w-50"
                       onChange={(val) => {
                         updateRow(row.tempId, "type", val);
                       }}

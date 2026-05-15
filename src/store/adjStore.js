@@ -4,7 +4,7 @@ export const useADJStore = create((set, get) => ({
   // header
   adjNo: ``,
   type: null,
-  reason: null,
+  reason: ``,
   note: ``,
 
   // rows
@@ -157,7 +157,7 @@ export const useADJStore = create((set, get) => ({
   },
 
   // reset
-  resetGRN: () => {
+  resetADJ: () => {
     set({
       adjNo: ``,
       type: null,
