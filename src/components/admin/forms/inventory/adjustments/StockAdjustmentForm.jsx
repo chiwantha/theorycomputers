@@ -104,7 +104,7 @@ const StockAdjustmentForm = ({ form_props }) => {
       }
 
       toast.success(`Saved !`);
-      // router.push(`/admin/inventory/adjustments`);
+      router.push(`/admin/inventory/adjustments`);
     } catch (err) {
       console.log("Operation Failed:", err);
       toast.error("Something went wrong !");

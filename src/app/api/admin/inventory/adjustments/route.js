@@ -273,8 +273,8 @@ export const POST = async (request) => {
         }
 
         // stock movements update
-        const stock_movements_sql = `INSER INTO stock_movements (item_id, type, quantity, reference, reference_id, note) VALUES (?,?,?,?,?,?)`;
-        const resStockMovements = await connection.execute(
+        const stock_movements_sql = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id, note) VALUES (?,?,?,?,?,?)`;
+        const [resStockMovements] = await connection.execute(
           stock_movements_sql,
           [
             item.itemId,
@@ -286,7 +286,7 @@ export const POST = async (request) => {
           ],
         );
         if (!resStockMovements.insertId) {
-          throw new Error(`Stock MOvements Failed !`);
+          throw new Error(`Stock Movements Failed !`);
         }
       }
     } else {
