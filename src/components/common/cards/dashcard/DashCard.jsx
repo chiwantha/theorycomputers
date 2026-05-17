@@ -13,7 +13,13 @@ const DashCard = ({ title, icon, value, link, className }) => {
       )}
     >
       <div className="absolute aspect-square h-full -right-12.5 mask-l-from-2">
-        <Image src={icon} alt={icon} fill className="object-cover " />
+        <Image
+          src={icon}
+          alt={icon}
+          fill
+          className="object-cover"
+          sizes="30vw"
+        />
       </div>
       <span className="text-nowrap text-ellipsis line-clamp-1 text-gray-400 capitalize">
         {title || `Card Title`}

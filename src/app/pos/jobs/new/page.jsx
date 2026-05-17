@@ -1,14 +1,12 @@
 import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
-import JobGrid from "@/components/pos/grid/jobgrid/JobGrid";
 import React from "react";
 
-const PosJobPage = () => {
+const page = () => {
   return (
     <div className="flex flex-col space-y-4">
       <BreadCrumb />
-      <JobGrid />
     </div>
   );
 };
 
-export default PosJobPage;
+export default page;

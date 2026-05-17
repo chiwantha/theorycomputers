@@ -3,24 +3,22 @@ import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { getTimeSince } from "@/lib/utils";
 import { Phone, Plus, User } from "lucide-react";
+import Link from "next/link";
 import React from "react";
-import { toast } from "react-toastify";
 
 const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
   return (
     <div
       className={`min-h-50 p-4 md:p-6 bg-gray-50 rounded-xl  border-gray-200 hover:border-blue-300 transition-all duration-300 flex
-        ${add ? `justify-center items-center border-6 border-dashed text-blue-400` : ` border`}`}
+        ${add ? ` border-4 border-dashed text-blue-400` : ` border`}`}
     >
       {add ? (
-        <div
-          className=""
-          onClick={() => {
-            toast.warning(`Transation Bloked !`);
-          }}
+        <Link
+          className="w-full h-full flex items-center justify-center"
+          href={`/pos/jobs/new`}
         >
           <Plus size={60} />
-        </div>
+        </Link>
       ) : (
         <div className="flex flex-col w-full gap-1">
           <div className="flex items-center justify-between">

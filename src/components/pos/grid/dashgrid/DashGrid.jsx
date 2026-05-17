@@ -1,13 +1,20 @@
 import React from "react";
-import DashCard from "../../cards/dashcard/DashCard";
+import DashCard from "../../../common/cards/dashcard/DashCard";
 
 const DashGrid = () => {
   const cards = [
     {
-      title: `Today Sales`,
+      title: `Issued Invoices`,
       image: `/dashboard/sales.png`,
       link: ``,
-      value: 1256.0,
+      value: 20,
+      className: ``,
+    },
+    {
+      title: `Issued Qutations`,
+      image: `/dashboard/quotation.png`,
+      link: ``,
+      value: 2,
       className: ``,
     },
     {

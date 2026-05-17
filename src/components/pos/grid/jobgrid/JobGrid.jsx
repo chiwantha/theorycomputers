@@ -8,7 +8,7 @@ const JobGrid = ({ gridName, grid }) => {
   const data = DummyJobList;
 
   const filteredJobs = data.filter((job) =>
-    `${job.customer_name} ${job.device_name} ${job.phone} `
+    `${job.state == 0 ? `pending` : `checkout`} ${job.customer_name} ${job.device_name} ${job.phone}`
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
@@ -50,7 +50,7 @@ const JobGrid = ({ gridName, grid }) => {
           ))
         ) : (
           <span className="col-span-full text-center text-gray-500 py-10">
-            No jobs yet
+            No jobs Found !
           </span>
         )}
       </div>

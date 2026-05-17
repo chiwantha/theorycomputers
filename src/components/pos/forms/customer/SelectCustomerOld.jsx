@@ -5,7 +5,7 @@ import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const SelectCustomer = ({
+const SelectCustomerOld = ({
   customersList,
   customer, // centralized customer object
   setCustomer, // centralized setter
@@ -139,4 +139,4 @@ const SelectCustomer = ({
   );
 };
 
-export default SelectCustomer;
+export default SelectCustomerOld;

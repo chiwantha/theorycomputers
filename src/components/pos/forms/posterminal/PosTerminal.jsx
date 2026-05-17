@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import ProductListGrid from "../../grid/productlist/ProductListGrid";
-import SelectCustomer from "../customer/SelectCustomer";
+import SelectCustomer from "../customer/SelectCustomerOld";
 import CartCard from "../../cards/cartcard/CartCard";
 import Button from "@/components/common/button/Button";
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
