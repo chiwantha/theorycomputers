@@ -50,7 +50,7 @@ export function validateGrnItems(grn_items) {
       return { error: `Invalid cost for item ${product.item_id}` };
     }
 
-    if (product.is_serial === 1) {
+    if (product.serial === 1) {
       if (!Array.isArray(product.serials) || product.serials.length === 0) {
         return { error: `Serials missing for item ${product.item_id}` };
       }
@@ -62,6 +62,44 @@ export function validateGrnItems(grn_items) {
       for (const serial of product.serials) {
         if (!serial || serial.trim() === "") {
           return { error: `Empty serial found for item ${product.item_id}` };
+        }
+      }
+    }
+  }
+
+  return { success: true };
+}
+
+export function validateAdjItems(adj_items) {
+  if (!Array.isArray(adj_items) || adj_items.length === 0) {
+    return { error: "No ADJ items found!" };
+  }
+
+  for (const product of adj_items) {
+    if (!product.itemId) {
+      return { error: "Invalid item id!" };
+    }
+
+    if (!product.quantity || product.quantity <= 0) {
+      return { error: `Invalid quantity for item ${product.itemName}` };
+    }
+
+    if (!product.type || product.type < 0) {
+      return { error: `Invalid adj type for item ${product.itemName}` };
+    }
+
+    if (product.serial === 1) {
+      if (!Array.isArray(product.serials) || product.serials.length === 0) {
+        return { error: `Serials missing for item ${product.itemName}` };
+      }
+
+      if (product.serials.length !== product.quantity) {
+        return { error: `Serial count mismatch for item ${product.itemName}` };
+      }
+
+      for (const serial of product.serials) {
+        if (!serial || serial.trim() === "") {
+          return { error: `Empty serial found for item ${product.itemName}` };
         }
       }
     }

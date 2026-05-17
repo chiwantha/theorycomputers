@@ -64,6 +64,7 @@ export const POST = async (request) => {
       total,
     ]);
     if (!ResultSetHeader.insertId) throw new Error("Insert GRN Header failed");
+
     const grn_header_id = ResultSetHeader.insertId;
 
     // insert details

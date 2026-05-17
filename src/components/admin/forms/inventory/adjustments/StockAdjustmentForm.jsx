@@ -92,8 +92,14 @@ const StockAdjustmentForm = ({ form_props }) => {
       );
 
       if (!res.ok) {
-        toast.error(`Adjustment failed !`);
-        toast.warning((await res.json()).message);
+        const data = await res.json();
+
+        toast.error("Adjustment failed!");
+
+        if (data.error) {
+          toast.warning(data.error);
+        }
+
         return;
       }
 
@@ -150,7 +156,7 @@ const StockAdjustmentForm = ({ form_props }) => {
             />
             <NextInput
               name={`note`}
-              label={`note`}
+              label={`Note`}
               placeholder={`type your note`}
               textarea
               value={note}
