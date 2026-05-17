@@ -4,6 +4,7 @@ import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { RefreshCcw } from "lucide-react";
+import { useEffect } from "react";
 
 const SelectCustomer = ({ customersList, island = true }) => {
   const setHeaderField = useCUSTOMERStore((state) => state.setHeaderField);
@@ -12,6 +13,10 @@ const SelectCustomer = ({ customersList, island = true }) => {
   const customerName = useCUSTOMERStore((state) => state.customerName);
   const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
   const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
+
+  useEffect(() => {
+    resetCustomer();
+  }, []);
 
   return (
     <div
