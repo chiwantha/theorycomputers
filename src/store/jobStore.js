@@ -10,7 +10,7 @@ export const useJOBStore = create((set, get) => ({
   // header
   jobId: ``,
   jobNo: ``,
-  device_type: ``,
+  deviceType: 0,
   brand: ``,
   model: ``,
   serialNo: ``,
@@ -177,7 +177,7 @@ export const useJOBStore = create((set, get) => ({
     set({
       jobId: ``,
       jobNo: ``,
-      device_type: ``,
+      deviceType: ``,
       brand: ``,
       model: ``,
       serialNo: ``,

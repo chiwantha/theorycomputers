@@ -20,7 +20,7 @@ const SelectCustomer = ({ customersList, island = true }) => {
 
   return (
     <div
-      className={`${island && `bg-white rounded-xl shadow-lg  p-4`} flex flex-col space-y-4`}
+      className={`${island && `bg-white rounded-xl shadow-md  p-4`} flex flex-col space-y-4`}
     >
       <div className="flex gap-2 justify-between items-center">
         <div className="flex items-center bg-gray-200 hover:bg-gray-300 rounded-xl">
