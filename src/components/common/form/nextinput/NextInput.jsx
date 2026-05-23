@@ -22,6 +22,7 @@ const NextInput = ({
   placeholder,
   value,
   required,
+  readonly,
   onChange,
   max,
   combo = false,
@@ -77,6 +78,7 @@ const NextInput = ({
           placeholder={placeholder}
           rows={textareaRows}
           maxLength={max}
+          readOnly={readonly}
           value={value}
           onChange={onChange}
           className={cn(InputStyle, inputClassName)}
@@ -97,6 +99,7 @@ const NextInput = ({
           name={name}
           id={id}
           required={true}
+          readOnly={readonly}
           maxLength={max}
           value={value}
           onChange={onChange}

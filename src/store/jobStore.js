@@ -1,3 +1,4 @@
+import { generateDocNo } from "@/lib/utils";
 import { create } from "zustand";
 
 const calculateGrossTotal = (rows) => {
@@ -9,21 +10,27 @@ const calculateGrossTotal = (rows) => {
 export const useJOBStore = create((set, get) => ({
   // header
   jobId: ``,
-  jobNo: ``,
-  deviceType: 0,
-  brand: ``,
-  model: ``,
-  serialNo: ``,
-  username: ``,
-  password: ``,
-  description: ``,
-  accessories: ``,
-
-  state: 0,
-
+  jobNo: generateDocNo(`JOB`),
+  // customer_id ( we have that )
+  warranty: false,
+  deadline: ``,
+  advancedPayment: 0,
   grossTotal: 0,
   discount: 0,
   netTotal: 0,
+
+  itemId: ``,
+  category: 0,
+  brand: 0,
+  model: ``,
+  serial: false,
+  serialNo: ``,
+  username: ``,
+  password: ``,
+  accessories: ``,
+  problem: ``,
+
+  state: 0,
 
   rows: [],
 
@@ -40,20 +47,16 @@ export const useJOBStore = create((set, get) => ({
       tempId: crypto.randomUUID(),
 
       itemId: item.itemId,
-
       itemName: item.itemName,
-
-      quantity: item.quantity || 0,
-
-      serial: item.serial || false,
-
-      showSerials: false,
-
-      serials: [],
+      billing: item.billing,
 
       unitPrice: item.unitPrice || 0,
-
+      quantity: item.quantity || 0,
       lineTotal: item.unitPrice * item.quantity,
+
+      serial: item.serial || false,
+      showSerials: false,
+      serials: [],
     };
 
     const rows = [...get().rows, newRow];
@@ -134,6 +137,18 @@ export const useJOBStore = create((set, get) => ({
     set({ rows });
   },
 
+  removeRow: (tempId) => {
+    const rows = get().rows.filter((row) => row.tempId !== tempId);
+
+    const grossTotal = calculateGrossTotal(rows);
+
+    set({
+      rows,
+      grossTotal,
+      netTotal: grossTotal - get().discount,
+    });
+  },
+
   toggleSerials: (tempId) => {
     const rows = get().rows.map((row) => {
       if (row.tempId !== tempId) {
@@ -175,22 +190,29 @@ export const useJOBStore = create((set, get) => ({
   // reset
   resetJOB: () => {
     set({
+      // header
       jobId: ``,
-      jobNo: ``,
-      deviceType: ``,
-      brand: ``,
-      model: ``,
-      serialNo: ``,
-      username: ``,
-      password: ``,
-      description: ``,
-      accessories: ``,
-
-      state: 0,
-
+      jobNo: generateDocNo(`JOB`),
+      // customer_id ( we have that )
+      warranty: false,
+      deadline: ``,
+      advancedPayment: 0,
       grossTotal: 0,
       discount: 0,
       netTotal: 0,
+
+      itemId: ``,
+      category: 0,
+      brand: 0,
+      model: ``,
+      serial: false,
+      serialNo: ``,
+      username: ``,
+      password: ``,
+      accessories: ``,
+      problem: ``,
+
+      state: 0,
 
       rows: [],
     });

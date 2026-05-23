@@ -15,6 +15,7 @@ const NextDropdown = ({
   id,
   className,
   required,
+  disabled,
   label,
 }) => {
   const [selected, setSelected] = useState("");
@@ -83,7 +84,7 @@ const NextDropdown = ({
 
       <div
         className={cn(
-          "outline-none w-full rounded-xl bg-gray-100 py-2 flex justify-between relative",
+          `outline-none w-full rounded-xl bg-gray-100 py-2 flex justify-between relative ${disabled && `pointer-events-none opacity-60`}`,
           className,
         )}
         ref={containerRef}

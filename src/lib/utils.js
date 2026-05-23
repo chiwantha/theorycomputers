@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { v4 as uuidv4 } from "uuid";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -37,4 +38,17 @@ export function getTimeSince(createdAt) {
   }
 
   return `${hours}H ${minutes}Min`;
+}
+
+export function generateDocNo() {
+  const now = new Date();
+
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+
+  const datePart = yy + mm;
+
+  const uuidPart = uuidv4().replace(/-/g, "").toUpperCase().slice(0, 4); // 👈 EXACT 4 chars
+
+  return `JOB-${datePart}-${uuidPart}`;
 }
