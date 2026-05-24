@@ -19,9 +19,11 @@ export const useJOBStore = create((set, get) => ({
   discount: 0,
   netTotal: 0,
 
+  invHeaderId: ``,
+  invDetailsId: ``,
   itemId: ``,
-  category: 0,
-  brand: 0,
+  category: ``,
+  brand: ``,
   model: ``,
   serial: false,
   serialNo: ``,
@@ -52,7 +54,7 @@ export const useJOBStore = create((set, get) => ({
       billing: item.billing || `NORMAL`,
 
       unitPrice: item.unitPrice || 0,
-      quantity: item.itemType == `P` ? item.quantity || 0 : 1,
+      quantity: item.quantity || 0,
       lineTotal:
         item.billing == "WARRANTY" ? 0 : item.unitPrice * item.quantity || 0,
 
@@ -89,7 +91,7 @@ export const useJOBStore = create((set, get) => ({
       updatedRow.lineTotal =
         updatedRow.billing === "WARRANTY"
           ? 0
-          : updatedRow.unitPrice * updatedRow.quantity;
+          : (updatedRow.unitPrice || 0) * (updatedRow.quantity || 0);
 
       // =========================
       // HANDLE SERIAL QTY
@@ -206,9 +208,11 @@ export const useJOBStore = create((set, get) => ({
       discount: 0,
       netTotal: 0,
 
+      invHeaderId: ``,
+      invDetailsId: ``,
       itemId: ``,
-      category: 0,
-      brand: 0,
+      category: ``,
+      brand: ``,
       model: ``,
       serial: false,
       serialNo: ``,

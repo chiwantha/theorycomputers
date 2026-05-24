@@ -75,6 +75,11 @@ const JobRow = ({ item_list }) => {
                           updateRow(row.tempId, "itemName", selected?.name);
                           updateRow(row.tempId, "unitPrice", selected?.selling);
                           updateRow(row.tempId, "itemType", selected?.type);
+                          updateRow(
+                            row.tempId,
+                            "quantity",
+                            selected?.type == "S" ? 1 : 0,
+                          );
 
                           updateRow(
                             row.tempId,
@@ -197,10 +202,10 @@ const JobRow = ({ item_list }) => {
                                   (item) => item.value === row.itemId,
                                 )?.serials
                               }
-                              placeholder={`Select Serial`}
+                              placeholder={`Select Serial ${i + 1}`}
                               defaultValue={row.serials[i] || ``}
                               onChange={(val) =>
-                                updateSerial(row.temp_id, i, val)
+                                updateSerial(row.tempId, i, val)
                               }
                             />
                           ))}

@@ -8,6 +8,8 @@ import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import JobRow from "../../cards/inputCards/JobRow";
 import Button from "@/components/common/button/Button";
 import { useCUSTOMERStore } from "@/store/customerStore";
+import { toast } from "react-toastify";
+import { validateFields } from "@/lib/validation";
 
 const DeviceTypes = [
   {
@@ -39,6 +41,7 @@ const DeviceTypes = [
 
 const invItems = [
   {
+    headerId: 10,
     detailId: 10,
     label: `Dell Desktop Computer - 2Months Left - INV105025`,
     value: 25,
@@ -65,9 +68,7 @@ const JobForm = ({ form_props }) => {
   const advancedPayment = useJOBStore((state) => state.advancedPayment);
   const accessories = useJOBStore((state) => state.accessories);
   const problem = useJOBStore((state) => state.problem);
-
   const customerId = useCUSTOMERStore((state) => state.customerId);
-
   const setHeaderField = useJOBStore((state) => state.setHeaderField);
   const resetJOB = useJOBStore((state) => state.resetJOB);
 
@@ -82,8 +83,146 @@ const JobForm = ({ form_props }) => {
   }, [customerId]);
 
   const handleCrud = async () => {
-    console.log(`Customer Data : `, useCUSTOMERStore.getState());
-    console.log(`Job Data : `, useJOBStore.getState());
+    setPending(true);
+    try {
+      let validation;
+      const customerData = useCUSTOMERStore.getState();
+      const jobData = useJOBStore.getState();
+
+      console.log(jobData);
+
+      // Customer Validation
+      if (warranty) {
+        validation = validateFields(customerData, [`customerId`]);
+        if (!validation.isValid) {
+          toast.error(`Missing: ${validation.emptyFields.join(", ")}`);
+          return;
+        }
+      } else {
+        validation = customerData.customerState
+          ? customerData.customerName !== "" &&
+            customerData.customerPhone !== ""
+          : customerData.customerId !== null;
+        if (!validation) {
+          toast.error(`Missing Customer Details !`);
+          return;
+        }
+      }
+
+      // Job Details Validation
+      if (warranty) {
+        validation = validateFields(jobData, [
+          `jobNo`,
+          `itemId`,
+          `invHeaderId`,
+          `invDetailsId`,
+          `problem`,
+        ]);
+        if (!validation.isValid) {
+          toast.error(`Missing: ${validation.emptyFields.join(", ")}`);
+          return;
+        }
+      } else {
+        validation = validateFields(jobData, [
+          `jobNo`,
+          `category`,
+          `brand`,
+          `problem`,
+        ]);
+        if (!validation.isValid) {
+          toast.error(`Missing: ${validation.emptyFields.join(", ")}`);
+          return;
+        }
+      }
+
+      if (jobData.rows.length > 0) {
+        for (const row of jobData.rows) {
+          if (!row.itemId) {
+            toast.error(`Select Valid Item!`);
+            return;
+          }
+
+          if (!row.billing && jobData.warranty) {
+            toast.error(`Missing Billing on ${row?.itemName} !`);
+            return;
+          }
+
+          if (!row.unitPrice) {
+            toast.error(`Missing Unit Price on ${row?.itemName} !`);
+            return;
+          }
+
+          if (!row.quantity && row.itemType == "P") {
+            toast.error(`Missing Quantity on ${row?.itemName} !`);
+            return;
+          }
+
+          if (row.serial) {
+            const validSerials = row.serials.filter(
+              (serial) => serial?.trim() !== "",
+            );
+
+            alert(row.serials);
+            console.log(jobData);
+
+            if (validSerials.length !== row.quantity) {
+              toast.error(
+                `Mismatch in serial and quantity on ${row?.itemName} !`,
+              );
+              return;
+            }
+          }
+        }
+      }
+
+      const data = new FormData();
+      data.append(`jobNo`, jobData.jobNo);
+      data.append(`warranty`, jobData.warranty);
+
+      data.append(`customerState`, customerData.customerState);
+      data.append(`customerId`, customerData.customerId);
+      data.append(`customerName`, customerData.customerName);
+      data.append(`customerPhone`, customerData.customerPhone);
+
+      data.append(`invHeaderId`, jobData.invHeaderId);
+      data.append(`invDetailsId`, jobData.invDetailsId);
+      data.append(`itemId`, jobData.itemId);
+      data.append(`category`, jobData.category);
+      data.append(`brand`, jobData.brand);
+      data.append(`model`, jobData.model);
+      data.append(`serial`, jobData.serial);
+      data.append(`serialNo`, jobData.serialNo);
+      data.append(`username`, jobData.username);
+      data.append(`password`, jobData.password);
+      data.append(`accessories`, jobData.accessories);
+      data.append(`problem`, jobData.problem);
+
+      data.append(`jobItems`, JSON.stringify(jobData.rows));
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/pos/jobs`, {
+        method: `POST`,
+        body: data,
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+
+        toast.error("Job failed!");
+
+        if (data.error) {
+          toast.warning(data.error);
+        }
+
+        return;
+      }
+
+      toast.success(`Saved !`);
+    } catch (err) {
+      console.log("Operation Failed:", err);
+      toast.error("Something went wrong !");
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -159,6 +298,8 @@ const JobForm = ({ form_props }) => {
                   setHeaderField(`serial`, selected?.serial || false);
                   setHeaderField(`serialNo`, selected?.serial_no || ``);
                   setHeaderField(`itemId`, val);
+                  setHeaderField(`invHeaderId`, selected.headerId);
+                  setHeaderField(`invDetailsId`, selected.detailId);
                 }}
               />
 
