@@ -9,12 +9,17 @@ import React from "react";
 import { useJOBStore } from "@/store/jobStore";
 
 const JobRow = ({ item_list }) => {
+  const warranty = useJOBStore((state) => state.warranty);
   const rows = useJOBStore((state) => state.rows);
   const addRow = useJOBStore((state) => state.addRow);
   const updateRow = useJOBStore((state) => state.updateRow);
   const removeRow = useJOBStore((state) => state.removeRow);
   const toggleSerials = useJOBStore((state) => state.toggleSerials);
   const updateSerial = useJOBStore((state) => state.updateSerial);
+  const grossTotal = useJOBStore((state) => state.grossTotal);
+  const discount = useJOBStore((state) => state.discount);
+  const netTotal = useJOBStore((state) => state.netTotal);
+
   return (
     <div className="">
       <div className="overflow-x-auto lg:overflow-visible">
@@ -23,169 +28,210 @@ const JobRow = ({ item_list }) => {
             <tr>
               <th className="text-sm text-left pl-2 pb-2">Item</th>
 
-              <th className="text-sm text-left pl-4 pb-2">Billing</th>
+              {warranty && (
+                <th className="text-sm text-left pl-4 pb-2">Billing</th>
+              )}
 
-              <th className="text-sm text-left pl-4 pb-2">Job</th>
+              <th className="text-sm text-left pl-4 pb-2">Unit Price</th>
 
               <th className="text-sm text-left pl-4 pb-2">Quantity</th>
 
-              <th className="text-sm text-left pl-4 pb-2">Note</th>
+              <th className="text-sm text-left pl-4 pb-2">Total</th>
 
               <th className="text-sm text-left pl-4 pb-2">Action</th>
             </tr>
           </thead>
 
           <tbody>
-            {rows.map((row) => (
-              <React.Fragment key={row.tempId}>
-                <tr>
-                  {/* ITEM */}
-                  <td className="pb-2">
-                    <NextDropdown
-                      items={item_list}
-                      value={row.itemId}
-                      placeholder="Select Item"
-                      className="min-w-75"
-                      onChange={(val) => {
-                        const selected = item_list.find(
-                          (item) => item.value === val,
-                        );
+            {rows.map((row) => {
+              let itemType = "P";
+              let itemStock = 0;
+              let iteminStock = true;
+              if (row.itemId && row.itemId !== ``) {
+                const selectedItem = item_list.find(
+                  (item) => item.value === row.itemId,
+                );
 
-                        updateRow(row.tempId, "itemId", val);
-                        updateRow(row.tempId, "itemName", selected?.name);
-
-                        updateRow(
-                          row.tempId,
-                          "serial",
-                          selected?.is_serial || false,
-                        );
-                      }}
-                    />
-                  </td>
-
-                  {/* Billing */}
-                  <td className="pb-2 pl-2">
-                    <NextDropdown
-                      items={[
-                        { value: `NORMAL`, label: `Normal` },
-                        { value: `FREE`, label: `Free` },
-                        { value: `WARRANTY`, label: `Warranty` },
-                      ]}
-                      value={row.type}
-                      placeholder="Normal"
-                      className="min-w-50"
-                      onChange={(val) => {
-                        updateRow(row.tempId, "billing", val);
-                      }}
-                    />
-                  </td>
-                  {/* TYPE */}
-                  <td className="pb-2 pl-2">
-                    <NextDropdown
-                      items={[
-                        { value: `NEW`, label: `New` },
-                        { value: `REPLACE`, label: `Replace` },
-                      ]}
-                      value={row.type}
-                      placeholder="New"
-                      className="min-w-50"
-                      onChange={(val) => {
-                        updateRow(row.tempId, "job", val);
-                      }}
-                    />
-                  </td>
-
-                  {/* QTY */}
-                  <td className="pl-2 pb-2 ">
-                    <NextInput
-                      type="number"
-                      value={row.quantity}
-                      onChange={(e) =>
-                        updateRow(
-                          row.tempId,
-                          "quantity",
-                          Number(e.target.value),
-                        )
-                      }
-                      className={`min-w-30`}
-                    />
-                  </td>
-
-                  {/* NOTE */}
-                  <td className="pl-2 pb-2">
-                    <NextInput
-                      type="text"
-                      value={row.note}
-                      placeholder={`Note`}
-                      textarea
-                      max={100}
-                      textareaRows={1}
-                      onChange={(e) =>
-                        updateRow(row.tempId, "note", e.target.value)
-                      }
-                      className={`min-w-80`}
-                    />
-                  </td>
-
-                  {/* ACTION */}
-                  <td className="pl-2 pb-2 whitespace-nowrap w-1">
-                    <div className="flex gap-2">
-                      <Button
-                        name={<Barcode size={15} />}
-                        pd="px-3 py-3"
-                        disabled={!row.serial}
-                        click={() => toggleSerials(row.tempId)}
-                      />
-
-                      <Button
-                        name={<Trash size={15} />}
-                        pd="px-3 py-3"
-                        bg="bg-red-400 hover:bg-red-600 text-white"
-                        click={() => removeRow(row.tempId)}
-                      />
-                    </div>
-                  </td>
-                </tr>
-
-                {/* SERIALS */}
-                {row.serial && row.showSerials && (
+                itemType = selectedItem?.type;
+                itemStock = selectedItem?.stock;
+                iteminStock = itemType == "P" ? itemStock > 0 : itemType == "S";
+              }
+              return (
+                <React.Fragment key={row.tempId}>
                   <tr>
-                    <td colSpan={5} className="pl-4 pb-2 space-y-2">
-                      <div className="flex flex-col gap-2 border-l-2 border-gray-300 pl-2">
-                        {Array.from({
-                          length: row.quantity,
-                        }).map((_, i) => (
-                          <NextInput
-                            key={i}
-                            placeholder={`${row.job !== null && row.job == "REPLACE" ? `Replacement` : ``} Serial ${i + 1}`}
-                            value={row.serials[i] || ""}
-                            onChange={(e) =>
-                              updateSerial(row.tempId, i, e.target.value)
-                            }
-                          />
-                        ))}
+                    {/* ITEM */}
+                    <td className="pb-2">
+                      <NextDropdown
+                        items={item_list}
+                        value={row.itemId}
+                        placeholder="Select Item"
+                        className="min-w-75"
+                        onChange={(val) => {
+                          const selected = item_list.find(
+                            (item) => item.value === val,
+                          );
+
+                          updateRow(row.tempId, "itemId", val);
+                          updateRow(row.tempId, "itemName", selected?.name);
+                          updateRow(row.tempId, "unitPrice", selected?.selling);
+                          updateRow(row.tempId, "itemType", selected?.type);
+
+                          updateRow(
+                            row.tempId,
+                            "serial",
+                            selected?.is_serial || false,
+                          );
+                        }}
+                      />
+                    </td>
+
+                    {/* Billing */}
+                    {warranty && (
+                      <td className="pb-2 pl-2">
+                        <NextDropdown
+                          items={[
+                            { value: `NORMAL`, label: `Normal` },
+                            { value: `WARRANTY`, label: `Warranty` },
+                          ]}
+                          value={row.billing}
+                          placeholder="Normal"
+                          className="min-w-50"
+                          onChange={(val) => {
+                            updateRow(row.tempId, "billing", val);
+                          }}
+                        />
+                      </td>
+                    )}
+
+                    {/* UNIT PRICE */}
+                    <td className="pb-2 pl-2">
+                      <NextInput
+                        name={`unit_price`}
+                        readonly={true}
+                        value={Number(row.unitPrice || 0).toLocaleString(
+                          undefined,
+                          {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          },
+                        )}
+                      />
+                    </td>
+
+                    {/* QTY */}
+                    <td className="pl-2 pb-2 ">
+                      <NextInput
+                        type={
+                          !iteminStock || itemType == "S" ? `text` : "number"
+                        }
+                        value={
+                          !iteminStock
+                            ? `OUT OF STOCK`
+                            : itemType == "P"
+                              ? row.quantity
+                              : `Auto`
+                        }
+                        inputClassName={
+                          !iteminStock && `bg-red-50 pointer-events-none`
+                        }
+                        onChange={(e) =>
+                          updateRow(
+                            row.tempId,
+                            "quantity",
+                            Number(e.target.value),
+                          )
+                        }
+                        max={iteminStock ? itemStock : 0}
+                        readonly={itemType == `S`}
+                        className={`min-w-30`}
+                      />
+                    </td>
+
+                    {/* NOTE */}
+                    <td className="pl-2 pb-2">
+                      <NextInput
+                        name={`lineTotal`}
+                        readonly={true}
+                        value={Number(row.lineTotal || 0).toLocaleString(
+                          undefined,
+                          {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          },
+                        )}
+                      />
+                    </td>
+
+                    {/* ACTION */}
+                    <td className="pl-2 pb-2 whitespace-nowrap w-1">
+                      <div className="flex gap-2">
+                        <Button
+                          name={<Barcode size={15} />}
+                          pd="px-3 py-3"
+                          disabled={!row.serial}
+                          click={() => toggleSerials(row.tempId)}
+                        />
+
+                        <Button
+                          name={<Trash size={15} />}
+                          pd="px-3 py-3"
+                          bg="bg-red-400 hover:bg-red-600 text-white"
+                          click={() => removeRow(row.tempId)}
+                        />
                       </div>
-                      {row.job != null && row.job == `REPLACE` && (
-                        <div className="flex flex-col gap-2 border-l-2 border-red-300 pl-2">
+                    </td>
+                  </tr>
+
+                  {/* SERIALS */}
+                  {row.serial && row.showSerials && (
+                    <tr>
+                      <td colSpan={5} className="pl-4 pb-2 space-y-2">
+                        <div className="flex flex-col gap-2 border-l-2 border-gray-300 pl-2">
                           {Array.from({
                             length: row.quantity,
                           }).map((_, i) => (
-                            <NextInput
+                            <NextDropdown
                               key={i}
-                              placeholder={`Faulty Serial ${i + 1}`}
-                              value={row.serials[i] || ""}
-                              onChange={(e) =>
-                                updateSerial(row.tempId, i, e.target.value)
+                              items={
+                                item_list.find(
+                                  (item) => item.value === row.itemId,
+                                )?.serials
+                              }
+                              placeholder={`Select Serial`}
+                              defaultValue={row.serials[i] || ``}
+                              onChange={(val) =>
+                                updateSerial(row.temp_id, i, val)
                               }
                             />
                           ))}
                         </div>
-                      )}
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
+            {rows.length > 0 && (
+              <tr className="">
+                <td colSpan={warranty ? 3 : 2}></td>
+                <td colSpan={3} className="pl-2">
+                  <div className="flex flex-col py-3 px-4 rounded-xl bg-blue-50  text-gray-600 space-y-1">
+                    <div className="flex justify-between items-center font-semibold ">
+                      <span className="">Gross Total</span>
+                      <span className="">{grossTotal}</span>
+                    </div>
+                    <div className="flex justify-between items-center font-semibold ">
+                      <span className="">Discount</span>
+                      <span className="">- {discount}</span>
+                    </div>
+                    <div className="flex justify-between items-center font-semibold ">
+                      <span className="">Net Total</span>
+                      <span className="">{netTotal}</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

@@ -48,11 +48,13 @@ export const useJOBStore = create((set, get) => ({
 
       itemId: item.itemId,
       itemName: item.itemName,
-      billing: item.billing,
+      itemType: item.itemType,
+      billing: item.billing || `NORMAL`,
 
       unitPrice: item.unitPrice || 0,
-      quantity: item.quantity || 0,
-      lineTotal: item.unitPrice * item.quantity,
+      quantity: item.itemType == `P` ? item.quantity || 0 : 1,
+      lineTotal:
+        item.billing == "WARRANTY" ? 0 : item.unitPrice * item.quantity || 0,
 
       serial: item.serial || false,
       showSerials: false,
@@ -84,7 +86,10 @@ export const useJOBStore = create((set, get) => ({
       // =========================
       // RECALCULATE LINE TOTAL
       // =========================
-      updatedRow.lineTotal = updatedRow.quantity * updatedRow.unitPrice;
+      updatedRow.lineTotal =
+        updatedRow.billing === "WARRANTY"
+          ? 0
+          : updatedRow.unitPrice * updatedRow.quantity;
 
       // =========================
       // HANDLE SERIAL QTY

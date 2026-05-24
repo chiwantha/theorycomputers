@@ -50,19 +50,42 @@ export const get_suppliers = async () => {
 };
 export const get_items = async () => {
   try {
-    const sql = `SELECT 
+    const sql = `
+SELECT 
     mst_items.id AS value,
     mst_items.name AS label,
     mst_items.*,
     mst_category.name AS category,
     mst_items.is_serial,
-    COALESCE(stock.quantity, 0) AS stock
+    COALESCE(stock.quantity, 0) AS stock,
+
+    COALESCE(
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN stock_items_serials.stock = 1 
+                THEN stock_items_serials.serial
+            END
+        ),
+        JSON_ARRAY()
+    ) AS serials
+
 FROM mst_items
+
 LEFT JOIN stock 
     ON mst_items.id = stock.item_id
-    INNER JOIN mst_category
+
+LEFT JOIN stock_items_serials 
+    ON mst_items.id = stock_items_serials.item_id
+
+INNER JOIN mst_category 
     ON mst_items.category_id = mst_category.id
-WHERE mst_items.state = 1 ORDER BY stock DESC;`;
+
+WHERE mst_items.state = 1
+
+GROUP BY mst_items.id
+
+ORDER BY stock DESC;
+`;
 
     const data = await query(sql);
 
@@ -70,7 +93,23 @@ WHERE mst_items.state = 1 ORDER BY stock DESC;`;
       return [];
     }
 
-    return data;
+    return data.map((item) => {
+      let serials = [];
+
+      try {
+        serials = JSON.parse(item.serials || "[]");
+      } catch (e) {
+        serials = [];
+      }
+
+      return {
+        ...item,
+        serials: serials.filter(Boolean).map((s) => ({
+          label: s,
+          value: s,
+        })),
+      };
+    });
   } catch (err) {
     console.log(`Error Loading Items List !`, err);
     return [];

@@ -77,7 +77,7 @@ const JobForm = ({ form_props }) => {
 
   useEffect(() => {
     {
-      customerId && alert(customerId);
+      // customerId && alert(customerId);
     }
   }, [customerId]);
 
@@ -133,6 +133,7 @@ const JobForm = ({ form_props }) => {
           </div>
         </div>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl shadow-md bg-white">
         {warranty ? (
           <>
@@ -207,12 +208,14 @@ const JobForm = ({ form_props }) => {
               placeholder={`VIVOBOOK 1504VA`}
               label={`Model`}
               value={model}
+              max={100}
               onChange={(e) => setHeaderField(`model`, e.target.value)}
             />
             <NextInput
               name={`serialNo`}
               placeholder={`DE45328889823PQS`}
               label={`Serial No`}
+              max={100}
               value={serialNo}
               onChange={(e) => setHeaderField(`serialNo`, e.target.value)}
             />
@@ -224,12 +227,14 @@ const JobForm = ({ form_props }) => {
             placeholder={`Administrator`}
             label={`Device Username`}
             value={username}
+            max={50}
             onChange={(e) => setHeaderField(`username`, e.target.value)}
           />
           <NextInput
             name={`password`}
             placeholder={`Admin123`}
             label={`Device Password`}
+            max={50}
             value={password}
             onChange={(e) => setHeaderField(`password`, e.target.value)}
           />
@@ -249,6 +254,7 @@ const JobForm = ({ form_props }) => {
           label={`Received Accessories`}
           placeholder={`Charger, Mouse, Keyboard`}
           value={accessories}
+          max={250}
           onChange={(e) => setHeaderField(`accessories`, e.target.value)}
         />
         <NextInput
@@ -268,7 +274,7 @@ const JobForm = ({ form_props }) => {
       </div>
 
       <Button
-        name={pending ? `Processing !` : `Save Grn`}
+        name={pending ? `Processing !` : `Save Job`}
         bg={`bg-green-400 hover:bg-green-500 text-white col-span-full`}
         click={() => {
           handleCrud();
