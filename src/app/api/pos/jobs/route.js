@@ -4,7 +4,18 @@ import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    return NextResponse.json({ success: true }, { status: 200 });
+    const sql = ``;
+
+    const res = await query(sql);
+
+    if (!res || res.length == 0) {
+      return NextResponse.json(
+        { error: `No Adjustments Found !` },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(res, { status: 200 });
   } catch (err) {
     console.log(`Invernal Server Error ! :`, err);
     return NextResponse.json(
@@ -66,7 +77,7 @@ export const POST = async (request) => {
     } else {
       customer_id_use = customerId;
     }
-    console.log(`test 1 passed ✅ !`);
+    // console.log(`test 1 passed ✅ !`);
 
     // INSERT HEADER
     const jobHeaderSql = `INSERT INTO job_header (job_no, customer_id, warranty, advance) VALUES (?,?,?,?)`;
@@ -80,7 +91,8 @@ export const POST = async (request) => {
       throw new Error("Job Header Failed !");
     }
     const header_id = resJobHeader.insertId;
-    console.log(`test 2 passed ✅ !`);
+
+    // console.log(`test 2 passed ✅ !`);
 
     // INSERT DETAILS
     const jobDetailsSql = `INSERT INTO job_details (header_id, inv_header_id, inv_details_id, item_id, category_id, brand_id, model, serial, username, password, accessories, problem )
@@ -102,7 +114,8 @@ export const POST = async (request) => {
     if (!resJobDetails.insertId) {
       throw new Error("Job Details Failed !");
     }
-    console.log(`test 3 passed ✅ !`);
+
+    // console.log(`test 3 passed ✅ !`);
 
     // HANDLE JOB ITEMS
     if (jobItems.length > 0) {
@@ -120,7 +133,8 @@ export const POST = async (request) => {
         if (!resJobItem.insertId) {
           throw new Error(`Job Item Failed !`);
         }
-        console.log(`test 4 passed ✅ !`);
+
+        // console.log(`test 4 passed ✅ !`);
 
         // UPDATE STOCK
         const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ?`;
@@ -131,7 +145,8 @@ export const POST = async (request) => {
         if (!resUpdateStock.affectedRows === 0) {
           throw new Error(`Update Stock Failed !`);
         }
-        console.log(`test 5 passed ✅ !`);
+
+        // console.log(`test 5 passed ✅ !`);
 
         // HANDLE SERIAL
         if (item.serial) {
@@ -148,7 +163,8 @@ export const POST = async (request) => {
             }
           }
         }
-        console.log(`test 6 passed ✅ !`);
+
+        // console.log(`test 6 passed ✅ !`);
 
         // LOG STOCK MOVEMENTS
         const logStockMovements = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id) VALUES (?,?,?,?,?)`;
@@ -159,11 +175,13 @@ export const POST = async (request) => {
         if (resStockMovements.affectedRows === 0) {
           throw new Error(`Stock Movements Logging Failed !`);
         }
-        console.log(`test 7 passed ✅ !`);
+
+        // console.log(`test 7 passed ✅ !`);
       }
     }
 
     // throw new Error(`Test Passed ✅ !`);
+
     await connection.commit();
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {

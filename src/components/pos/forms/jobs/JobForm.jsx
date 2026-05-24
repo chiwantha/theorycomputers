@@ -74,6 +74,10 @@ const JobForm = ({ form_props }) => {
   const setHeaderField = useJOBStore((state) => state.setHeaderField);
   const resetJOB = useJOBStore((state) => state.resetJOB);
 
+  const grossTotal = useJOBStore((state) => state.grossTotal);
+  const discount = useJOBStore((state) => state.discount);
+  const netTotal = useJOBStore((state) => state.netTotal);
+
   useEffect(() => {
     resetJOB();
   }, []);
@@ -199,6 +203,10 @@ const JobForm = ({ form_props }) => {
       data.append(`advance`, jobData.advance);
       data.append(`accessories`, jobData.accessories);
       data.append(`problem`, jobData.problem);
+
+      data.append(`grossTotal`, jobData.grossTotal);
+      data.append(`discount`, jobData.discount);
+      data.append(`netTotal`, jobData.netTotal);
 
       data.append(`jobItems`, JSON.stringify(jobData.rows));
 
