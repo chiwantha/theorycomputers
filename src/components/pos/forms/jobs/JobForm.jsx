@@ -10,6 +10,7 @@ import Button from "@/components/common/button/Button";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { toast } from "react-toastify";
 import { validateFields } from "@/lib/validation";
+import { useRouter } from "next/navigation";
 
 const DeviceTypes = [
   {
@@ -51,6 +52,7 @@ const invItems = [
 ];
 
 const JobForm = ({ form_props }) => {
+  const router = useRouter();
   const { customersList, categoriesList, brandsList, itemsList } =
     form_props || {};
   const [pending, setPending] = useState(false);
@@ -65,7 +67,7 @@ const JobForm = ({ form_props }) => {
   const serialNo = useJOBStore((state) => state.serialNo);
   const username = useJOBStore((state) => state.username);
   const password = useJOBStore((state) => state.password);
-  const advancedPayment = useJOBStore((state) => state.advancedPayment);
+  const advance = useJOBStore((state) => state.advance);
   const accessories = useJOBStore((state) => state.accessories);
   const problem = useJOBStore((state) => state.problem);
   const customerId = useCUSTOMERStore((state) => state.customerId);
@@ -194,6 +196,7 @@ const JobForm = ({ form_props }) => {
       data.append(`serialNo`, jobData.serialNo);
       data.append(`username`, jobData.username);
       data.append(`password`, jobData.password);
+      data.append(`advance`, jobData.advance);
       data.append(`accessories`, jobData.accessories);
       data.append(`problem`, jobData.problem);
 
@@ -217,6 +220,7 @@ const JobForm = ({ form_props }) => {
       }
 
       toast.success(`Saved !`);
+      router.push(`/pos/jobs`);
     } catch (err) {
       console.log("Operation Failed:", err);
       toast.error("Something went wrong !");
@@ -384,8 +388,8 @@ const JobForm = ({ form_props }) => {
             placeholder={`5000`}
             label={`Advance Payment`}
             type="number"
-            value={advancedPayment}
-            onChange={(e) => setHeaderField(`advancedPayment`, e.target.value)}
+            value={advance}
+            onChange={(e) => setHeaderField(`advance`, e.target.value)}
           />
         </div>
         <NextInput
