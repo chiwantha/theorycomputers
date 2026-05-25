@@ -29,7 +29,7 @@ export const useJOBStore = create((set, get) => ({
   serialNo: ``,
   username: ``,
   password: ``,
-  advance: ``,
+  advance: 0,
   accessories: ``,
   problem: ``,
 
@@ -219,7 +219,7 @@ export const useJOBStore = create((set, get) => ({
       serialNo: ``,
       username: ``,
       password: ``,
-      advance: ``,
+      advance: 0,
       accessories: ``,
       problem: ``,
 

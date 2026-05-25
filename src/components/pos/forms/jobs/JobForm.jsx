@@ -74,10 +74,6 @@ const JobForm = ({ form_props }) => {
   const setHeaderField = useJOBStore((state) => state.setHeaderField);
   const resetJOB = useJOBStore((state) => state.resetJOB);
 
-  const grossTotal = useJOBStore((state) => state.grossTotal);
-  const discount = useJOBStore((state) => state.discount);
-  const netTotal = useJOBStore((state) => state.netTotal);
-
   useEffect(() => {
     resetJOB();
   }, []);
@@ -90,6 +86,7 @@ const JobForm = ({ form_props }) => {
 
   const handleCrud = async () => {
     setPending(true);
+
     try {
       let validation;
       const customerData = useCUSTOMERStore.getState();

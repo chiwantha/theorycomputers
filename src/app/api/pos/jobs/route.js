@@ -1,4 +1,5 @@
 import pool from "@/lib/db";
+import { sendSms } from "@/lib/func";
 import { validateJobItems } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
@@ -44,6 +45,9 @@ export const POST = async (request) => {
     const customerId = data.get(`customerId`);
     const customerName = data.get(`customerName`);
     const customerPhone = data.get(`customerPhone`);
+    const grossTotal = data.get(`grossTotal`);
+    const discount = data.get(`discount`);
+    const netTotal = data.get(`netTotal`);
 
     const invHeaderId = data.get(`invHeaderId`);
     const invDetailsId = data.get(`invDetailsId`);
@@ -80,12 +84,15 @@ export const POST = async (request) => {
     // console.log(`test 1 passed ✅ !`);
 
     // INSERT HEADER
-    const jobHeaderSql = `INSERT INTO job_header (job_no, customer_id, warranty, advance) VALUES (?,?,?,?)`;
+    const jobHeaderSql = `INSERT INTO job_header (job_no, customer_id, warranty, advance, gross, discount, net) VALUES (?,?,?,?,?,?,?)`;
     const [resJobHeader] = await connection.execute(jobHeaderSql, [
       jobNo,
       customer_id_use,
       warranty ? 1 : 0,
       advance,
+      grossTotal,
+      discount,
+      netTotal,
     ]);
     if (!resJobHeader.insertId) {
       throw new Error("Job Header Failed !");
@@ -182,6 +189,9 @@ export const POST = async (request) => {
 
     // throw new Error(`Test Passed ✅ !`);
 
+    if (customerState == `1`) {
+      sendSms(customerPhone, `Welcome To Theory Computers !`);
+    }
     await connection.commit();
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
