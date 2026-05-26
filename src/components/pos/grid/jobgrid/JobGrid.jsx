@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import JobCard from "../../cards/jobcard/JobCard";
-import { DummyJobList } from "@/constant/DummyJobs";
 
 const JobGrid = ({ jobList = [], gridName, grid }) => {
   const [search, setSearch] = useState("");

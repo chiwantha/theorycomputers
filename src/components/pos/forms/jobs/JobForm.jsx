@@ -165,9 +165,6 @@ const JobForm = ({ form_props, rows = true }) => {
               (serial) => serial?.trim() !== "",
             );
 
-            alert(row.serials);
-            console.log(jobData);
-
             if (validSerials.length !== row.quantity) {
               toast.error(
                 `Mismatch in serial and quantity on ${row?.itemName} !`,

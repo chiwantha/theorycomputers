@@ -8,7 +8,7 @@ export const useCUSTOMERStore = create((set, get) => ({
   customerPhone: ``,
 
   // header actions
-  setHeaderField: (field, value) => {
+  setCustomerField: (field, value) => {
     set({
       [field]: value,
     });

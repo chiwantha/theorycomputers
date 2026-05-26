@@ -7,7 +7,7 @@ import { RefreshCcw } from "lucide-react";
 import { useEffect } from "react";
 
 const SelectCustomer = ({ customersList, island = true }) => {
-  const setHeaderField = useCUSTOMERStore((state) => state.setHeaderField);
+  const setHeaderField = useCUSTOMERStore((state) => state.setCustomerField);
   const customerState = useCUSTOMERStore((state) => state.customerState);
   const customerId = useCUSTOMERStore((state) => state.customerId);
   const customerName = useCUSTOMERStore((state) => state.customerName);
