@@ -6,7 +6,15 @@ import { Phone, Plus, User } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
+const JobCard = ({
+  add,
+  id,
+  customer_name,
+  phone,
+  state,
+  created_at,
+  invoice_Id,
+}) => {
   return (
     <div
       className={`min-h-50  bg-gray-50 rounded-xl  border-gray-200 hover:border-blue-300 transition-all duration-300 flex
@@ -54,7 +62,7 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
               {getTimeSince(created_at)}
             </span>
             <Button
-              name={state == 1 ? `Checkout` : `View`}
+              name={state == 0 ? `View` : state == 1 && `Checkout`}
               pd={`px-4 py-1`}
               bg={
                 state == 1
@@ -62,6 +70,7 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
                   : false
               }
               link={`/pos/business/jobs/${id}`}
+              disabled={invoice_Id}
             />
           </div>
         </div>

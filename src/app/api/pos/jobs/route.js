@@ -1,19 +1,25 @@
-import pool from "@/lib/db";
+import pool, { query } from "@/lib/db";
 import { sendSms } from "@/lib/func";
 import { validateJobItems } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    const sql = ``;
+    const sql = `SELECT job_header.id AS jobId,
+    job_header.job_no as jobNo,
+     customers.id as CustomerId,
+      CONCAT(customers.first_name, ' ', customers.last_name) AS customerName,
+      customers.phone AS customerPhone,
+      job_header.invoice_id,
+       job_header.created_at, job_header.state AS jobState
+        FROM job_header
+        INNER JOIN customers ON job_header.customer_id = customers.id 
+        WHERE job_header.state != 2`;
 
     const res = await query(sql);
 
     if (!res || res.length == 0) {
-      return NextResponse.json(
-        { error: `No Adjustments Found !` },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: `No Jobs Found !` }, { status: 404 });
     }
 
     return NextResponse.json(res, { status: 200 });
@@ -81,6 +87,7 @@ export const POST = async (request) => {
     } else {
       customer_id_use = customerId;
     }
+
     // console.log(`test 1 passed ✅ !`);
 
     // INSERT HEADER
@@ -144,13 +151,15 @@ export const POST = async (request) => {
         // console.log(`test 4 passed ✅ !`);
 
         // UPDATE STOCK
-        const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ?`;
-        const [resUpdateStock] = await connection.execute(updateStockSql, [
-          item.quantity,
-          item.itemId,
-        ]);
-        if (!resUpdateStock.affectedRows === 0) {
-          throw new Error(`Update Stock Failed !`);
+        if (item.type == "P") {
+          const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ?`;
+          const [resUpdateStock] = await connection.execute(updateStockSql, [
+            item.quantity,
+            item.itemId,
+          ]);
+          if (resUpdateStock.affectedRows === 0) {
+            throw new Error(`Update Stock Failed !`);
+          }
         }
 
         // console.log(`test 5 passed ✅ !`);
@@ -179,7 +188,7 @@ export const POST = async (request) => {
           logStockMovements,
           [item.itemId, `OUT`, item.quantity, `JOB`, header_id],
         );
-        if (resStockMovements.affectedRows === 0) {
+        if (!resStockMovements.insertId) {
           throw new Error(`Stock Movements Logging Failed !`);
         }
 
@@ -193,6 +202,44 @@ export const POST = async (request) => {
       sendSms(customerPhone, `Welcome To Theory Computers !`);
     }
     await connection.commit();
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (err) {
+    await connection.rollback();
+    console.log("Transaction Failed ! :", err.message);
+    return NextResponse.json(
+      { error: err.message || "Internal Server Error" },
+      { status: 500 },
+    );
+  } finally {
+    connection.release();
+  }
+};
+
+export const PUT = async (request) => {
+  const connection = await pool.getConnection();
+  try {
+    const data = await request.json();
+    // await connection.beginTransaction();
+    // await connection.commit();
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (err) {
+    await connection.rollback();
+    console.log("Transaction Failed ! :", err.message);
+    return NextResponse.json(
+      { error: err.message || "Internal Server Error" },
+      { status: 500 },
+    );
+  } finally {
+    connection.release();
+  }
+};
+
+export const DELETE = async (request) => {
+  const connection = await pool.getConnection();
+  try {
+    const data = await request.json();
+    // await connection.beginTransaction();
+    // await connection.commit();
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
     await connection.rollback();

@@ -8,6 +8,9 @@ const calculateGrossTotal = (rows) => {
 };
 
 export const useJOBStore = create((set, get) => ({
+  // route handling
+  data: `NEW`,
+  section: `BOTH`,
   // header
   jobId: ``,
   jobNo: generateDocNo(`JOB`),
@@ -198,6 +201,9 @@ export const useJOBStore = create((set, get) => ({
   // reset
   resetJOB: () => {
     set({
+      // route handling
+      data: `NEW`,
+      section: `BOTH`,
       // header
       jobId: ``,
       jobNo: generateDocNo(`JOB`),

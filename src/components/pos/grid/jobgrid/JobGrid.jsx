@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import JobCard from "../../cards/jobcard/JobCard";
 import { DummyJobList } from "@/constant/DummyJobs";
 
-const JobGrid = ({ gridName, grid }) => {
+const JobGrid = ({ jobList = [], gridName, grid }) => {
   const [search, setSearch] = useState("");
-  const data = DummyJobList;
+  const data = jobList;
 
   const filteredJobs = data.filter((job) =>
     `${job.state == 0 ? `pending` : `checkout`} ${job.customer_name} ${job.device_name} ${job.phone}`
@@ -36,23 +36,18 @@ const JobGrid = ({ gridName, grid }) => {
       >
         <JobCard add={true} />
 
-        {filteredJobs.length > 0 ? (
+        {filteredJobs.length > 0 &&
           filteredJobs.map((card, index) => (
             <JobCard
               key={index}
-              id={card.id}
-              device={{ id: card.device_id, name: card.device_name }}
-              customer_name={card.customer_name}
-              phone={card.phone}
-              state={card.state}
+              id={card.jobId}
+              customer_name={card.customerName}
+              phone={card.customerPhone}
+              state={card.jobState}
+              invoice_Id={card.invoice_id}
               created_at={card.created_at}
             />
-          ))
-        ) : (
-          <span className="col-span-full text-center text-gray-500 py-10">
-            No jobs Found !
-          </span>
-        )}
+          ))}
       </div>
     </div>
   );
