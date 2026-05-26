@@ -69,7 +69,7 @@ const JobCard = ({
                   ? `bg-green-500 hover:bg-green-600 text-white`
                   : false
               }
-              link={`/pos/business/jobs/${id}`}
+              link={`/pos/jobs/${id}`}
               disabled={invoice_Id}
             />
           </div>

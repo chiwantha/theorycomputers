@@ -51,7 +51,7 @@ const invItems = [
   },
 ];
 
-const JobForm = ({ form_props }) => {
+const JobForm = ({ form_props, rows = true }) => {
   const router = useRouter();
   const { customersList, categoriesList, brandsList, itemsList } =
     form_props || {};
@@ -419,9 +419,11 @@ const JobForm = ({ form_props }) => {
         />
       </div>
 
-      <div className="p-4 shadow-md bg-white rounded-xl">
-        <JobRow item_list={itemsList} />
-      </div>
+      {rows && (
+        <div className="p-4 shadow-md bg-white rounded-xl">
+          <JobRow item_list={itemsList} />
+        </div>
+      )}
 
       <Button
         name={pending ? `Processing !` : `Save Job`}
