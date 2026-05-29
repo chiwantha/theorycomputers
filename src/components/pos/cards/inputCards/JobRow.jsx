@@ -5,20 +5,28 @@ import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 
 import { Trash, Plus, Barcode } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useJOBStore } from "@/store/jobStore";
 
-const JobRow = ({ item_list }) => {
+const JobRow = ({ item_list, defaultRows = false }) => {
   const warranty = useJOBStore((state) => state.warranty);
   const rows = useJOBStore((state) => state.rows);
   const addRow = useJOBStore((state) => state.addRow);
   const updateRow = useJOBStore((state) => state.updateRow);
   const removeRow = useJOBStore((state) => state.removeRow);
+  const setRows = useJOBStore((state) => state.setRows);
   const toggleSerials = useJOBStore((state) => state.toggleSerials);
   const updateSerial = useJOBStore((state) => state.updateSerial);
   const grossTotal = useJOBStore((state) => state.grossTotal);
   const discount = useJOBStore((state) => state.discount);
   const netTotal = useJOBStore((state) => state.netTotal);
+
+  useEffect(() => {
+    if (!Array.isArray(defaultRows) || defaultRows.length === 0) return;
+    // console.log(`My ROws : `, defaultRows);
+    setRows(defaultRows);
+    // console.log(`Row State : `, useJOBStore.getState());
+  }, [defaultRows]);
 
   return (
     <div className="">
@@ -66,6 +74,7 @@ const JobRow = ({ item_list }) => {
                         value={row.itemId}
                         placeholder="Select Item"
                         className="min-w-75"
+                        defaultValue={row.itemId}
                         onChange={(val) => {
                           const selected = item_list.find(
                             (item) => item.value === val,
@@ -216,7 +225,7 @@ const JobRow = ({ item_list }) => {
                 </React.Fragment>
               );
             })}
-            {rows.length > 0 && (
+            {rows.length > 0 && !defaultRows && (
               <tr className="">
                 <td colSpan={warranty ? 3 : 2}></td>
                 <td colSpan={3} className="pl-2">

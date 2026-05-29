@@ -20,24 +20,26 @@ export function calculateGrnTotal(grn_items) {
 }
 
 export function getTimeSince(createdAt) {
-  const created = new Date(createdAt);
-  const now = new Date();
+  const created = new Date(String(createdAt).replace("Z", ""));
+  let diffMs = Date.now() - created.getTime();
 
-  const diffMs = now - created;
-  const totalMinutes = Math.floor(diffMs / (1000 * 60));
+  if (diffMs < 0) diffMs = 0;
 
-  const hours = Math.floor(totalMinutes / 60);
+  const totalMinutes = Math.floor(diffMs / 60000);
+
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
   const minutes = totalMinutes % 60;
 
-  if (hours === 0) {
-    return `${minutes}Min`;
+  if (days > 0) {
+    return `${days}D ${hours}H`;
   }
 
-  if (minutes === 0) {
-    return `${hours}H`;
+  if (hours > 0) {
+    return `${hours}H ${minutes}Min`;
   }
 
-  return `${hours}H ${minutes}Min`;
+  return `${minutes}Min`;
 }
 
 export function generateDocNo() {
@@ -48,7 +50,7 @@ export function generateDocNo() {
 
   const datePart = yy + mm;
 
-  const uuidPart = uuidv4().replace(/-/g, "").toUpperCase().slice(0, 4); // 👈 EXACT 4 chars
+  const uuidPart = uuidv4().replace(/-/g, "").toUpperCase().slice(0, 6); // 👈 EXACT 4 chars
 
   return `JOB-${datePart}-${uuidPart}`;
 }

@@ -24,9 +24,26 @@ export const GET = async (request, { params }) => {
     }
     // console.log(`Customer : `, customerRes[0]);
 
-    const detailsSql = `SELECT job_details.*, mst_category.name AS category_name, mst_brand.name AS brand_name FROM job_details
-    INNER JOIN mst_category ON job_details.category_id = mst_category.id
-    INNER JOIN mst_brand ON job_details.brand_id = mst_brand.id WHERE header_id = ?`;
+    const detailsSql = `
+      SELECT 
+          job_details.*,
+          mst_items.name AS item_name,
+          mst_category.name AS category_name,
+          mst_brand.name AS brand_name
+      FROM job_details
+      LEFT JOIN mst_items 
+          ON job_details.item_id = mst_items.id
+      LEFT JOIN mst_category 
+          ON mst_category.id = COALESCE(
+          job_details.category_id,
+          mst_items.category_id
+      )
+      LEFT JOIN mst_brand 
+          ON mst_brand.id = COALESCE(
+          job_details.brand_id,
+          mst_items.brand_id
+      )
+      WHERE header_id = ?`;
     const detailsRes = await query(detailsSql, [job_id]);
     if (!detailsRes || detailsRes.length == 0) {
       return NextResponse.json(
@@ -36,7 +53,8 @@ export const GET = async (request, { params }) => {
     }
     // console.log(`Details : `, detailsRes);
 
-    const itemsSql = `SELECT * FROM job_items WHERE header_id = ?`;
+    const itemsSql = `SELECT job_items.*, mst_items.name AS item_name, mst_items.is_serial AS serial,  mst_items.type AS item_type FROM job_items
+    INNER JOIN mst_items ON mst_items.id = job_items.item_id WHERE job_items.header_id = ?`;
     const itemsRes = await query(itemsSql, [job_id]);
     if (!itemsRes || itemsRes.length == 0) {
       return NextResponse.json(
@@ -50,7 +68,26 @@ export const GET = async (request, { params }) => {
     const itemSerialsRes = await query(itemSerialsSql, [`JOB`, job_id]);
     // console.log(`Serials : `, itemSerialsRes);
 
-    const jobData = { headerRes, customerRes, detailsRes, itemsRes };
+    const serialMap = new Map();
+
+    for (const s of itemSerialsRes) {
+      if (!serialMap.has(s.item_id)) {
+        serialMap.set(s.item_id, []);
+      }
+      serialMap.get(s.item_id).push(s.serial);
+    }
+
+    const jobItems = itemsRes.map((item) => ({
+      ...item,
+      serials: item.serial === 1 ? serialMap.get(item.item_id) || [] : [],
+    }));
+
+    const jobData = {
+      headerRes,
+      customerRes,
+      detailsRes,
+      jobItems,
+    };
 
     return NextResponse.json(jobData, { status: 200 });
   } catch (err) {

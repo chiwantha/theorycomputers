@@ -95,7 +95,7 @@ export const POST = async (request) => {
     const [resJobHeader] = await connection.execute(jobHeaderSql, [
       jobNo,
       customer_id_use,
-      warranty ? 1 : 0,
+      warranty == "true" ? 1 : 0,
       advance,
       grossTotal,
       discount,

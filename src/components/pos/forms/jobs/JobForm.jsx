@@ -11,6 +11,7 @@ import { useCUSTOMERStore } from "@/store/customerStore";
 import { toast } from "react-toastify";
 import { validateFields } from "@/lib/validation";
 import { useRouter } from "next/navigation";
+import { generateDocNo } from "@/lib/utils";
 
 const DeviceTypes = [
   {
@@ -45,7 +46,7 @@ const invItems = [
     headerId: 10,
     detailId: 10,
     label: `Dell Desktop Computer - 2Months Left - INV105025`,
-    value: 25,
+    value: 51,
     serial: true,
     serial_no: `10508697`,
   },
@@ -76,6 +77,7 @@ const JobForm = ({ form_props, rows = true }) => {
 
   useEffect(() => {
     resetJOB();
+    setHeaderField(`jobNo`, generateDocNo(`JOB`));
   }, []);
 
   useEffect(() => {
@@ -261,6 +263,7 @@ const JobForm = ({ form_props, rows = true }) => {
               className={`px-4 py-1.5 rounded-lg  transition-colors duration-300 ${!warranty ? `bg-blue-500  text-white` : `text-gray-600`}`}
               onClick={() => {
                 resetJOB();
+                setHeaderField(`jobNo`, generateDocNo(`JOB`));
                 setHeaderField(`warranty`, false);
               }}
             >
@@ -270,6 +273,7 @@ const JobForm = ({ form_props, rows = true }) => {
               className={`px-4 py-1.5 rounded-xl transition-colors duration-300 ${warranty ? `bg-blue-500  text-white` : `text-gray-600`}`}
               onClick={() => {
                 resetJOB();
+                setHeaderField(`jobNo`, generateDocNo(`JOB`));
                 setHeaderField(`warranty`, true);
               }}
             >

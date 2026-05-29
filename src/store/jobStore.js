@@ -13,7 +13,7 @@ export const useJOBStore = create((set, get) => ({
   section: `BOTH`,
   // header
   jobId: ``,
-  jobNo: generateDocNo(`JOB`),
+  jobNo: ``,
   // customer_id ( we have that )
   warranty: false,
   deadline: ``,
@@ -160,6 +160,34 @@ export const useJOBStore = create((set, get) => ({
     });
   },
 
+  setRows: (rowsData) => {
+    const rows = rowsData.map((row) => ({
+      tempId: crypto.randomUUID(),
+
+      billing: row.billing,
+      itemId: row.item_id,
+      itemName: row.item_name,
+      itemType: row.item_type,
+      serial: row.serial == 1 ? true : false,
+      serials: row.serials || [],
+      showSerials: false,
+
+      unitPrice: Number(row.unit_price),
+      quantity: Number(row.quantity),
+      lineTotal: Number(row.line_total),
+
+      // defaults
+    }));
+
+    const grossTotal = calculateGrossTotal(rows);
+
+    set({
+      rows,
+      grossTotal,
+      netTotal: grossTotal - get().discount,
+    });
+  },
+
   toggleSerials: (tempId) => {
     const rows = get().rows.map((row) => {
       if (row.tempId !== tempId) {
@@ -206,7 +234,7 @@ export const useJOBStore = create((set, get) => ({
       section: `BOTH`,
       // header
       jobId: ``,
-      jobNo: generateDocNo(`JOB`),
+      jobNo: ``,
       // customer_id ( we have that )
       warranty: false,
       deadline: ``,
