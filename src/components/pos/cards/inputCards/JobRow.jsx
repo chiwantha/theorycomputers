@@ -20,6 +20,7 @@ const JobRow = ({ item_list, defaultRows = false }) => {
   const grossTotal = useJOBStore((state) => state.grossTotal);
   const discount = useJOBStore((state) => state.discount);
   const netTotal = useJOBStore((state) => state.netTotal);
+  const state = useJOBStore((state) => state.state);
 
   useEffect(() => {
     if (!Array.isArray(defaultRows) || defaultRows.length === 0) return;
@@ -29,7 +30,11 @@ const JobRow = ({ item_list, defaultRows = false }) => {
   }, [defaultRows]);
 
   return (
-    <div className="">
+    <div
+      className={
+        state == 3 || state == 4 || state == 2 ? `pointer-events-none` : ``
+      }
+    >
       <div className="overflow-x-auto lg:overflow-visible">
         <table className="min-w-full ">
           <thead>
