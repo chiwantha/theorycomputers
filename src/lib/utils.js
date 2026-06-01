@@ -54,3 +54,19 @@ export function generateDocNo() {
 
   return `JOB-${datePart}-${uuidPart}`;
 }
+
+export function setDivDisabled(divId, disabled) {
+  const div = document.getElementById(divId);
+
+  if (!div) return;
+
+  if (disabled) {
+    div.style.pointerEvents = "none";
+    div.style.opacity = "0.6";
+    div.style.userSelect = "none";
+  } else {
+    div.style.pointerEvents = "auto";
+    div.style.opacity = "1";
+    div.style.userSelect = "auto";
+  }
+}

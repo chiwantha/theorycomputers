@@ -15,7 +15,12 @@ export const useJOBStore = create((set, get) => ({
   jobNo: ``,
   // customer_id ( we have that )
   warranty: false,
+
+  job_start: ``,
   deadline: ``,
+  job_finished: ``,
+  created_at: ``,
+
   advancedPayment: 0,
   grossTotal: 0,
   discount: 0,
@@ -235,7 +240,12 @@ export const useJOBStore = create((set, get) => ({
       jobNo: ``,
       // customer_id ( we have that )
       warranty: false,
+
+      job_start: ``,
       deadline: ``,
+      job_finished: ``,
+      created_at: ``,
+
       advancedPayment: 0,
       grossTotal: 0,
       discount: 0,

@@ -24,6 +24,8 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
     setHeaderField(`jobNo`, headerData?.job_no);
     setHeaderField(`warranty`, headerData?.warranty ? true : false);
     setHeaderField(`state`, headerData?.state);
+    setHeaderField(`created_at`, headerData?.created_at);
+    // setHeaderField(`created_at`, headerData?.created_at);
 
     setHeaderField(`itemId`, headerData?.item_id || ``);
     setHeaderField(`category`, detailsData?.category_id);
@@ -96,7 +98,7 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
 
         {/* BACK */}
         <div className="absolute inset-0 rotate-y-180 backface-hidden">
-          <div className="rounded-xl p-4 bg-white shadow-md min-h-full ">
+          <div className="rounded-xl p-4 bg-blue-200 shadow-md min-h-full ">
             <div className="grid grid-cols-2 gap-4">
               <NextInput
                 name={`username`}
@@ -134,15 +136,14 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
                 value={problem}
                 onChange={(e) => setHeaderField(`problem`, e.target.value)}
               />
-              <Button name={`Save`} />
+              <Button
+                rounded={`rounded-lg`}
+                bg={`bg-red-500 text-white hover:bg-red-600`}
+                name={<X size={20} />}
+                pd={`px-2 py-2`}
+                click={() => setHeaderField(`section`, `ITEMS`)}
+              />
             </div>
-            <Button
-              rounded={`rounded-lg absolute top-4 right-4`}
-              bg={`bg-red-500 text-white hover:bg-red-600`}
-              name={<X size={20} />}
-              pd={`px-2 py-2`}
-              click={() => setHeaderField(`section`, `ITEMS`)}
-            />
           </div>
         </div>
       </div>

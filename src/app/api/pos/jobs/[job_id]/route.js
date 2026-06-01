@@ -1,4 +1,5 @@
-import { query } from "@/lib/db";
+import pool, { query } from "@/lib/db";
+import { validateFields, validateJobItems } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export const GET = async (request, { params }) => {
@@ -96,5 +97,60 @@ export const GET = async (request, { params }) => {
       { error: `Internal Server Error !` },
       { status: 500 },
     );
+  }
+};
+
+export const PUT = async (request, { params }) => {
+  const connection = await pool.getConnection();
+  try {
+    const { job_id } = await params;
+    const data = await request.formData();
+
+    console.log(`Job Id : ${job_id} , Job Data : ${data}`);
+    console.log(data);
+
+    const jobItems = JSON.parse(data.get("jobItems"));
+    const grossTotal = data.get(`grossTotal`);
+    const discount = data.get(`discount`);
+    const netTotal = data.get(`netTotal`);
+    const section = data.get(`section`);
+    const username = data.get(`username`);
+    const password = data.get(`password`);
+    const accessories = data.get(`accessories`);
+    const problem = data.get(`problem`);
+
+    if (section === "HEADER") {
+      let validate = validateFields(
+        {
+          problem,
+        },
+        [`problem`],
+      );
+      if (!validate.isValid) {
+        throw new Error(validate.emptyFields);
+      }
+    } else if (section === "ITEMS") {
+      if (jobItems.length > 0) {
+        const validation = validateJobItems(jobItems);
+        if (validation.error) {
+          throw new Error(validation.error);
+        }
+      }
+    } else {
+      throw new Error(`Unidentifined Function !`);
+    }
+
+    // await connection.beginTransaction();
+    // await connection.commit();
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (err) {
+    await connection.rollback();
+    console.log("Transaction Failed ! :", err.message);
+    return NextResponse.json(
+      { error: err.message || "Internal Server Error" },
+      { status: 500 },
+    );
+  } finally {
+    connection.release();
   }
 };

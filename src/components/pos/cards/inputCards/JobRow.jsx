@@ -7,9 +7,11 @@ import NextInput from "@/components/common/form/nextinput/NextInput";
 import { Trash, Plus, Barcode } from "lucide-react";
 import React, { useEffect } from "react";
 import { useJOBStore } from "@/store/jobStore";
+import { divDisable } from "@/constant/Forms";
 
 const JobRow = ({ item_list, defaultRows = false }) => {
   const warranty = useJOBStore((state) => state.warranty);
+  const section = useJOBStore((state) => state.section);
   const rows = useJOBStore((state) => state.rows);
   const addRow = useJOBStore((state) => state.addRow);
   const updateRow = useJOBStore((state) => state.updateRow);
@@ -31,9 +33,7 @@ const JobRow = ({ item_list, defaultRows = false }) => {
 
   return (
     <div
-      className={
-        state == 3 || state == 4 || state == 2 ? `pointer-events-none` : ``
-      }
+      className={`${state == 3 || state == 4 || state == 2 ? `pointer-events-none` : ``} ${section == `HEADER` ? divDisable : ``}`}
     >
       <div className="overflow-x-auto lg:overflow-visible">
         <table className="min-w-full ">
