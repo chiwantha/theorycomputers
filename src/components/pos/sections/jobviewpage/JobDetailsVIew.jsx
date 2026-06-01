@@ -7,7 +7,6 @@ import { Pencil, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const JobDetailsVIew = ({ detailsData, headerData }) => {
-  const [isHeaderEdit, setHeaderEdit] = useState(false);
   const jobId = useJOBStore((state) => state.jobId);
   const warranty = useJOBStore((state) => state.warranty);
   const model = useJOBStore((state) => state.model);
@@ -18,6 +17,7 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
   const problem = useJOBStore((state) => state.problem);
   const setHeaderField = useJOBStore((state) => state.setHeaderField);
   const state = useJOBStore((state) => state.state);
+  const section = useJOBStore((state) => state.section);
 
   useEffect(() => {
     setHeaderField(`jobId`, headerData?.id);
@@ -36,16 +36,13 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
     setHeaderField(`password`, detailsData?.password || ``);
     setHeaderField(`accessories`, detailsData?.accessories || ``);
     setHeaderField(`problem`, detailsData?.problem);
-
-    setHeaderField(`data`, `EDIT`);
-    setHeaderField(`section`, isHeaderEdit ? `HEADER` : `BOTH`);
   }, [detailsData, headerData]);
 
   return (
     <div className="perspective-[2000px] z-50">
       <div
         className={`relative duration-700 transform-style-preserve-3d ${
-          isHeaderEdit ? "rotate-y-180" : ""
+          section == "HEADER" ? "rotate-y-180" : ""
         }`}
       >
         {/* FRONT */}
@@ -85,16 +82,15 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
             <ValueDisplay title={`Accessories`} value={accessories} />
             <ValueDisplay title={`Problem`} value={problem} />
 
-            {state !== 3 ||
-              (state !== 4 && (
-                <Button
-                  rounded={`rounded-lg absolute top-4 right-4`}
-                  bg={`bg-amber-500 text-white hover:bg-amber-600`}
-                  name={<Pencil size={20} />}
-                  pd={`px-2 py-2`}
-                  click={() => setHeaderEdit(true)}
-                />
-              ))}
+            {(state !== 3 || state !== 4) && (
+              <Button
+                rounded={`rounded-lg absolute top-4 right-4`}
+                bg={`bg-amber-500 text-white hover:bg-amber-600`}
+                name={<Pencil size={20} />}
+                pd={`px-2 py-2`}
+                click={() => setHeaderField(`section`, `HEADER`)}
+              />
+            )}
           </div>
         </div>
 
@@ -145,7 +141,7 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
               bg={`bg-red-500 text-white hover:bg-red-600`}
               name={<X size={20} />}
               pd={`px-2 py-2`}
-              click={() => setHeaderEdit(false)}
+              click={() => setHeaderField(`section`, `ITEMS`)}
             />
           </div>
         </div>

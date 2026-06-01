@@ -1,5 +1,6 @@
 import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
 import JobRow from "@/components/pos/cards/inputCards/JobRow";
+import JobAction from "@/components/pos/sections/jobviewpage/JobAction";
 import JobCp from "@/components/pos/sections/jobviewpage/JobCp";
 import JobCustomerVIew from "@/components/pos/sections/jobviewpage/JobCustomerVIew";
 import JobDetailsVIew from "@/components/pos/sections/jobviewpage/JobDetailsVIew";
@@ -43,6 +44,7 @@ const page = async ({ params }) => {
       <div className="bg-white shadow-md rounded-xl p-4">
         <JobRow item_list={itemsList} defaultRows={Job?.jobItems} />
       </div>
+      <JobAction />
     </div>
   );
 };
