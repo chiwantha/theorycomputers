@@ -25,7 +25,6 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
     setHeaderField(`warranty`, headerData?.warranty ? true : false);
     setHeaderField(`state`, headerData?.state);
     setHeaderField(`created_at`, headerData?.created_at);
-    // setHeaderField(`created_at`, headerData?.created_at);
 
     setHeaderField(`itemId`, headerData?.item_id || ``);
     setHeaderField(`category`, detailsData?.category_id);

@@ -186,7 +186,6 @@ const JobCp = () => {
         <div className="flex flex-col p-4 rounded-xl h-full justify-center shadow-md bg-white ">
           <div className="grid grid-cols-2 gap-2">
             <ValueDisplay
-              className={`bg-gray-100`}
               title={`Time Passed`}
               value={getTimeSince(created_at)}
             />
@@ -205,7 +204,7 @@ const JobCp = () => {
         <Button
           pd={`px-4 py-4`}
           wfull={true}
-          name={currentState?.primary?.text}
+          name={pending ? `Wait...!` : currentState?.primary?.text}
           bg={currentState?.primary?.bg}
           click={() => {
             handleState(
@@ -214,14 +213,14 @@ const JobCp = () => {
               currentState?.primary?.link,
             );
           }}
-          disabled={currentState?.primary?.disabled}
+          disabled={currentState?.primary?.disabled || pending}
         />
 
         {currentState?.secondary && (
           <Button
             pd={`px-4 py-4`}
             wfull={true}
-            name={currentState.secondary.text}
+            name={pending ? `Wait...!` : currentState.secondary.text}
             bg={currentState.secondary.bg}
             click={() =>
               handleState(
@@ -230,7 +229,7 @@ const JobCp = () => {
                 currentState?.secondary?.link,
               )
             }
-            disabled={currentState?.secondary?.disabled}
+            disabled={currentState?.secondary?.disabled || pending}
           />
         )}
       </div>

@@ -10,6 +10,7 @@ const JobAction = () => {
   const router = useRouter();
   const params = useParams();
   const [pending, setPending] = useState();
+  const setHeaderField = useJOBStore((state) => state.setHeaderField);
 
   const handleCrud = async () => {
     setPending(true);
@@ -103,6 +104,7 @@ const JobAction = () => {
       }
 
       toast.success(`Saved !`);
+      setHeaderField(`section`, `ITEMS`);
       router.push(`/pos/jobs/${job_id}`);
     } catch (err) {
       console.log("Operation Failed:", err);

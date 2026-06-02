@@ -151,7 +151,7 @@ export const POST = async (request) => {
         // console.log(`test 4 passed ✅ !`);
 
         // UPDATE STOCK
-        if (item.type == "P") {
+        if (item.itemType == "P") {
           const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ?`;
           const [resUpdateStock] = await connection.execute(updateStockSql, [
             item.quantity,
@@ -183,13 +183,15 @@ export const POST = async (request) => {
         // console.log(`test 6 passed ✅ !`);
 
         // LOG STOCK MOVEMENTS
-        const logStockMovements = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id) VALUES (?,?,?,?,?)`;
-        const [resStockMovements] = await connection.execute(
-          logStockMovements,
-          [item.itemId, `OUT`, item.quantity, `JOB`, header_id],
-        );
-        if (!resStockMovements.insertId) {
-          throw new Error(`Stock Movements Logging Failed !`);
+        if (item.itemType == "P") {
+          const logStockMovements = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id) VALUES (?,?,?,?,?)`;
+          const [resStockMovements] = await connection.execute(
+            logStockMovements,
+            [item.itemId, `OUT`, item.quantity, `JOB`, header_id],
+          );
+          if (!resStockMovements.insertId) {
+            throw new Error(`Stock Movements Logging Failed !`);
+          }
         }
 
         // console.log(`test 7 passed ✅ !`);
