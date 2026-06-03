@@ -21,6 +21,18 @@ We will notify you once the work is completed.
 
 Thank you !
 `,
+  RESTARTED: (data) => `
+Hello ${data.customerName},
+
+Work on your job has been restarted.
+
+Job No : ${data.jobNo}
+Status: In Progress
+
+We will notify you once the work is completed.
+
+Thank you !
+`,
   FINISHED: (data) => `
     Hello ${data.customerName},
 

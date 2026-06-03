@@ -6,16 +6,22 @@ import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    const sql = `SELECT job_header.id AS jobId,
-    job_header.job_no as jobNo,
-     customers.id as CustomerId,
-      CONCAT(customers.first_name, ' ', customers.last_name) AS customerName,
-      customers.phone AS customerPhone,
-      job_header.invoice_id,
-       job_header.created_at, job_header.state AS jobState
-        FROM job_header
-        INNER JOIN customers ON job_header.customer_id = customers.id 
-        WHERE job_header.state != 2`;
+    const sql = `SELECT
+    job_header.id AS jobId,
+    job_header.job_no AS jobNo,
+    customers.id AS CustomerId,
+    CONCAT(customers.first_name, ' ', customers.last_name) AS customerName,
+    customers.phone AS customerPhone,
+    job_header.invoice_id,
+    job_header.created_at,
+    job_header.state AS jobState
+FROM job_header
+INNER JOIN customers
+    ON job_header.customer_id = customers.id
+WHERE
+    DATE(job_header.created_at) = CURDATE()
+    OR job_header.state IN (0, 1)
+ORDER BY job_header.state ASC, job_header.created_at DESC;`;
 
     const res = await query(sql);
 

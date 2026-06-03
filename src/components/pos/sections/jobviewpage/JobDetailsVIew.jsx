@@ -83,7 +83,7 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
             <ValueDisplay title={`Accessories`} value={accessories} />
             <ValueDisplay title={`Problem`} value={problem} />
 
-            {(state !== 3 || state !== 4) && (
+            {state !== 3 && state !== 4 && (
               <Button
                 rounded={`rounded-lg absolute top-4 right-4`}
                 bg={`bg-amber-500 text-white hover:bg-amber-600`}

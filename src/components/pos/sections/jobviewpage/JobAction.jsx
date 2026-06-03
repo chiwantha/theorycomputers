@@ -11,6 +11,7 @@ const JobAction = () => {
   const params = useParams();
   const [pending, setPending] = useState();
   const setHeaderField = useJOBStore((state) => state.setHeaderField);
+  const state = useJOBStore((state) => state.state);
 
   const handleCrud = async () => {
     setPending(true);
@@ -116,20 +117,22 @@ const JobAction = () => {
   const section = useJOBStore((state) => state.section);
   return (
     <div>
-      <Button
-        disabled={pending}
-        name={
-          pending
-            ? `Processing...!`
-            : section == "HEADER"
-              ? `Save Header`
-              : section == `ITEMS`
-                ? `Save Items`
-                : `Error`
-        }
-        click={() => handleCrud()}
-        bg={`bg-green-400 text-white hover:bg-green-500`}
-      />
+      {!(state >= 4) && (
+        <Button
+          disabled={pending}
+          name={
+            pending
+              ? `Processing...!`
+              : section == "HEADER"
+                ? `Save Header`
+                : section == `ITEMS`
+                  ? `Save Items`
+                  : `Error`
+          }
+          click={() => handleCrud()}
+          bg={`bg-green-400 text-white hover:bg-green-500`}
+        />
+      )}
     </div>
   );
 };

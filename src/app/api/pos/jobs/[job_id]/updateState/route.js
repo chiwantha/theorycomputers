@@ -1,9 +1,11 @@
 import { jobTemplates } from "@/constant/SmsTemplate";
-import { query } from "@/lib/db";
+import pool, { query } from "@/lib/db";
 import { sendSms } from "@/lib/func";
 import { NextResponse } from "next/server";
+import { reverseStock } from "../route";
 
 export const PUT = async (request, { params }) => {
+  const connection = await pool.getConnection();
   try {
     const { job_id } = await params;
     // console.log(job_id);
@@ -25,6 +27,8 @@ export const PUT = async (request, { params }) => {
     ) {
       throw new Error(`Missing Data on Server !`);
     }
+
+    await connection.beginTransaction();
 
     const sql = `UPDATE job_header SET state = ?, updated_at = NOW() WHERE id = ?`;
     const res = await query(sql, [data?.state, job_id]);
@@ -50,21 +54,34 @@ export const PUT = async (request, { params }) => {
         }),
       );
     } else if (data?.action == `Cancel`) {
+      await reverseStock(connection, job_id);
       await sendSms(
         data?.customerPhone,
         jobTemplates.CANCELLED({
           customerName: data?.customerName,
           jobNo: data?.jobNo,
-          reason: `Customer requested cancellation`,
+          reason: data?.reason || `Customer requested cancellation`,
+        }),
+      );
+    } else if (data?.action == `Restart`) {
+      await sendSms(
+        data?.customerPhone,
+        jobTemplates.RESTARTED({
+          customerName: data?.category_name,
+          jobNo: data?.jobNo,
         }),
       );
     }
 
+    await connection.commit();
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
+    await connection.rollback();
     console.log(`Internal Server Error : `, err);
     return NextResponse.json(err?.message || `Internal Server Error ! `, {
       status: 500,
     });
+  } finally {
+    connection.release();
   }
 };

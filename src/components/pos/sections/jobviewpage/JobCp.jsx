@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/common/button/Button";
+import CancelConfirmModal from "@/components/common/form/confirmmodal/useCancelConfirm";
 import Separator from "@/components/common/separator/Separator";
 import ValueDisplay from "@/components/common/valuedisplay/ValueDisplay";
 import { divDisable } from "@/constant/Forms";
@@ -14,6 +15,8 @@ import { toast } from "react-toastify";
 const JobCp = () => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const cancelModal = CancelConfirmModal();
+
   const grossTotal = useJOBStore((state) => state.grossTotal);
   const jobNo = useJOBStore((state) => state.jobNo);
   const section = useJOBStore((state) => state.section);
@@ -33,14 +36,14 @@ const JobCp = () => {
     0: {
       primary: {
         text: "START",
-        bg: "bg-green-400 text-white hover:bg-green-500",
+        bg: "bg-green-400 text-white hover:bg-green-500 font-bold text-lg",
         function: `Start`,
         value: 1,
         link: false,
       },
       secondary: {
         text: "CANCEL",
-        bg: "bg-red-500 text-white hover:bg-red-600",
+        bg: "bg-red-500 text-white hover:bg-red-600 font-bold text-lg",
         function: `Cancel`,
         value: 4,
         link: false,
@@ -50,14 +53,14 @@ const JobCp = () => {
     1: {
       primary: {
         text: "FINISH",
-        bg: "bg-blue-500 text-white hover:bg-blue-600",
+        bg: "bg-blue-500 text-white hover:bg-blue-600 font-bold text-lg",
         function: `Finish`,
         value: 2,
         link: false,
       },
       secondary: {
         text: "CANCEL",
-        bg: "bg-red-500 text-white hover:bg-red-600",
+        bg: "bg-red-500 text-white hover:bg-red-600 font-bold text-lg",
         function: `Cancel`,
         value: 4,
         link: false,
@@ -67,14 +70,14 @@ const JobCp = () => {
     2: {
       primary: {
         text: "CHECKOUT",
-        bg: "bg-purple-500 text-white hover:bg-purple-600",
+        bg: "bg-green-500 text-white hover:bg-green-600 font-bold text-lg",
         function: false,
         value: false,
         link: true,
       },
       secondary: {
         text: "RESTART",
-        bg: "bg-amber-500 text-white hover:bg-amber-600",
+        bg: "bg-amber-500 text-white hover:bg-amber-600 font-bold text-lg",
         function: `Restart`,
         value: 1,
         link: false,
@@ -84,7 +87,7 @@ const JobCp = () => {
     3: {
       primary: {
         text: "PAID",
-        bg: "bg-emerald-500 text-white hover:bg-emerald-600",
+        bg: "bg-emerald-500 text-white hover:bg-emerald-600 font-bold text-lg",
         function: false,
         value: false,
         link: false,
@@ -95,7 +98,7 @@ const JobCp = () => {
     4: {
       primary: {
         text: "CANCELLED",
-        bg: "bg-zinc-500 text-white",
+        bg: "bg-zinc-500 text-white font-bold text-lg",
         function: false,
         value: false,
         link: false,
@@ -108,6 +111,16 @@ const JobCp = () => {
 
   const handleState = async (func, value, link) => {
     setPending(true);
+    let reason = ``;
+    if (func == `Cancel`) {
+      const result = await cancelModal.askCancel();
+
+      if (!result?.confirmed) {
+        setPending(false);
+        return;
+      }
+      reason = result?.reason;
+    }
 
     if (!jobId) {
       toast.error(`Job Id Missing !`);
@@ -136,6 +149,7 @@ const JobCp = () => {
             customerName: customerName,
             jobNo: jobNo,
             netTotal: netTotal,
+            reason: reason,
           }),
         },
       );
@@ -166,6 +180,7 @@ const JobCp = () => {
     <div
       className={` ${section == `HEADER` ? divDisable : ``} flex flex-col order-1 md:order-2 space-y-4`}
     >
+      {cancelModal.modal}
       <div className="rounded-xl    space-y-4 flex flex-col  h-full">
         {/* job totals */}
         <div className="flex flex-col p-4 rounded-xl text-gray-600 shadow-md bg-white">
