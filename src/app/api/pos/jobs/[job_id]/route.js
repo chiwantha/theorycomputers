@@ -57,12 +57,12 @@ export const GET = async (request, { params }) => {
     const itemsSql = `SELECT job_items.*, mst_items.name AS item_name, mst_items.is_serial AS serial,  mst_items.type AS item_type FROM job_items
     INNER JOIN mst_items ON mst_items.id = job_items.item_id WHERE job_items.header_id = ?`;
     const itemsRes = await query(itemsSql, [job_id]);
-    if (!itemsRes || itemsRes.length == 0) {
-      return NextResponse.json(
-        { error: `No Job Items Found !` },
-        { status: 404 },
-      );
-    }
+    // if (!itemsRes || itemsRes.length == 0) {
+    //   return NextResponse.json(
+    //     { error: `No Job Items Found !` },
+    //     { status: 404 },
+    //   );
+    // }
     // console.log(`Items : `, itemsRes);
 
     const itemSerialsSql = `SELECT * FROM stock_items_serials WHERE reference=? AND reference_id=?`;

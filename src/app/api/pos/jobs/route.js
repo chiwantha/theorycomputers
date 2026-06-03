@@ -1,3 +1,4 @@
+import { customerTemplates, jobTemplates } from "@/constant/SmsTemplate";
 import pool, { query } from "@/lib/db";
 import { sendSms } from "@/lib/func";
 import { validateJobItems } from "@/lib/validation";
@@ -201,8 +202,22 @@ export const POST = async (request) => {
     // throw new Error(`Test Passed ✅ !`);
 
     if (customerState == `1`) {
-      sendSms(customerPhone, `Welcome To Theory Computers !`);
+      await sendSms(
+        customerPhone,
+        customerTemplates.CREATE({
+          customerName: customerName,
+        }),
+      );
     }
+
+    await sendSms(
+      customerPhone,
+      jobTemplates.CREATE({
+        jobNo: jobNo,
+        customerName: customerName,
+      }),
+    );
+
     await connection.commit();
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {

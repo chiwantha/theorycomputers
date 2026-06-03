@@ -5,6 +5,7 @@ import Separator from "@/components/common/separator/Separator";
 import ValueDisplay from "@/components/common/valuedisplay/ValueDisplay";
 import { divDisable } from "@/constant/Forms";
 import { getTimeSince } from "@/lib/utils";
+import { useCUSTOMERStore } from "@/store/customerStore";
 import { useJOBStore } from "@/store/jobStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,6 +15,7 @@ const JobCp = () => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const grossTotal = useJOBStore((state) => state.grossTotal);
+  const jobNo = useJOBStore((state) => state.jobNo);
   const section = useJOBStore((state) => state.section);
   const discount = useJOBStore((state) => state.discount);
   const netTotal = useJOBStore((state) => state.netTotal);
@@ -24,6 +26,8 @@ const JobCp = () => {
   const job_start = useJOBStore((state) => state.job_start);
   const job_finished = useJOBStore((state) => state.job_finished);
   const setDiscount = useJOBStore((state) => state.setDiscount);
+  const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
+  const customerName = useCUSTOMERStore((state) => state.customerName);
 
   const stateConfig = {
     0: {
@@ -127,6 +131,11 @@ const JobCp = () => {
           method: `PUT`,
           body: JSON.stringify({
             state: value,
+            action: func,
+            customerPhone: customerPhone,
+            customerName: customerName,
+            jobNo: jobNo,
+            netTotal: netTotal,
           }),
         },
       );
