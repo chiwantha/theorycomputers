@@ -9,6 +9,7 @@ import Separator from "@/components/common/separator/Separator";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import { toast } from "react-toastify";
 import SelectCustomer from "../customer/SelectCustomer";
+import SelectTrnDoc from "../trndoc/SelectTrnDoc";
 
 const PosTerminal = ({ customersList, itemsList, quotationList }) => {
   return (
@@ -16,14 +17,7 @@ const PosTerminal = ({ customersList, itemsList, quotationList }) => {
       {/* LEFT */}
       <div className="flex flex-col gap-4 w-full h-[calc(100vh-92px)]">
         <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded-xl shadow">
-            <NextDropdown items={[]} label="Select Quotation" />
-            <Button
-              name="Load Quotation"
-              wfull
-              bg="bg-blue-500 text-white mt-2"
-            />
-          </div>
+          <SelectTrnDoc />
 
           <SelectCustomer customersList={customersList} />
         </div>
