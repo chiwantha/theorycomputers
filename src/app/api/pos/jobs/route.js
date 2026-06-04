@@ -20,7 +20,7 @@ INNER JOIN customers
     ON job_header.customer_id = customers.id
 WHERE
     DATE(job_header.created_at) = CURDATE()
-    OR job_header.state IN (0, 1)
+    OR job_header.state IN (0, 2)
 ORDER BY job_header.state ASC, job_header.created_at DESC;`;
 
     const res = await query(sql);

@@ -18,6 +18,7 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
   const setHeaderField = useJOBStore((state) => state.setHeaderField);
   const state = useJOBStore((state) => state.state);
   const section = useJOBStore((state) => state.section);
+  const setDiscount = useJOBStore((state) => state.setDiscount);
 
   useEffect(() => {
     setHeaderField(`jobId`, headerData?.id);
@@ -37,6 +38,7 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
     setHeaderField(`password`, detailsData?.password || ``);
     setHeaderField(`accessories`, detailsData?.accessories || ``);
     setHeaderField(`problem`, detailsData?.problem);
+    setDiscount(headerData?.discount || 0);
   }, [detailsData, headerData]);
 
   return (

@@ -186,7 +186,9 @@ const JobCp = () => {
         <div className="flex flex-col p-4 rounded-xl text-gray-600 shadow-md bg-white">
           <div className="grid grid-cols-2 gap-2 r">
             <span className="pl-4 ">Gross Total</span>
-            <span className=" py-1 font-semibold px-4 ">{grossTotal}</span>
+            <span className=" py-1 font-semibold px-4 ">
+              {grossTotal.toFixed(2)}
+            </span>
           </div>
           <Separator />
           <div className="grid grid-cols-2 gap-2">
@@ -203,7 +205,9 @@ const JobCp = () => {
           <Separator />
           <div className="grid grid-cols-2 gap-2">
             <span className="pl-4 ">Net Total</span>
-            <span className=" py-1  font-semibold px-4 ">{netTotal}</span>
+            <span className=" py-1  font-semibold px-4 ">
+              {netTotal.toFixed(2)}
+            </span>
           </div>
         </div>
 
