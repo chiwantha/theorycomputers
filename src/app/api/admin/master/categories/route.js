@@ -18,7 +18,7 @@ export const GET = async (request) => {
     console.log(`Internal Server Error : `, err);
     return NextResponse.json(
       { error: `Internal Server Error !` },
-      { status: 200 },
+      { status: 500 },
     );
   }
 };
@@ -43,7 +43,7 @@ export const POST = async (request) => {
     console.log(`Internal Server Error : `, err);
     return NextResponse.json(
       { error: `Internal Server Error !` },
-      { status: 200 },
+      { status: 500 },
     );
   }
 };
@@ -72,7 +72,7 @@ export const PUT = async (request) => {
     console.log(`Internal Server Error : `, err);
     return NextResponse.json(
       { error: `Internal Server Error !` },
-      { status: 200 },
+      { status: 500 },
     );
   }
 };
@@ -98,7 +98,7 @@ export const DELETE = async (request) => {
     console.log(`Internal Server Error : `, err);
     return NextResponse.json(
       { error: `Internal Server Error !` },
-      { status: 200 },
+      { status: 500 },
     );
   }
 };

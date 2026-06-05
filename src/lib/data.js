@@ -222,3 +222,19 @@ ORDER BY stock DESC;
     return [];
   }
 };
+export const get_warranties = async () => {
+  try {
+    const sql = `SELECT id AS value, name AS label, mst_brand.* FROM mst_brand WHERE state = 1`;
+
+    const data = await query(sql);
+
+    if (!data || data.length == 0) {
+      return [];
+    }
+
+    return data;
+  } catch (err) {
+    console.log(`Error Loading Warranty List !`, err);
+    return [];
+  }
+};

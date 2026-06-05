@@ -1,8 +1,8 @@
 "use client";
-
 import Button from "@/components/common/button/Button";
 import DeleteData from "@/components/common/form/deletedata/DeleteData";
 import FormHeader from "@/components/common/form/formheader/FormHeader";
+import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import Separator from "@/components/common/separator/Separator";
 import { validateFields } from "@/lib/validation";
@@ -10,17 +10,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
+const WarrantyMasterForm = ({ defaultData, form_props, close_drawer }) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [formData, setformdata] = useState({
     id: ``,
     name: ``,
-    agent: ``,
-    phone: ``,
-    whatsapp: ``,
-    email: ``,
-    address: ``,
+    type: ``,
+    duration: ``,
   });
 
   useEffect(() => {
@@ -29,21 +26,15 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
       setformdata({
         id: defaultData?.row?.id,
         name: defaultData?.row?.name,
-        agent: defaultData?.row?.agent,
-        phone: defaultData?.row?.phone,
-        whatsapp: defaultData?.row?.whatsapp,
-        email: defaultData?.row?.email,
-        address: defaultData?.row?.address,
+        type: defaultData?.row?.type,
+        duration: defaultData?.row?.duration,
       });
     } else {
       setformdata({
         id: ``,
         name: ``,
-        agent: ``,
-        phone: ``,
-        whatsapp: ``,
-        email: ``,
-        address: ``,
+        type: ``,
+        duration: ``,
       });
     }
   }, [defaultData]);
@@ -58,20 +49,22 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
       const data = new FormData();
       data.append(`id`, formData.id);
       data.append(`name`, formData.name);
-      data.append(`agent`, formData.agent);
-      data.append(`phone`, formData.phone);
-      data.append(`whatsapp`, formData.whatsapp);
-      data.append(`email`, formData.email);
-      data.append(`address`, formData.address);
+      data.append(`type`, formData.type);
+      data.append(`duration`, formData.duration);
 
       const method = isDelete ? "DELETE" : isEdit ? "PUT" : "POST";
 
       let validation;
 
       if (method === "POST") {
-        validation = validateFields(formData, ["name", "agent", "phone"]);
+        validation = validateFields(formData, ["name", "type", "duration"]);
       } else if (method === "PUT") {
-        validation = validateFields(formData, ["id", "name", "agent", "phone"]);
+        validation = validateFields(formData, [
+          "id",
+          "name",
+          "type",
+          "duration",
+        ]);
       } else {
         validation = validateFields(formData, ["id"]);
       }
@@ -82,7 +75,7 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/suppliers`,
+        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/warranty`,
         {
           method,
           body: data,
@@ -115,7 +108,7 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
 
   return (
     <div className="flex flex-col gap-6">
-      <FormHeader defaultData={defaultData} title={`Supplier`} />
+      <FormHeader defaultData={defaultData} title={`Warranty`} />
       {!defaultData || defaultData?.type !== `delete` ? (
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
           {defaultData && (
@@ -134,69 +127,42 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
           )}
           <NextInput
             label={`Name`}
-            placeholder={`K-Chord ( Pvt ) Ltd`}
+            placeholder={`3 Month Shop Warranty`}
             name={`name`}
             value={formData.name}
             onChange={(e) => setformdata({ ...formData, name: e.target.value })}
             className={`sm:col-span-2`}
             required={true}
           />
+          <NextDropdown
+            name={`type`}
+            defaultValue={formData.type}
+            required={true}
+            label={`Type`}
+            items={[
+              { value: `NONE`, label: `No Warranty` },
+              { value: `SHOP`, label: `Shop Warranty` },
+              { value: `SUPPLIER`, label: `Supplier Provide Warranty` },
+            ]}
+            placeholder="Select Warranty Type"
+            onChange={(val) => setformdata({ ...formData, type: val })}
+          />
           <NextInput
-            label={`Agent`}
-            placeholder={`Kasun Chiwantha`}
-            name={`agent`}
-            value={formData.agent}
+            label={`Duration ( In Months )`}
+            placeholder={`3`}
+            name={`duration`}
+            type="number"
+            value={formData.duration}
             onChange={(e) =>
-              setformdata({ ...formData, agent: e.target.value })
+              setformdata({ ...formData, duration: e.target.value })
             }
-            className={`sm:col-span-2`}
             required={true}
           />
-          <Separator />
-          <NextInput
-            label={`Phone`}
-            placeholder={`0788806670`}
-            name={`phone`}
-            value={formData.phone}
-            onChange={(e) =>
-              setformdata({ ...formData, phone: e.target.value })
-            }
-            required={true}
-          />
-          <NextInput
-            label={`WhatsApp`}
-            placeholder={`0761294262`}
-            name={`whatsapp`}
-            value={formData.whatsapp}
-            onChange={(e) =>
-              setformdata({ ...formData, whatsapp: e.target.value })
-            }
-          />
-          <NextInput
-            label={`Email`}
-            placeholder={`contact@kchord.com`}
-            name={`email`}
-            value={formData.email}
-            onChange={(e) =>
-              setformdata({ ...formData, email: e.target.value })
-            }
-          />
-          <NextInput
-            label={`Address`}
-            placeholder={`No. 361/23 parangoda , Dekatana`}
-            name={`address`}
-            value={formData.address}
-            onChange={(e) =>
-              setformdata({ ...formData, address: e.target.value })
-            }
-          />
-
-          <Separator />
           <Button
             name={
               pending
                 ? `Processing !`
-                : `${defaultData ? `Update` : `Save`} Supplier`
+                : `${defaultData ? `Update` : `Save`} Warranty`
             }
             bg={`bg-green-400 hover:bg-green-500 text-white col-span-full`}
             click={() => {
@@ -212,4 +178,4 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
   );
 };
 
-export default SupplierMasterForm;
+export default WarrantyMasterForm;
