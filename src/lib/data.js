@@ -238,3 +238,21 @@ export const get_warranties = async () => {
     return [];
   }
 };
+export const get_jobs = async () => {
+  try {
+    const sql = `SELECT jh.id AS value, CONCAT(jh.job_no, " - ", c.phone) AS label, jh.* FROM job_header jh
+    INNER JOIN customers c ON c.id = jh.customer_id 
+    WHERE jh.state=2 AND jh.invoice_id is NULL`;
+
+    const data = await query(sql);
+
+    if (!data || data.length == 0) {
+      return [];
+    }
+
+    return data;
+  } catch (err) {
+    console.log(`Error Loading Job List !`, err);
+    return [];
+  }
+};

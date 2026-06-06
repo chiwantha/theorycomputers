@@ -7,8 +7,9 @@ import SelectTrnDoc from "../trndoc/SelectTrnDoc";
 import InvoiceRow from "../../cards/inputCards/InvoiceRow";
 import { useINVOICEStore } from "@/store/invoiceStore";
 import { generateDocNo } from "@/lib/utils";
+import PaymentSection from "../../sections/terminal/Payment";
 
-const Terminal = ({ customersList, itemsList, quotationList }) => {
+const Terminal = ({ customersList, itemsList, quotationList, jobList }) => {
   const docType = useINVOICEStore((state) => state.docType);
   const invType = useINVOICEStore((state) => state.invType);
   const jobId = useINVOICEStore((state) => state.jobId);
@@ -24,10 +25,17 @@ const Terminal = ({ customersList, itemsList, quotationList }) => {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="grid grid-cols-1 2xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 2xl:grid-cols-4 space-y-4 2xl:space-y-0 2xl:space-x-4">
         {/* Grid Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 col-span-3">
-          <SelectTrnDoc />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 col-span-3">
+          <div className="col-span-2">
+            <SelectTrnDoc jobList={jobList} />
+          </div>
+
+          <div className="col-span-2">
+            <SelectCustomer customersList={customersList} />
+          </div>
+
           {/* Document Selector */}
           <div className="bg-white rounded-xl shadow-md md:col-span-full md:-order-1 xl:order-0 xl:col-span-1">
             <div
@@ -52,11 +60,12 @@ const Terminal = ({ customersList, itemsList, quotationList }) => {
               </button>
             </div>
           </div>
-          <SelectCustomer customersList={customersList} />
+
           <div className="col-span-full bg-white p-4 rounded-xl shadow-md">
             <InvoiceRow item_list={itemsList} />
           </div>
-          <div className="flex flex-col">
+
+          <div className="flex flex-col col-span-full ">
             <span>Document Type : {docType}</span>
             <span>Invoice Type : {invType}</span>
             <span>Job Id : {jobId}</span>
@@ -64,6 +73,7 @@ const Terminal = ({ customersList, itemsList, quotationList }) => {
           </div>
         </div>
         {/* Payment Section */}
+        <PaymentSection />
       </div>
     </div>
   );

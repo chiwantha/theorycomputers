@@ -13,7 +13,7 @@ export const useINVOICEStore = create((set, get) => ({
   jobId: ``,
 
   // ammounts
-  advanced: 0,
+  advance: 0,
   grossTotal: 0,
   discount: 0,
   netTotal: 0,
@@ -44,6 +44,14 @@ export const useINVOICEStore = create((set, get) => ({
     });
   },
 
+  // discount
+  setDiscount: (discount) => {
+    set({
+      discount,
+      netTotal: get().grossTotal - discount - advance,
+    });
+  },
+
   // reset
   resetINVOICE: () => {
     set({
@@ -59,7 +67,7 @@ export const useINVOICEStore = create((set, get) => ({
       jobId: ``,
 
       // ammounts
-      advanced: 0,
+      advance: 0,
       grossTotal: 0,
       discount: 0,
       netTotal: 0,
