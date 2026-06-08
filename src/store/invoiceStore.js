@@ -14,20 +14,22 @@ export const useINVOICEStore = create((set, get) => ({
 
   // ammounts
   advance: 0,
-  grossTotal: 0,
+  downPayment: 0,
+  grossTotal: 5000,
   discount: 0,
   netTotal: 0,
 
   // payments
-  paidAmount: 0,
+  paymentMethod: `CASH`,
   cashAmount: 0,
   cardAmount: 0,
   bankAmount: 0,
-  balanceAmount: 0,
   creditAmount: 0,
+
+  receivedAmount: 0,
   dueDate: ``,
-  paymentMethod: `CASH`,
-  paymentStatus: `UNPAID`,
+  cardType: ``,
+  cardDigits: ``,
 
   // meta
   note: ``,
@@ -48,7 +50,15 @@ export const useINVOICEStore = create((set, get) => ({
   setDiscount: (discount) => {
     set({
       discount,
-      netTotal: get().grossTotal - discount - advance,
+      netTotal: get().grossTotal - discount - get().advance,
+    });
+  },
+
+  setPaidAmount: (paidAmount) => {
+    set({
+      paidAmount,
+      paidAmount: paidAmount,
+      balanceAmount: get().netTotal - paidAmount,
     });
   },
 
@@ -68,20 +78,22 @@ export const useINVOICEStore = create((set, get) => ({
 
       // ammounts
       advance: 0,
-      grossTotal: 0,
+      downPayment: 0,
+      grossTotal: 5000,
       discount: 0,
       netTotal: 0,
 
       // payments
-      paidAmount: 0,
+      paymentMethod: `CASH`,
       cashAmount: 0,
       cardAmount: 0,
       bankAmount: 0,
-      balanceAmount: 0,
       creditAmount: 0,
+
+      receivedAmount: 0,
       dueDate: ``,
-      paymentMethod: `CASH`,
-      paymentStatus: `UNPAID`,
+      cardType: ``,
+      cardDigits: ``,
 
       // meta
       note: ``,

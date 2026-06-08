@@ -36,7 +36,7 @@ const InvoiceRow = ({ item_list, defaultRows = false }) => {
       className={`${state == 3 || state == 4 || state == 2 ? `pointer-events-none` : ``} ${section == `HEADER` ? divDisable : ``}`}
     >
       <div className="overflow-x-auto lg:overflow-visible">
-        <table className="min-w-full table-fixed">
+        <table className="min-w-full table-auto">
           <thead>
             <tr className="text-sm">
               <th className="w-[30%] min-w-70 text-left pl-4 pb-2">Item</th>
