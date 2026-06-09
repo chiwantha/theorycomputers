@@ -26,7 +26,7 @@ export const useINVOICEStore = create((set, get) => ({
   bankAmount: 0,
   creditAmount: 0,
 
-  receivedAmount: 0,
+  // payment meta
   dueDate: ``,
   cardType: ``,
   cardDigits: ``,
@@ -54,11 +54,17 @@ export const useINVOICEStore = create((set, get) => ({
     });
   },
 
-  setPaidAmount: (paidAmount) => {
+  // resetPayment
+  resetINVPayment: () => {
     set({
-      paidAmount,
-      paidAmount: paidAmount,
-      balanceAmount: get().netTotal - paidAmount,
+      cashAmount: 0,
+      cardAmount: 0,
+      bankAmount: 0,
+      creditAmount: 0,
+      receivedAmount: 0,
+      dueDate: ``,
+      cardDigits: ``,
+      cardType: ``,
     });
   },
 
@@ -90,7 +96,7 @@ export const useINVOICEStore = create((set, get) => ({
       bankAmount: 0,
       creditAmount: 0,
 
-      receivedAmount: 0,
+      // payment meta
       dueDate: ``,
       cardType: ``,
       cardDigits: ``,

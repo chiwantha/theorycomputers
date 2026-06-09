@@ -13,42 +13,25 @@ import { FaCcMastercard } from "react-icons/fa6";
 import { RefreshCcw } from "lucide-react";
 
 const PaymentSection = () => {
+  const [pending, setPending] = useState(false);
   const advance = useINVOICEStore((state) => state.advance);
   const grossTotal = useINVOICEStore((state) => state.grossTotal);
   const discount = useINVOICEStore((state) => state.discount);
   const netTotal = useINVOICEStore((state) => state.netTotal);
-
   const paymentMethod = useINVOICEStore((state) => state.paymentMethod);
-
   const cashAmount = useINVOICEStore((state) => state.cashAmount);
   const cardAmount = useINVOICEStore((state) => state.cardAmount);
   const bankAmount = useINVOICEStore((state) => state.bankAmount);
   const downPayment = useINVOICEStore((state) => state.downPayment);
   const creditAmount = useINVOICEStore((state) => state.creditAmount);
-
-  const paidAmount = useINVOICEStore((state) => state.paidAmount);
-  const balanceAmount = useINVOICEStore((state) => state.balanceAmount);
-
   const receivedAmount = useINVOICEStore((state) => state.receivedAmount);
   const dueDate = useINVOICEStore((state) => state.dueDate);
   const cardDigits = useINVOICEStore((state) => state.cardDigits);
   const cardType = useINVOICEStore((state) => state.cardType);
-
   const setDiscount = useINVOICEStore((state) => state.setDiscount);
-  const setPaidAmount = useINVOICEStore((state) => state.setPaidAmount);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
   const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
-
-  const clearPayment = () => {
-    setHeaderField(`cashAmount`, 0);
-    setHeaderField(`cardAmount`, 0);
-    setHeaderField(`bankAmount`, 0);
-    setHeaderField(`creditAmount`, 0);
-    setHeaderField(`receivedAmount`, 0);
-    setHeaderField(`dueDate`, ``);
-    setHeaderField(`cardDigits`, ``);
-    setHeaderField(`cardType`, ``);
-  };
+  const resetINVPayment = useINVOICEStore((state) => state.resetINVPayment);
 
   const paymentMethods = [
     {
@@ -56,7 +39,7 @@ const PaymentSection = () => {
       icon: <FaRupeeSign />,
       func: () => {
         setHeaderField(`paymentMethod`, `CASH`);
-        clearPayment();
+        resetINVPayment();
       },
     },
     {
@@ -64,7 +47,7 @@ const PaymentSection = () => {
       icon: <FaCreditCard />,
       func: () => {
         setHeaderField(`paymentMethod`, `CARD`);
-        clearPayment();
+        resetINVPayment();
       },
     },
     {
@@ -72,7 +55,7 @@ const PaymentSection = () => {
       icon: <AiFillBank />,
       func: () => {
         setHeaderField(`paymentMethod`, `MIX`);
-        clearPayment();
+        resetINVPayment();
       },
     },
     {
@@ -80,10 +63,19 @@ const PaymentSection = () => {
       icon: <GiReceiveMoney />,
       func: () => {
         setHeaderField(`paymentMethod`, `CREDIT`);
-        clearPayment();
+        resetINVPayment();
       },
     },
   ];
+
+  const handleCrud = async () => {
+    setPending(true);
+    try {
+    } catch (err) {
+    } finally {
+      setPending(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md p-4 space-y-4">
@@ -158,9 +150,9 @@ const PaymentSection = () => {
                 type="number"
                 label={`Cash Received`}
                 placeholder={`5000.00`}
-                value={receivedAmount}
+                value={cashAmount}
                 onChange={(e) => {
-                  setHeaderField(`receivedAmount`, e.target.value);
+                  setHeaderField(`cashAmount`, e.target.value);
                 }}
               />
               <NextInput
@@ -168,7 +160,7 @@ const PaymentSection = () => {
                 type="number"
                 label={`Balance`}
                 placeholder={`0`}
-                value={receivedAmount - netTotal}
+                value={cashAmount - netTotal}
                 readonly={true}
               />
             </div>
@@ -279,7 +271,7 @@ const PaymentSection = () => {
 
       <div className="items-center flex gap-2">
         <Button
-          name={`PAY`}
+          name={pending ? `Processing...` : `PAY`}
           wfull={true}
           pd={`py-3 px-4 font-bold text-xl`}
           bg={`bg-green-500 text-white hover:bg-green-600`}
