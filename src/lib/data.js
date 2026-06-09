@@ -224,7 +224,7 @@ ORDER BY stock DESC;
 };
 export const get_warranties = async () => {
   try {
-    const sql = `SELECT id AS value, name AS label, mst_brand.* FROM mst_brand WHERE state = 1`;
+    const sql = `SELECT mw.id AS value, mw.name AS label, mw.* FROM mst_warranty mw WHERE state = 1`;
 
     const data = await query(sql);
 

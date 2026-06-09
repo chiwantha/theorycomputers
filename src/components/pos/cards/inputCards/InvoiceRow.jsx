@@ -6,35 +6,28 @@ import NextInput from "@/components/common/form/nextinput/NextInput";
 
 import { Trash, Plus, Barcode } from "lucide-react";
 import React, { useEffect } from "react";
-import { useJOBStore } from "@/store/jobStore";
 import { divDisable } from "@/constant/Forms";
+import { useINVOICEStore } from "@/store/invoiceStore";
 
-const InvoiceRow = ({ item_list, defaultRows = false }) => {
-  const warranty = useJOBStore((state) => state.warranty);
-  const section = useJOBStore((state) => state.section);
-  const rows = useJOBStore((state) => state.rows);
-  const addRow = useJOBStore((state) => state.addRow);
-  const updateRow = useJOBStore((state) => state.updateRow);
-  const removeRow = useJOBStore((state) => state.removeRow);
-  const setRows = useJOBStore((state) => state.setRows);
-  const toggleSerials = useJOBStore((state) => state.toggleSerials);
-  const updateSerial = useJOBStore((state) => state.updateSerial);
-  const grossTotal = useJOBStore((state) => state.grossTotal);
-  const discount = useJOBStore((state) => state.discount);
-  const netTotal = useJOBStore((state) => state.netTotal);
-  const state = useJOBStore((state) => state.state);
+const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
+  const rows = useINVOICEStore((state) => state.rows);
+  const addRow = useINVOICEStore((state) => state.addRow);
+  const updateRow = useINVOICEStore((state) => state.updateRow);
+  const removeRow = useINVOICEStore((state) => state.removeRow);
+  const setRows = useINVOICEStore((state) => state.setRows);
+  const toggleSerials = useINVOICEStore((state) => state.toggleSerials);
+  const updateSerial = useINVOICEStore((state) => state.updateSerial);
+  const grossTotal = useINVOICEStore((state) => state.grossTotal);
+  const discount = useINVOICEStore((state) => state.discount);
+  const netTotal = useINVOICEStore((state) => state.netTotal);
 
   useEffect(() => {
     if (!Array.isArray(defaultRows) || defaultRows.length === 0) return;
-    // console.log(`My ROws : `, defaultRows);
     setRows(defaultRows);
-    // console.log(`Row State : `, useJOBStore.getState());
   }, [defaultRows]);
 
   return (
-    <div
-      className={`${state == 3 || state == 4 || state == 2 ? `pointer-events-none` : ``} ${section == `HEADER` ? divDisable : ``}`}
-    >
+    <div>
       <div className="overflow-x-auto lg:overflow-visible">
         <table className="min-w-full table-auto">
           <thead>
@@ -64,7 +57,7 @@ const InvoiceRow = ({ item_list, defaultRows = false }) => {
                 const selectedItem = item_list.find(
                   (item) => item.value === row.itemId,
                 );
-                console.log(`Selected Item : `, selectedItem);
+                // console.log(`Selected Item : `, selectedItem);
 
                 itemType = selectedItem?.type;
                 itemStock = selectedItem?.stock;
@@ -86,10 +79,52 @@ const InvoiceRow = ({ item_list, defaultRows = false }) => {
                             (item) => item.value === val,
                           );
 
+                          const selectedWarranty = warranty_list.find(
+                            (warranty) => warranty.id === selected?.warranty_id,
+                          );
+
+                          console.log(`Warranty : `, selectedWarranty?.name);
+                          updateRow(
+                            row.tempId,
+                            "warrantyId",
+                            selected?.warranty_id || null,
+                          );
+                          updateRow(
+                            row.tempId,
+                            `warrantyName`,
+                            selectedWarranty?.name,
+                          );
+
+                          const duration = Number(
+                            selectedWarranty?.duration || 0,
+                          );
+
+                          if (
+                            duration === 0 ||
+                            selectedWarranty?.duration == null
+                          ) {
+                            updateRow(row.tempId, "warrantyEndDate", null);
+                          } else {
+                            const warrantyEndDate = new Date();
+                            warrantyEndDate.setDate(
+                              warrantyEndDate.getDate() +
+                                Math.round(duration * 30.44),
+                            );
+
+                            updateRow(
+                              row.tempId,
+                              "warrantyEndDate",
+                              warrantyEndDate.toISOString().split("T")[0],
+                            );
+                          }
+
                           updateRow(row.tempId, "itemId", val);
                           updateRow(row.tempId, "itemName", selected?.name);
-                          updateRow(row.tempId, "unitPrice", selected?.selling);
                           updateRow(row.tempId, "itemType", selected?.type);
+
+                          updateRow(row.tempId, "cost", selected?.cost);
+                          updateRow(row.tempId, "selling", selected?.selling);
+
                           updateRow(
                             row.tempId,
                             "quantity",
@@ -108,26 +143,56 @@ const InvoiceRow = ({ item_list, defaultRows = false }) => {
                     {/* warranty */}
                     <td className="pb-2 pl-2">
                       <NextDropdown
-                        items={[
-                          { value: `NORMAL`, label: `Normal` },
-                          { value: `WARRANTY`, label: `Warranty` },
-                        ]}
-                        value={row.billing}
-                        placeholder="Normal"
+                        items={warranty_list}
+                        value={2}
+                        placeholder="Select Warranty"
                         className="w-full"
+                        defaultValue={row.warrantyId}
                         onChange={(val) => {
-                          updateRow(row.tempId, "billing", val);
+                          const selectedWarranty = warranty_list.find(
+                            (warranty) => warranty?.id === val,
+                          );
+
+                          updateRow(row.tempId, `warrantyId`, val);
+                          updateRow(
+                            row.tempId,
+                            `warrantyName`,
+                            selectedWarranty?.name,
+                          );
+
+                          const duration = Number(
+                            selectedWarranty?.duration || 0,
+                          );
+
+                          if (
+                            duration === 0 ||
+                            selectedWarranty?.duration == null
+                          ) {
+                            updateRow(row.tempId, "warrantyEndDate", null);
+                          } else {
+                            const warrantyEndDate = new Date();
+                            warrantyEndDate.setDate(
+                              warrantyEndDate.getDate() +
+                                Math.round(duration * 30.44),
+                            );
+
+                            updateRow(
+                              row.tempId,
+                              "warrantyEndDate",
+                              warrantyEndDate.toISOString().split("T")[0],
+                            );
+                          }
                         }}
                       />
                     </td>
 
-                    {/* UNIT PRICE */}
+                    {/* SELLING PRICE */}
                     <td className="pb-2 pl-2">
                       <NextInput
-                        name={`unit_price`}
+                        name={`selling_price`}
                         inputClassName={`w-full`}
                         readonly={true}
-                        value={Number(row.unitPrice || 0).toLocaleString(
+                        value={Number(row.selling || 0).toLocaleString(
                           undefined,
                           {
                             minimumFractionDigits: 2,

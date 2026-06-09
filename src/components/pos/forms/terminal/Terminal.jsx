@@ -10,7 +10,13 @@ import { generateDocNo } from "@/lib/utils";
 import PaymentSection from "../../sections/terminal/Payment";
 import Separator from "@/components/common/separator/Separator";
 
-const Terminal = ({ customersList, itemsList, quotationList, jobList }) => {
+const Terminal = ({
+  customersList,
+  itemsList,
+  quotationList,
+  jobList,
+  warrantyList,
+}) => {
   const docType = useINVOICEStore((state) => state.docType);
   const invType = useINVOICEStore((state) => state.invType);
   const jobId = useINVOICEStore((state) => state.jobId);
@@ -90,12 +96,15 @@ const Terminal = ({ customersList, itemsList, quotationList, jobList }) => {
             {/* Invoice Rows */}
             <div className="col-span-full">
               <div className="bg-white p-4 rounded-xl shadow-md">
-                <InvoiceRow item_list={itemsList} />
+                <InvoiceRow
+                  item_list={itemsList}
+                  warranty_list={warrantyList}
+                />
               </div>
             </div>
 
             {/* Debug Values  */}
-            <div className="flex flex-col">
+            <div className="flex flex-col hidden">
               <span>Gross : {grossTotal}</span>
               <span>Advance : - {advance}</span>
               <span>Discount : - {discount}</span>

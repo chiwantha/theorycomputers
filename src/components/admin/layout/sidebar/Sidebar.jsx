@@ -17,6 +17,7 @@ import {
   Barcode,
   ClipboardMinus,
   PenTool,
+  ShieldCheck,
 } from "lucide-react";
 
 import SidebarItem from "./sidebarItem/SidebarItem";
@@ -59,6 +60,11 @@ const admin_links = [
         name: "Suppliers",
         icon: <Users size={20} />,
         path: "/admin/master/suppliers",
+      },
+      {
+        name: "Warranty",
+        icon: <ShieldCheck size={20} />,
+        path: "/admin/master/warranty",
       },
     ],
   },
