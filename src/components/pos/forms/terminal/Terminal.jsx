@@ -104,7 +104,7 @@ const Terminal = ({
             </div>
 
             {/* Debug Values  */}
-            <div className="flex flex-col hidden">
+            <div className=" flex-col hidden">
               <span>Gross : {grossTotal}</span>
               <span>Advance : - {advance}</span>
               <span>Discount : - {discount}</span>
