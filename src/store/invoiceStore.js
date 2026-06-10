@@ -68,7 +68,6 @@ export const useINVOICEStore = create((set, get) => ({
       bankAmount: 0,
       creditAmount: 0,
       downPayment: 0,
-      receivedAmount: 0,
       dueDate: ``,
       cardDigits: ``,
       cardType: ``,
@@ -135,7 +134,7 @@ export const useINVOICEStore = create((set, get) => ({
       warrantyEndDate: item.warrantyEndDate,
 
       quantity: item.quantity || 0,
-      lineTotal: item.selling * item.quantity || 0,
+      lineTotal: (item.selling || 0) * (item.quantity || 0),
 
       serial: item.serial || false,
       showSerials: false,
@@ -149,7 +148,7 @@ export const useINVOICEStore = create((set, get) => ({
     set({
       rows,
       grossTotal,
-      netTotal: grossTotal - get().discount,
+      netTotal: grossTotal - get().discount - get().advance,
     });
   },
 
@@ -198,7 +197,7 @@ export const useINVOICEStore = create((set, get) => ({
     set({
       rows,
       grossTotal,
-      netTotal: grossTotal - get().discount,
+      netTotal: grossTotal - get().discount - get().advance,
     });
   },
 
@@ -229,7 +228,7 @@ export const useINVOICEStore = create((set, get) => ({
     set({
       rows,
       grossTotal,
-      netTotal: grossTotal - get().discount,
+      netTotal: grossTotal - get().discount - get().advance,
     });
   },
 
@@ -237,18 +236,22 @@ export const useINVOICEStore = create((set, get) => ({
     const rows = rowsData.map((row) => ({
       tempId: crypto.randomUUID(),
 
-      billing: row.billing,
       itemId: row.item_id,
       itemName: row.item_name,
       itemType: row.item_type,
-      serial: row.serial == 1 ? true : false,
-      serials: row.serials || [],
-      showSerials: false,
+
+      warrantyId: row.warranty_id,
+      warrantyName: row.warranty_name,
+      warrantyEndDate: row.warranty_end_date,
 
       cost: Number(row.unit_price),
       selling: Number(row.selling_price),
       quantity: Number(row.quantity),
       lineTotal: Number(row.line_total),
+
+      serial: row.serial == 1 ? true : false,
+      serials: row.serials || [],
+      showSerials: false,
 
       // defaults
     }));
@@ -258,7 +261,7 @@ export const useINVOICEStore = create((set, get) => ({
     set({
       rows,
       grossTotal,
-      netTotal: grossTotal - get().discount,
+      netTotal: grossTotal - get().discount - get().advance,
     });
   },
 
