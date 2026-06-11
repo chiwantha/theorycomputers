@@ -20,22 +20,23 @@ export const useINVOICEStore = create((set, get) => ({
 
   // ammounts
   advance: 0,
-  downPayment: 0,
   grossTotal: 0,
   discount: 0,
   netTotal: 0,
 
   // payments
   paymentMethod: `CASH`,
-  cashAmount: 0,
-  cardAmount: 0,
-  bankAmount: 0,
-  creditAmount: 0,
+  cashAmount: ``,
+  cardAmount: ``,
+  bankAmount: ``,
+  creditAmount: ``,
+  downPayment: ``,
 
   // payment meta
   dueDate: ``,
   cardType: ``,
   cardDigits: ``,
+  cashReceived: ``,
 
   // meta
   note: ``,
@@ -63,14 +64,15 @@ export const useINVOICEStore = create((set, get) => ({
   // resetPayment
   resetINVPayment: () => {
     set({
-      cashAmount: 0,
-      cardAmount: 0,
-      bankAmount: 0,
-      creditAmount: 0,
-      downPayment: 0,
+      cashAmount: ``,
+      cardAmount: ``,
+      bankAmount: ``,
+      creditAmount: ``,
+      downPayment: ``,
       dueDate: ``,
       cardDigits: ``,
       cardType: ``,
+      cashReceived: ``,
     });
   },
 
@@ -90,19 +92,20 @@ export const useINVOICEStore = create((set, get) => ({
 
       // ammounts
       advance: 0,
-      downPayment: 0,
       grossTotal: 0,
       discount: 0,
       netTotal: 0,
 
       // payments
       paymentMethod: `CASH`,
-      cashAmount: 0,
-      cardAmount: 0,
-      bankAmount: 0,
-      creditAmount: 0,
+      cashAmount: ``,
+      cardAmount: ``,
+      bankAmount: ``,
+      creditAmount: ``,
+      downPayment: ``,
 
       // payment meta
+      cashReceived: ``,
       dueDate: ``,
       cardType: ``,
       cardDigits: ``,

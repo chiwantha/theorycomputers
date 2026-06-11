@@ -19,8 +19,6 @@ const Terminal = ({
 }) => {
   const docType = useINVOICEStore((state) => state.docType);
   const invType = useINVOICEStore((state) => state.invType);
-  const jobId = useINVOICEStore((state) => state.jobId);
-  const quoteId = useINVOICEStore((state) => state.quoteId);
   const advance = useINVOICEStore((state) => state.advance);
   const grossTotal = useINVOICEStore((state) => state.grossTotal);
   const discount = useINVOICEStore((state) => state.discount);
@@ -37,6 +35,7 @@ const Terminal = ({
 
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
   const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
+  const resetINVPayment = useINVOICEStore((state) => state.resetINVPayment);
 
   useEffect(() => {
     resetINVOICE();
@@ -63,7 +62,10 @@ const Terminal = ({
                         ? "bg-green-500 text-white"
                         : "text-gray-600"
                     }`}
-                    onClick={() => setHeaderField("docType", "INVOICE")}
+                    onClick={() => {
+                      resetINVPayment();
+                      setHeaderField("docType", "INVOICE");
+                    }}
                   >
                     Invoice
                   </button>
@@ -74,7 +76,10 @@ const Terminal = ({
                         ? "bg-blue-500 text-white"
                         : "text-gray-600"
                     }`}
-                    onClick={() => setHeaderField("docType", "QUOTATION")}
+                    onClick={() => {
+                      resetINVPayment();
+                      setHeaderField("docType", "QUOTATION");
+                    }}
                     disabled={invType !== "DIRECT"}
                   >
                     Quote
@@ -104,7 +109,7 @@ const Terminal = ({
             </div>
 
             {/* Debug Values  */}
-            <div className=" flex-col hidden">
+            <div className="flex flex-col ">
               <span>Gross : {grossTotal}</span>
               <span>Advance : - {advance}</span>
               <span>Discount : - {discount}</span>

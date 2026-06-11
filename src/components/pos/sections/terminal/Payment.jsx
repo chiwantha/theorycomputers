@@ -7,27 +7,39 @@ import { FaCreditCard } from "react-icons/fa";
 import { AiFillBank } from "react-icons/ai";
 import { GiReceiveMoney } from "react-icons/gi";
 import NextInput from "@/components/common/form/nextinput/NextInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiVisaLine } from "react-icons/ri";
 import { FaCcMastercard } from "react-icons/fa6";
 import { RefreshCcw } from "lucide-react";
+import { useCUSTOMERStore } from "@/store/customerStore";
+import { validateFields } from "@/lib/validation";
+import { toast } from "react-toastify";
 
 const PaymentSection = () => {
   const [pending, setPending] = useState(false);
+  const invNo = useINVOICEStore((state) => state.invNo);
   const docType = useINVOICEStore((state) => state.docType);
+  const invType = useINVOICEStore((state) => state.invType);
+  const jobId = useINVOICEStore((state) => state.jobId);
+  const quoteId = useINVOICEStore((state) => state.quoteId);
+
   const advance = useINVOICEStore((state) => state.advance);
   const grossTotal = useINVOICEStore((state) => state.grossTotal);
   const discount = useINVOICEStore((state) => state.discount);
   const netTotal = useINVOICEStore((state) => state.netTotal);
+
   const paymentMethod = useINVOICEStore((state) => state.paymentMethod);
   const cashAmount = useINVOICEStore((state) => state.cashAmount);
   const cardAmount = useINVOICEStore((state) => state.cardAmount);
   const bankAmount = useINVOICEStore((state) => state.bankAmount);
   const downPayment = useINVOICEStore((state) => state.downPayment);
   const creditAmount = useINVOICEStore((state) => state.creditAmount);
+
   const dueDate = useINVOICEStore((state) => state.dueDate);
   const cardDigits = useINVOICEStore((state) => state.cardDigits);
   const cardType = useINVOICEStore((state) => state.cardType);
+  const cashReceived = useINVOICEStore((state) => state.cashReceived);
+
   const setDiscount = useINVOICEStore((state) => state.setDiscount);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
   const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
@@ -68,14 +80,198 @@ const PaymentSection = () => {
     },
   ];
 
+  useEffect(() => {
+    if (docType === `INVOICE`) {
+      if (paymentMethod === `CASH`) {
+        setHeaderField(`cashAmount`, netTotal);
+      } else if (paymentMethod === `CARD`) {
+        setHeaderField(`cardAmount`, netTotal);
+      }
+    }
+  }, [netTotal, paymentMethod, docType]);
+
   const handleCrud = async () => {
     setPending(true);
+
     try {
+      let validation;
+      const customerData = useCUSTOMERStore.getState();
+      const invoiceData = useINVOICEStore.getState();
+
+      // Customer Validation
+      if (customerData?.customerState === 0) {
+        validation = validateFields(customerData, [`customerId`]);
+        if (!validation.isValid) {
+          toast.error(`Select Customer !`);
+          return;
+        }
+      } else {
+        validation = customerData?.customerState
+          ? customerData.customerName !== "" &&
+            customerData.customerPhone !== ""
+          : customerData.customerId !== null;
+        if (!validation) {
+          toast.error(`Missing New Customer Details !`);
+          return;
+        }
+      }
+
+      // Invoice Items Validation
+      if (invoiceData?.rows.length > 0) {
+        for (const row of invoiceData?.rows) {
+          if (!row.itemId) {
+            toast.error(`Select Valid Item!`);
+            return;
+          }
+
+          if (!row.selling) {
+            toast.error(`Missing Selling Price on ${row?.itemName} !`);
+            return;
+          }
+
+          if (!row.cost) {
+            toast.error(`Missing Unit Cost on ${row?.itemName} !`);
+            return;
+          }
+
+          if (!row.quantity && row.itemType == "P") {
+            toast.error(`Missing Quantity on ${row?.itemName} !`);
+            return;
+          }
+
+          if (row.serial) {
+            const validSerials = row.serials.filter(
+              (serial) => serial?.trim() !== "",
+            );
+
+            if (validSerials.length !== row.quantity) {
+              toast.error(
+                `Mismatch in serial and quantity on ${row?.itemName} !`,
+              );
+              return;
+            }
+          }
+        }
+      } else {
+        toast.error(`Missing Invoice Details !`);
+        return;
+      }
+
+      // Invoice Header Validation
+      if (invType === "JOB" && !jobId) {
+        toast.error(`Job Id Missing !`);
+        return;
+      }
+      if (invType === "QUOTATION" && !quoteId) {
+        toast.error(`Quotation Id Missing !`);
+        return;
+      }
+      validation = validateFields(
+        {
+          invNo,
+          docType,
+          paymentMethod,
+        },
+        [`invNo`, `docType`, `paymentMethod`],
+      );
+      if (!validation.isValid) {
+        toast.error(`Missing : ${validation.emptyFields.join(", ")} !`);
+        return;
+      }
+
+      // Invoice Payment Data Validation
+      if (docType === `INVOICE`) {
+        if (paymentMethod === `CASH`) {
+          validation = validateFields(
+            {
+              cashAmount,
+            },
+            [`cashAmount`],
+          );
+        } else if (paymentMethod === `CARD`) {
+          validation = validateFields(
+            {
+              cardAmount,
+              cardType,
+              cardDigits,
+            },
+            [`cardAmount`, `cardType`, `cardDigits`],
+          );
+        } else if (paymentMethod === `MIX`) {
+          validation = validateFields(
+            {
+              cardAmount,
+              cashAmount,
+              bankAmount,
+            },
+            [`cardAmount`, `cashAmount`, `bankAmount`],
+          );
+        } else if (paymentMethod === `CREDIT`) {
+          validation = validateFields({ downPayment, creditAmount, dueDate }, [
+            `downPayment`,
+            `creditAmount`,
+            `dueDate`,
+          ]);
+        }
+        if (!validation.isValid) {
+          toast.error(`Missing : ${validation.emptyFields.join(", ")}`);
+          return;
+        }
+      }
+
+      return;
+      const data = new FormData();
+
+      data.append(`invItems`, JSON.stringify(invoiceData.rows));
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/pos/terminal`,
+        {
+          method: `POST`,
+          body: data,
+        },
+      );
+
+      if (!res.ok) {
+        const data = await res.json();
+
+        toast.error(
+          `${docType === `INVOICE` ? `Invoice` : `Quotation`} Failed !`,
+        );
+
+        if (data.error) {
+          toast.warning(data.error);
+        }
+
+        return;
+      }
+
+      toast.success(`Saved !`);
+      router.push(`/pos/terminal/${invNo}`);
     } catch (err) {
+      console.log("Operation Failed:", err);
+      toast.error("Something went wrong !");
     } finally {
       setPending(false);
     }
   };
+
+  const btnDisable =
+    docType == `QUOTATION`
+      ? false
+      : paymentMethod == "CASH"
+        ? cashReceived == 0 || !cashReceived
+        : paymentMethod == `MIX`
+          ? Number(cashAmount) + Number(cardAmount) + Number(bankAmount) == 0
+          : paymentMethod == "CARD"
+            ? cardType == `` || cardDigits == ``
+            : paymentMethod == `CREDIT`
+              ? downPayment == `` ||
+                dueDate == `` ||
+                Number(downPayment) + Number(creditAmount) !=
+                  Number(netTotal) ||
+                Number(creditAmount) > netTotal
+              : false;
 
   return (
     <div className="bg-white rounded-xl shadow-md p-4 space-y-4">
@@ -151,9 +347,9 @@ const PaymentSection = () => {
                   type="number"
                   label={`Cash Received`}
                   placeholder={`5000.00`}
-                  value={cashAmount}
+                  value={cashReceived}
                   onChange={(e) => {
-                    setHeaderField(`cashAmount`, e.target.value);
+                    setHeaderField(`cashReceived`, e.target.value);
                   }}
                 />
                 <NextInput
@@ -161,7 +357,7 @@ const PaymentSection = () => {
                   type="number"
                   label={`Balance`}
                   placeholder={`0`}
-                  value={cashAmount - netTotal}
+                  value={Number(cashReceived) - Number(netTotal)}
                   readonly={true}
                 />
               </div>
@@ -231,6 +427,19 @@ const PaymentSection = () => {
                     setHeaderField(`bankAmount`, e.target.value);
                   }}
                 />
+                <NextInput
+                  name={`cashBalance`}
+                  type="number"
+                  label={`Balance`}
+                  placeholder={`0`}
+                  value={
+                    Number(cashAmount) +
+                    Number(cardAmount) +
+                    Number(bankAmount) -
+                    Number(netTotal)
+                  }
+                  readonly={true}
+                />
               </>
             )}
 
@@ -240,10 +449,10 @@ const PaymentSection = () => {
                   name={`down payment amount`}
                   type="number"
                   label={`DownPayment`}
-                  placeholder={`5000.00`}
+                  placeholder={`1500`}
                   value={downPayment}
                   onChange={(e) => {
-                    const value = Number(e.target.value);
+                    const value = Number(e.target.value) || 0;
                     setHeaderField(`downPayment`, e.target.value);
                     setHeaderField(`creditAmount`, netTotal - value);
                   }}
@@ -278,22 +487,13 @@ const PaymentSection = () => {
           }
           wfull={true}
           pd={`py-3 px-4 font-bold text-xl`}
-          bg={`bg-green-500 text-white hover:bg-green-600`}
-          disabled={
-            paymentMethod == "CASH" || paymentMethod == `MIX`
-              ? Number(cashAmount) + Number(cardAmount) + Number(bankAmount) ==
-                0
-              : paymentMethod == "CARD"
-                ? cardType == `` || cardDigits == ``
-                : paymentMethod == `CREDIT`
-                  ? downPayment == `` ||
-                    dueDate == `` ||
-                    Number(downPayment) + Number(creditAmount) !=
-                      Number(netTotal) ||
-                    Number(creditAmount) > netTotal
-                  : false
+          bg={
+            btnDisable
+              ? `bg-green-100`
+              : `bg-green-500 text-white hover:bg-green-600`
           }
-          click={() => console.log(useINVOICEStore.getState())}
+          disabled={btnDisable}
+          click={() => handleCrud()}
         />
         <Button
           name={

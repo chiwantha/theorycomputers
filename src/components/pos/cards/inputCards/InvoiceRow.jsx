@@ -268,7 +268,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                   {/* SERIALS */}
                   {row.serial && row.showSerials && (
                     <tr>
-                      <td colSpan={5} className="pl-4 pb-2 space-y-2">
+                      <td colSpan={6} className="pl-4 pb-2 space-y-2">
                         <div className="flex flex-col gap-2 border-l-2 border-gray-300 pl-2">
                           {Array.from({
                             length: row.quantity,
