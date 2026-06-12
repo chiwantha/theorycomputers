@@ -1,10 +1,11 @@
 import pool from "@/lib/db";
+import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
   //   const connection = await pool.getConnection();
   try {
     const data = await request.formData();
-    // const invItems = JSON.parse(data.get("invItems"));
+    const invItems = JSON.parse(data.get("invItems"));
     console.log(data);
 
     // await connection.commit();

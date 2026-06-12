@@ -73,10 +73,13 @@ const JobForm = ({ form_props, rows = true }) => {
   const problem = useJOBStore((state) => state.problem);
   const customerId = useCUSTOMERStore((state) => state.customerId);
   const setHeaderField = useJOBStore((state) => state.setHeaderField);
+
   const resetJOB = useJOBStore((state) => state.resetJOB);
+  const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
 
   useEffect(() => {
     resetJOB();
+    resetCustomer();
     setHeaderField(`jobNo`, generateDocNo(`JOB`));
   }, []);
 

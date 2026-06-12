@@ -14,8 +14,10 @@ import { RefreshCcw } from "lucide-react";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { validateFields } from "@/lib/validation";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const PaymentSection = () => {
+  const { data: userData } = useSession();
   const [pending, setPending] = useState(false);
   const invNo = useINVOICEStore((state) => state.invNo);
   const docType = useINVOICEStore((state) => state.docType);
@@ -219,10 +221,29 @@ const PaymentSection = () => {
         }
       }
 
-      return;
       const data = new FormData();
+      data.append(`invNo`, invoiceData.invNo);
+      data.append(`dovType`, invoiceData.dovType);
+      data.append(`invType`, invoiceData.invType);
+      data.append(`quoteId`, invoiceData.quoteId);
+      data.append(`jobId`, invoiceData.jobId);
+      data.append(`advance`, invoiceData.advance);
+      data.append(`grossTotal`, invoiceData.grossTotal);
+      data.append(`discount`, invoiceData.discount);
+      data.append(`netTotal`, invoiceData.netTotal);
+      data.append(`paymentMethod`, invoiceData.paymentMethod);
+      data.append(`cashAmount`, invoiceData.cashAmount);
+      data.append(`cardAmount`, invoiceData.cardAmount);
+      data.append(`bankAmount`, invoiceData.bankAmount);
+      data.append(`creditAmount`, invoiceData.creditAmount);
+      data.append(`downPayment`, invoiceData.downPayment);
+      data.append(`dueDate`, invoiceData.dueDate);
+      data.append(`cardType`, invoiceData.cardType);
+      data.append(`cardDigits`, invoiceData.cardDigits);
+      data.append(`note`, invoiceData.note);
+      data.append(`cashierId`, userData?.user?.id);
 
-      data.append(`invItems`, JSON.stringify(invoiceData.rows));
+      data.append(`invItems`, JSON.stringify(invoiceData?.rows));
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_URL}/api/pos/terminal`,
@@ -260,9 +281,11 @@ const PaymentSection = () => {
     docType == `QUOTATION`
       ? false
       : paymentMethod == "CASH"
-        ? cashReceived == 0 || !cashReceived
+        ? cashReceived == 0 || !cashReceived || cashReceived < netTotal
         : paymentMethod == `MIX`
-          ? Number(cashAmount) + Number(cardAmount) + Number(bankAmount) == 0
+          ? Number(cashAmount) + Number(cardAmount) + Number(bankAmount) == 0 ||
+            Number(cashAmount) + Number(cardAmount) + Number(bankAmount) <
+              netTotal
           : paymentMethod == "CARD"
             ? cardType == `` || cardDigits == ``
             : paymentMethod == `CREDIT`

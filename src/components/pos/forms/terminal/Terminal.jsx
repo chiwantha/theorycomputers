@@ -9,6 +9,7 @@ import { useINVOICEStore } from "@/store/invoiceStore";
 import { generateDocNo } from "@/lib/utils";
 import PaymentSection from "../../sections/terminal/Payment";
 import Separator from "@/components/common/separator/Separator";
+import { useCUSTOMERStore } from "@/store/customerStore";
 
 const Terminal = ({
   customersList,
@@ -37,8 +38,11 @@ const Terminal = ({
   const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
   const resetINVPayment = useINVOICEStore((state) => state.resetINVPayment);
 
+  const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
+
   useEffect(() => {
     resetINVOICE();
+    resetCustomer();
     setHeaderField(`invNo`, generateDocNo(`INV`));
   }, []);
 
@@ -109,7 +113,7 @@ const Terminal = ({
             </div>
 
             {/* Debug Values  */}
-            <div className="flex flex-col ">
+            <div className="hidden flex-col ">
               <span>Gross : {grossTotal}</span>
               <span>Advance : - {advance}</span>
               <span>Discount : - {discount}</span>

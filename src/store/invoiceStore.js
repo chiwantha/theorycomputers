@@ -40,7 +40,6 @@ export const useINVOICEStore = create((set, get) => ({
 
   // meta
   note: ``,
-  cashierId: ``,
   status: 0,
 
   // items
@@ -112,7 +111,6 @@ export const useINVOICEStore = create((set, get) => ({
 
       // meta
       note: ``,
-      cashierId: ``,
       status: 0,
 
       // items
