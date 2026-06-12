@@ -9,6 +9,7 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
   const jobId = useINVOICEStore((state) => state.jobId);
   const quoteId = useINVOICEStore((state) => state.quoteId);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
+  const setDownPayment = useINVOICEStore((state) => state.setDownPayment);
   const setCustomerField = useCUSTOMERStore((state) => state.setCustomerField);
   const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
 
@@ -17,6 +18,8 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
     setHeaderField(`jobId`, ``);
     setHeaderField(`quoteId`, ``);
     setHeaderField(`docType`, `INVOICE`);
+    setDownPayment(``);
+    resetCustomer();
   };
 
   return (
@@ -28,10 +31,7 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
           <button
             className={`px-4 py-1.5 rounded-xl transition-colors duration-300 ${invType == `DIRECT` ? `bg-blue-500  text-white` : `text-gray-600`}`}
             onClick={() => {
-              setHeaderField(`invType`, `DIRECT`);
-              setHeaderField(`jobId`, ``);
-              setHeaderField(`quoteId`, ``);
-              resetCustomer();
+              resetInvType();
             }}
           >
             Direct
@@ -39,11 +39,8 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
           <button
             className={`px-4 py-1.5 rounded-xl transition-colors duration-300 ${invType == `JOB` ? `bg-blue-500  text-white` : `text-gray-600`}`}
             onClick={() => {
+              resetInvType();
               setHeaderField(`invType`, `JOB`);
-              setHeaderField(`docType`, `INVOICE`);
-              setHeaderField(`jobId`, ``);
-              setHeaderField(`quoteId`, ``);
-              resetCustomer();
             }}
           >
             Job
@@ -51,11 +48,8 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
           <button
             className={`px-4 py-1.5 rounded-xl  transition-colors duration-300 ${invType == `QUOTATION` ? `bg-blue-500  text-white` : `text-gray-600`}`}
             onClick={() => {
+              resetInvType();
               setHeaderField(`invType`, `QUOTATION`);
-              setHeaderField(`docType`, `INVOICE`);
-              setHeaderField(`jobId`, ``);
-              setHeaderField(`quoteId`, ``);
-              resetCustomer();
             }}
           >
             Quote
@@ -63,7 +57,9 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
         </div>
         <div className="flex gap-2 items-center">
           <button
-            onClick={resetInvType}
+            onClick={() => {
+              setDownPayment(1000);
+            }}
             className={`px-3 text-white py-1.5 rounded-xl text-ellipsis line-clamp-1 ${(jobId !== `` || quoteId !== ``) && `scale-100`} scale-0 transition-all group bg-green-400 hover:bg-green-600 duration-300`}
           >
             {invType == `JOB` ? `Load Job` : `Load Quote`}
@@ -94,7 +90,7 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
             }
             defaultValue={jobId}
             onChange={(val) => {
-              const selected = jobList.find((job) => (job.id = val));
+              const selected = jobList.find((job) => job.id === val);
               setCustomerField(`customerState`, 0);
               setCustomerField(`customerId`, selected?.customer_id);
               setHeaderField(`jobId`, val);

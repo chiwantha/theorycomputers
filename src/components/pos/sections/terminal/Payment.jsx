@@ -25,7 +25,6 @@ const PaymentSection = () => {
   const jobId = useINVOICEStore((state) => state.jobId);
   const quoteId = useINVOICEStore((state) => state.quoteId);
 
-  const advance = useINVOICEStore((state) => state.advance);
   const grossTotal = useINVOICEStore((state) => state.grossTotal);
   const discount = useINVOICEStore((state) => state.discount);
   const netTotal = useINVOICEStore((state) => state.netTotal);
@@ -43,6 +42,7 @@ const PaymentSection = () => {
   const cashReceived = useINVOICEStore((state) => state.cashReceived);
 
   const setDiscount = useINVOICEStore((state) => state.setDiscount);
+  const setDownPayment = useINVOICEStore((state) => state.setDownPayment);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
   const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
   const resetINVPayment = useINVOICEStore((state) => state.resetINVPayment);
@@ -78,6 +78,7 @@ const PaymentSection = () => {
       func: () => {
         setHeaderField(`paymentMethod`, `CREDIT`);
         resetINVPayment();
+        setHeaderField(`creditAmount`, netTotal);
       },
     },
   ];
@@ -88,6 +89,8 @@ const PaymentSection = () => {
         setHeaderField(`cashAmount`, netTotal);
       } else if (paymentMethod === `CARD`) {
         setHeaderField(`cardAmount`, netTotal);
+      } else if (paymentMethod === `CREDIT`) {
+        setHeaderField(`creditAmount`, downPayment);
       }
     }
   }, [netTotal, paymentMethod, docType]);
@@ -223,11 +226,10 @@ const PaymentSection = () => {
 
       const data = new FormData();
       data.append(`invNo`, invoiceData.invNo);
-      data.append(`dovType`, invoiceData.dovType);
+      data.append(`docType`, invoiceData.docType);
       data.append(`invType`, invoiceData.invType);
       data.append(`quoteId`, invoiceData.quoteId);
       data.append(`jobId`, invoiceData.jobId);
-      data.append(`advance`, invoiceData.advance);
       data.append(`grossTotal`, invoiceData.grossTotal);
       data.append(`discount`, invoiceData.discount);
       data.append(`netTotal`, invoiceData.netTotal);
@@ -240,8 +242,9 @@ const PaymentSection = () => {
       data.append(`dueDate`, invoiceData.dueDate);
       data.append(`cardType`, invoiceData.cardType);
       data.append(`cardDigits`, invoiceData.cardDigits);
+      data.append(`bankReference`, null);
       data.append(`note`, invoiceData.note);
-      data.append(`cashierId`, userData?.user?.id);
+      data.append(`userId`, userData?.user?.id);
 
       data.append(`invItems`, JSON.stringify(invoiceData?.rows));
 
@@ -307,11 +310,11 @@ const PaymentSection = () => {
 
         <Separator />
 
-        {advance ? (
+        {downPayment && invType === `JOB` ? (
           <>
             <div className="grid grid-cols-2 gap-2 items-center">
-              <span className="pl-4 text-gray-400">Advance</span>
-              <span className=" py-1 font-semibold px-4 ">{advance}</span>
+              <span className="pl-4 text-gray-400">Down Payment</span>
+              <span className=" py-1 font-semibold px-4 ">{downPayment}</span>
             </div>
             <Separator />
           </>
@@ -474,9 +477,11 @@ const PaymentSection = () => {
                   label={`DownPayment`}
                   placeholder={`1500`}
                   value={downPayment}
+                  readonly={invType === `JOB`}
+                  disabled={invType === `JOB`}
                   onChange={(e) => {
-                    const value = Number(e.target.value) || 0;
-                    setHeaderField(`downPayment`, e.target.value);
+                    const value = Number(e.target.value) || ``;
+                    setDownPayment(value);
                     setHeaderField(`creditAmount`, netTotal - value);
                   }}
                 />
