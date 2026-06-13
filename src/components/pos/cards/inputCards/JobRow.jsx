@@ -112,7 +112,7 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                             { value: `NORMAL`, label: `Normal` },
                             { value: `WARRANTY`, label: `Warranty` },
                           ]}
-                          value={row.billing}
+                          defaultValue={row.billing}
                           placeholder="Normal"
                           className="min-w-50"
                           onChange={(val) => {

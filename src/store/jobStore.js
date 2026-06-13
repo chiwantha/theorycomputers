@@ -164,6 +164,7 @@ export const useJOBStore = create((set, get) => ({
   },
 
   setRows: (rowsData) => {
+    console.log(rowsData);
     const rows = rowsData.map((row) => ({
       tempId: crypto.randomUUID(),
 
