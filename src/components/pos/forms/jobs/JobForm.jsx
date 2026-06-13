@@ -204,7 +204,6 @@ const JobForm = ({ form_props, rows = true }) => {
       data.append(`problem`, jobData.problem);
 
       data.append(`grossTotal`, jobData.grossTotal);
-      data.append(`discount`, jobData.discount);
       data.append(`netTotal`, jobData.netTotal);
 
       data.append(`jobItems`, JSON.stringify(jobData.rows));

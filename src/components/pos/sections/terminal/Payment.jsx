@@ -15,6 +15,7 @@ import { useCUSTOMERStore } from "@/store/customerStore";
 import { validateFields } from "@/lib/validation";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import { generateDocNo } from "@/lib/utils";
 
 const PaymentSection = () => {
   const { data: userData } = useSession();
@@ -96,6 +97,11 @@ const PaymentSection = () => {
   }, [netTotal, paymentMethod, docType]);
 
   const handleCrud = async () => {
+    if (docType === `INVOICE`) {
+      setHeaderField(`invNo`, generateDocNo(`INV`));
+    } else if (docType === `QUOATATION`) {
+      setHeaderField(`invNo`, generateDocNo(`QUT`));
+    }
     setPending(true);
 
     try {
@@ -134,7 +140,7 @@ const PaymentSection = () => {
             return;
           }
 
-          if (!row.cost) {
+          if (!row.cost && row.item_type === `P`) {
             toast.error(`Missing Unit Cost on ${row?.itemName} !`);
             return;
           }
@@ -280,24 +286,28 @@ const PaymentSection = () => {
     }
   };
 
-  const btnDisable =
-    docType == `QUOTATION`
-      ? false
-      : paymentMethod == "CASH"
-        ? cashReceived == 0 || !cashReceived || cashReceived < netTotal
-        : paymentMethod == `MIX`
-          ? Number(cashAmount) + Number(cardAmount) + Number(bankAmount) == 0 ||
-            Number(cashAmount) + Number(cardAmount) + Number(bankAmount) <
-              netTotal
-          : paymentMethod == "CARD"
-            ? cardType == `` || cardDigits == ``
-            : paymentMethod == `CREDIT`
-              ? downPayment == `` ||
-                dueDate == `` ||
-                Number(downPayment) + Number(creditAmount) !=
-                  Number(netTotal) ||
-                Number(creditAmount) > netTotal
-              : false;
+  const btnDisableHandle = () => {
+    const btnDisable =
+      docType == `QUOTATION`
+        ? false
+        : paymentMethod == "CASH"
+          ? cashReceived == 0 || !cashReceived || cashReceived < netTotal
+          : paymentMethod == `MIX`
+            ? Number(cashAmount) + Number(cardAmount) + Number(bankAmount) ==
+                0 ||
+              Number(cashAmount) + Number(cardAmount) + Number(bankAmount) <
+                netTotal
+            : paymentMethod == "CARD"
+              ? cardType == `` || cardDigits == ``
+              : paymentMethod == `CREDIT`
+                ? dueDate == `` || invType !== `JOB`
+                  ? Number(downPayment) + Number(creditAmount) !=
+                      Number(netTotal) || Number(creditAmount) > netTotal
+                  : false
+                : false;
+
+    return btnDisable;
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md p-4 space-y-4">
@@ -480,7 +490,8 @@ const PaymentSection = () => {
                   readonly={invType === `JOB`}
                   disabled={invType === `JOB`}
                   onChange={(e) => {
-                    const value = Number(e.target.value) || ``;
+                    const value =
+                      e.target.value == `` ? `` : Number(e.target.value);
                     setDownPayment(value);
                     setHeaderField(`creditAmount`, netTotal - value);
                   }}
@@ -516,11 +527,11 @@ const PaymentSection = () => {
           wfull={true}
           pd={`py-3 px-4 font-bold text-xl`}
           bg={
-            btnDisable
+            btnDisableHandle()
               ? `bg-green-100`
               : `bg-green-500 text-white hover:bg-green-600`
           }
-          disabled={btnDisable}
+          disabled={btnDisableHandle()}
           click={() => handleCrud()}
         />
         <Button

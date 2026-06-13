@@ -164,7 +164,7 @@ export function validateInvItems(inv_items) {
       return { error: `Invalid item type for item ${product.itemName}` };
     }
 
-    if (!product.cost) {
+    if (!product.cost && product.itemType === `P`) {
       return { error: `Invalid unit cost for item ${product.itemName}` };
     }
 
@@ -176,7 +176,7 @@ export function validateInvItems(inv_items) {
       return { error: `Invalid quantity for item ${product.itemName}` };
     }
 
-    if (product.warrantyId != null || !product.warrantyId) {
+    if (product.warrantyId) {
       if (!product.warrantyName) {
         return { error: `Invalid warranty name for item ${product.itemName}` };
       }

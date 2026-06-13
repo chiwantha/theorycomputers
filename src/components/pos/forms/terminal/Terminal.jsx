@@ -44,6 +44,8 @@ const Terminal = ({
     resetINVOICE();
     resetCustomer();
     setHeaderField(`invNo`, generateDocNo(`INV`));
+    setHeaderField(`itemList`, itemsList);
+    setHeaderField(`warrantyList`, warrantyList);
   }, []);
 
   return (

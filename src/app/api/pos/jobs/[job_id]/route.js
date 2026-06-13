@@ -54,9 +54,11 @@ export const GET = async (request, { params }) => {
     }
     // console.log(`Details : `, detailsRes);
 
-    const itemsSql = `SELECT job_items.*, mst_items.name AS item_name, mst_items.is_serial AS serial,  mst_items.type AS item_type
+    const itemsSql = `SELECT job_items.*, mst_items.name AS item_name, mst_items.is_serial AS serial,  mst_items.type AS item_type , mst_items.cost AS unit_cost, 
+    mst_items.warranty_id AS warranty_id , mst_warranty.name AS warranty_name ,  mst_warranty.duration AS warranty_duration
     FROM job_items
     INNER JOIN mst_items ON mst_items.id = job_items.item_id
+    LEFT JOIN mst_warranty ON mst_items.warranty_id = mst_warranty.id
     JOIN job_header ON job_items.header_Id = job_header.id
     WHERE job_items.header_id = ? AND (
     CASE 

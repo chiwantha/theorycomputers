@@ -3,13 +3,17 @@ import NextInput from "@/components/common/form/nextinput/NextInput";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { useINVOICEStore } from "@/store/invoiceStore";
 import { RefreshCcw } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
+  const [pending, setPending] = useState(false);
   const invType = useINVOICEStore((state) => state.invType);
   const jobId = useINVOICEStore((state) => state.jobId);
   const quoteId = useINVOICEStore((state) => state.quoteId);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
   const setDownPayment = useINVOICEStore((state) => state.setDownPayment);
+  const setRows = useINVOICEStore((state) => state.setRows);
+  const setHeds = useINVOICEStore((state) => state.setHeds);
   const setCustomerField = useCUSTOMERStore((state) => state.setCustomerField);
   const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
 
@@ -20,6 +24,35 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
     setHeaderField(`docType`, `INVOICE`);
     setDownPayment(``);
     resetCustomer();
+  };
+
+  const get_job_data = async (jobId) => {
+    setPending(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/pos/jobs/${jobId}`,
+      );
+
+      if (!res.ok) {
+        return [];
+      }
+
+      return await res.json();
+    } catch (err) {
+      console.log(`Error Fetching Job Data : `, err);
+      return [];
+    } finally {
+      setPending(false);
+    }
+  };
+
+  const handleLoad = async () => {
+    if (invType === `JOB`) {
+      const data = await get_job_data(jobId);
+      // alert(JSON.stringify(data?.headerRes));
+      setRows(data?.jobItems);
+      setHeds(data?.headerRes[0]);
+    }
   };
 
   return (
@@ -58,11 +91,16 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
         <div className="flex gap-2 items-center">
           <button
             onClick={() => {
-              setDownPayment(1000);
+              handleLoad();
             }}
+            disabled={pending}
             className={`px-3 text-white py-1.5 rounded-xl text-ellipsis line-clamp-1 ${(jobId !== `` || quoteId !== ``) && `scale-100`} scale-0 transition-all group bg-green-400 hover:bg-green-600 duration-300`}
           >
-            {invType == `JOB` ? `Load Job` : `Load Quote`}
+            {pending
+              ? `Wait ... !`
+              : invType == `JOB`
+                ? `Load Job`
+                : `Load Quote`}
           </button>
           <button
             onClick={resetInvType}

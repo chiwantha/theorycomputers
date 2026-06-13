@@ -70,3 +70,11 @@ export function setDivDisabled(divId, disabled) {
     div.style.userSelect = "auto";
   }
 }
+
+export const calculateWarrantyEndDate = (durationMonths) => {
+  const date = new Date();
+
+  date.setMonth(date.getMonth() + durationMonths);
+
+  return date.toISOString().split("T")[0];
+};

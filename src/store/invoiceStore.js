@@ -1,3 +1,4 @@
+import { calculateWarrantyEndDate } from "@/lib/utils";
 import { create } from "zustand";
 
 const calculateGrossTotal = (rows) => {
@@ -251,11 +252,13 @@ export const useINVOICEStore = create((set, get) => ({
       itemType: row.item_type,
 
       warrantyId: row.warranty_id,
-      warrantyName: row.warranty_name,
-      warrantyEndDate: row.warranty_end_date,
+      warrantyName: row.warranty_name || null,
+      warrantyEndDate: row.warranty_id
+        ? calculateWarrantyEndDate(row.warranty_duration)
+        : null,
 
-      cost: Number(row.unit_price),
-      selling: Number(row.selling_price),
+      cost: Number(row.unit_cost || 0),
+      selling: Number(row.unit_price),
       quantity: Number(row.quantity),
       lineTotal: Number(row.line_total),
 
@@ -273,6 +276,10 @@ export const useINVOICEStore = create((set, get) => ({
       grossTotal,
       netTotal: grossTotal - get().discount - Number(get().downPayment || 0),
     });
+  },
+
+  setHeds: (headerData) => {
+    get().setDownPayment(headerData?.advance);
   },
 
   toggleSerials: (tempId) => {

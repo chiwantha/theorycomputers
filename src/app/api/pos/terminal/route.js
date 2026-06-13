@@ -7,6 +7,8 @@ export const POST = async (request) => {
   try {
     const data = await request.formData();
     const invItems = JSON.parse(data.get("invItems"));
+    console.log(data);
+    console.log(invItems);
 
     if (invItems.length > 0) {
       const validation = validateInvItems(invItems);
@@ -30,8 +32,16 @@ export const POST = async (request) => {
     const userId = data.get(`userId`);
     const note = data.get(`note`);
 
-    const invNo = data.get(`invNo`);
-    const invNo = data.get(`invNo`);
+    // payment
+    const paymentMethod = data.get(`paymentMethod`);
+    const advance = data.get(`advance`);
+    const downPayment = data.get(`downPayment`);
+    const cashAmount = data.get(`cashAmount`);
+    const cardAmount = data.get(`cardAmount`);
+    const bankAmount = data.get(`bankAmount`);
+    const cardType = data.get(`cardType`);
+    const cardDigits = data.get(`cardDigits`);
+    const bankReference = data.get(`bankReference`);
 
     // await connection.commit();
     return NextResponse.json({ success: true }, { status: 200 });

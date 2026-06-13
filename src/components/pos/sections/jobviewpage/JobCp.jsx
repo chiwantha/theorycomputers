@@ -184,26 +184,27 @@ const JobCp = () => {
       <div className="rounded-xl    space-y-4 flex flex-col  h-full">
         {/* job totals */}
         <div className="flex flex-col p-4 rounded-xl text-gray-600 shadow-md bg-white">
-          <div className="grid grid-cols-2 gap-2 r">
+          <div className="grid grid-cols-2 gap-2  items-center">
             <span className="pl-4 ">Gross Total</span>
             <span className=" py-1 font-semibold px-4 ">
               {grossTotal.toFixed(2)}
             </span>
           </div>
           <Separator />
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 items-center">
             <span className="pl-4 ">Discount</span>
             <input
               name="dsicount"
               type="number"
+              disabled={true}
               className=" py-1 font-semibold px-4  outline-none bg-gray-200 rounded-md"
               value={discount}
               placeholder="Enter Discount Amount"
-              onChange={(e) => setDiscount(e.target.value)}
+              readOnly={true}
             />
           </div>
           <Separator />
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2  items-center">
             <span className="pl-4 ">Net Total</span>
             <span className=" py-1  font-semibold px-4 ">
               {netTotal.toFixed(2)}
