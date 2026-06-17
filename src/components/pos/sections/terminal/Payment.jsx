@@ -79,7 +79,6 @@ const PaymentSection = () => {
       func: () => {
         setHeaderField(`paymentMethod`, `CREDIT`);
         resetINVPayment();
-        setHeaderField(`creditAmount`, netTotal);
       },
     },
   ];
