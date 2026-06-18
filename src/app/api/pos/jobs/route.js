@@ -113,6 +113,25 @@ export const POST = async (request) => {
     }
     const header_id = resJobHeader.insertId;
 
+    if (Number(advance) !== 0 && advance) {
+      const jobAdvancePaymentSql = `INSERT INTO trn_payments (reference, reference_id, payment_type, payment_method, amount, note)
+      VALUES (?,?,?,?,?,?)`;
+      const [resjobAdvancePayment] = await connection.execute(
+        jobAdvancePaymentSql,
+        [
+          `JOB`,
+          header_id,
+          `DOWN`,
+          `CASH`,
+          advance,
+          `Advance Payment For ${jobNo}`,
+        ],
+      );
+      if (!resjobAdvancePayment.insertId) {
+        throw new Error("Down-Payment Transaction Failed !");
+      }
+    }
+
     // console.log(`test 2 passed ✅ !`);
 
     // INSERT DETAILS
