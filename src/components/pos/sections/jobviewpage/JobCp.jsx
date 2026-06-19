@@ -9,26 +9,38 @@ import { getTimeSince } from "@/lib/utils";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { useJOBStore } from "@/store/jobStore";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const JobCp = () => {
+const JobCp = ({ paymentsRes }) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const cancelModal = CancelConfirmModal();
 
   const grossTotal = useJOBStore((state) => state.grossTotal);
+  const netTotal = useJOBStore((state) => state.netTotal);
+  const advancedPayment = useJOBStore((state) => state.advancedPayment);
   const jobNo = useJOBStore((state) => state.jobNo);
   const section = useJOBStore((state) => state.section);
-  const netTotal = useJOBStore((state) => state.netTotal);
   const jobId = useJOBStore((state) => state.jobId);
   const state = useJOBStore((state) => state.state);
-  const deadline = useJOBStore((state) => state.deadline);
   const created_at = useJOBStore((state) => state.created_at);
+  const deadline = useJOBStore((state) => state.deadline);
   const job_start = useJOBStore((state) => state.job_start);
   const job_finished = useJOBStore((state) => state.job_finished);
   const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
   const customerName = useCUSTOMERStore((state) => state.customerName);
+  const setHeaderField = useJOBStore((state) => state.setHeaderField);
+
+  useEffect(() => {
+    // alert(JSON.stringify(paymentsRes));
+    if (paymentsRes?.payment_type === `DOWN`) {
+      setHeaderField(
+        `advancedPayment`,
+        `${Number(paymentsRes?.amount).toFixed(2)} / ${paymentsRes?.payment_method}`,
+      );
+    } else alert(`No !`);
+  }, [paymentsRes]);
 
   const stateConfig = {
     0: {
@@ -195,11 +207,14 @@ const JobCp = () => {
               {netTotal.toFixed(2)}
             </span>
           </div>
-          <Separator />
-          <div className="grid grid-cols-2 gap-2  items-center">
-            <span className="pl-4 ">Net Total</span>
+
+          <div
+            className="grid grid-cols-2 gap-2 mt-3 text-white
+          bg-green-400 rounded-lg p-2 items-center"
+          >
+            <span className="pl-4 ">Advance</span>
             <span className=" py-1  font-semibold px-4 ">
-              {netTotal.toFixed(2)}
+              {advancedPayment}
             </span>
           </div>
         </div>

@@ -40,7 +40,7 @@ const page = async ({ params }) => {
             headerData={Job?.headerRes[0] || false}
           />
         </div>
-        <JobCp />
+        <JobCp paymentsRes={Job?.paymentsRes[0] || false} />
       </div>
       <div className="bg-white shadow-md rounded-xl p-4">
         <JobRow item_list={itemsList} defaultRows={Job?.jobItems} />
