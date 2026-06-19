@@ -12,7 +12,7 @@ export const GET = async (request, { params }) => {
     if (!headerRes || headerRes.length == 0) {
       return NextResponse.json({ error: `No Job Found !` }, { status: 404 });
     }
-    console.log(`Header : `, headerRes[0]);
+    // console.log(`Header : `, headerRes[0]);
 
     const customerSql = `SELECT id, CONCAT(first_name, " ", last_name) AS customerName,
      phone AS customerPhone FROM customers WHERE id = ?`;
@@ -23,7 +23,7 @@ export const GET = async (request, { params }) => {
         { status: 404 },
       );
     }
-    console.log(`Customer : `, customerRes);
+    // console.log(`Customer : `, customerRes);
 
     const detailsSql = `
       SELECT 
@@ -52,11 +52,12 @@ export const GET = async (request, { params }) => {
         { status: 404 },
       );
     }
-    console.log(`Details : `, detailsRes);
+    // console.log(`Details : `, detailsRes);
 
     const paymentsSql = `SELECT * FROM trn_payments WHERE reference=? AND reference_id=?`;
     const paymentsRes = await query(paymentsSql, [`JOB`, job_id]);
-    console.log(`Payments : `, paymentsRes);
+
+    // console.log(`Payments : `, paymentsRes);
 
     const itemsSql = `SELECT job_items.*, mst_items.name AS item_name, mst_items.is_serial AS serial,  mst_items.type AS item_type , mst_items.cost AS unit_cost, 
     mst_items.warranty_id AS warranty_id , mst_warranty.name AS warranty_name ,  mst_warranty.duration AS warranty_duration
@@ -74,7 +75,8 @@ export const GET = async (request, { params }) => {
 
     const itemSerialsSql = `SELECT * FROM stock_items_serials WHERE reference=? AND reference_id=?`;
     const itemSerialsRes = await query(itemSerialsSql, [`JOB`, job_id]);
-    console.log(`Serials : `, itemSerialsRes);
+
+    // console.log(`Serials : `, itemSerialsRes);
 
     const serialMap = new Map();
 

@@ -27,7 +27,7 @@ const page = async ({ params }) => {
   const { job_id } = await params;
   const Job = await get_job_data(job_id);
   const itemsList = await get_items_for_job(job_id);
-  console.log(Job);
+  // console.log(Job);
 
   return (
     <div className="flex flex-col space-y-4">

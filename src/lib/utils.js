@@ -78,3 +78,16 @@ export const calculateWarrantyEndDate = (durationMonths) => {
 
   return date.toISOString().split("T")[0];
 };
+
+export const formatDateTime = (dateString) => {
+  if (!dateString) return "-";
+
+  const d = new Date(dateString);
+
+  return `${String(d.getUTCDate()).padStart(2, "0")} ${d.toLocaleString("en", {
+    month: "short",
+    timeZone: "UTC",
+  })}, ${String(d.getUTCHours()).padStart(2, "0")}:${String(
+    d.getUTCMinutes(),
+  ).padStart(2, "0")}`;
+};

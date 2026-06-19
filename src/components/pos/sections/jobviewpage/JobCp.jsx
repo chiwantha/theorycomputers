@@ -5,7 +5,7 @@ import CancelConfirmModal from "@/components/common/form/confirmmodal/useCancelC
 import Separator from "@/components/common/separator/Separator";
 import ValueDisplay from "@/components/common/valuedisplay/ValueDisplay";
 import { divDisable } from "@/constant/Forms";
-import { getTimeSince } from "@/lib/utils";
+import { formatDateTime, getTimeSince } from "@/lib/utils";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { useJOBStore } from "@/store/jobStore";
 import { useRouter } from "next/navigation";
@@ -230,8 +230,11 @@ const JobCp = ({ paymentsRes }) => {
               title={`Deadline`}
               value={deadline}
             />
-            <ValueDisplay title={`Started`} value={job_start} />
-            <ValueDisplay title={`Finished`} value={job_finished} />
+            <ValueDisplay title={`Started`} value={formatDateTime(job_start)} />
+            <ValueDisplay
+              title={`Finished`}
+              value={formatDateTime(job_finished)}
+            />
           </div>
         </div>
       </div>

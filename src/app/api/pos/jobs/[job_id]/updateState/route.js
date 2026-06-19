@@ -30,7 +30,15 @@ export const PUT = async (request, { params }) => {
 
     await connection.beginTransaction();
 
-    const sql = `UPDATE job_header SET state = ?, updated_at = NOW() WHERE id = ?`;
+    let middleCh =
+      data?.action == `Start`
+        ? `, start = NOW()`
+        : data?.action == `Finish`
+          ? `, finish = NOW()`
+          : data?.action == `Restart`
+            ? `, start = NOW(), finish = NULL`
+            : ``;
+    let sql = `UPDATE job_header SET state = ?, updated_at = NOW() ${middleCh} WHERE id = ?`;
     const res = await query(sql, [data?.state, job_id]);
     if (!res || res.affectedRows === 0) {
       throw new Error(`Update State Failed on Server`);
