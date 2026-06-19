@@ -20,7 +20,6 @@ const JobCp = () => {
   const grossTotal = useJOBStore((state) => state.grossTotal);
   const jobNo = useJOBStore((state) => state.jobNo);
   const section = useJOBStore((state) => state.section);
-  const discount = useJOBStore((state) => state.discount);
   const netTotal = useJOBStore((state) => state.netTotal);
   const jobId = useJOBStore((state) => state.jobId);
   const state = useJOBStore((state) => state.state);
@@ -28,7 +27,6 @@ const JobCp = () => {
   const created_at = useJOBStore((state) => state.created_at);
   const job_start = useJOBStore((state) => state.job_start);
   const job_finished = useJOBStore((state) => state.job_finished);
-  const setDiscount = useJOBStore((state) => state.setDiscount);
   const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
   const customerName = useCUSTOMERStore((state) => state.customerName);
 
@@ -191,17 +189,11 @@ const JobCp = () => {
             </span>
           </div>
           <Separator />
-          <div className="grid grid-cols-2 gap-2 items-center">
-            <span className="pl-4 ">Discount</span>
-            <input
-              name="dsicount"
-              type="number"
-              disabled={true}
-              className=" py-1 font-semibold px-4  outline-none bg-gray-200 rounded-md"
-              value={discount}
-              placeholder="Enter Discount Amount"
-              readOnly={true}
-            />
+          <div className="grid grid-cols-2 gap-2  items-center">
+            <span className="pl-4 ">Net Total</span>
+            <span className=" py-1  font-semibold px-4 ">
+              {netTotal.toFixed(2)}
+            </span>
           </div>
           <Separator />
           <div className="grid grid-cols-2 gap-2  items-center">
