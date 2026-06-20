@@ -17,9 +17,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
   const setRows = useINVOICEStore((state) => state.setRows);
   const toggleSerials = useINVOICEStore((state) => state.toggleSerials);
   const updateSerial = useINVOICEStore((state) => state.updateSerial);
-  const grossTotal = useINVOICEStore((state) => state.grossTotal);
-  const discount = useINVOICEStore((state) => state.discount);
-  const netTotal = useINVOICEStore((state) => state.netTotal);
+  const billEdit = useINVOICEStore((state) => state.billEdit);
 
   useEffect(() => {
     if (!Array.isArray(defaultRows) || defaultRows.length === 0) return;
@@ -27,7 +25,10 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
   }, [defaultRows]);
 
   return (
-    <div>
+    <fieldset
+      disabled={!billEdit}
+      className={!billEdit ? `cursor-not-allowed ` : ``}
+    >
       <div className="overflow-x-auto lg:overflow-visible">
         <table className="min-w-full table-auto">
           <thead>
@@ -312,7 +313,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
           }
         />
       </div>
-    </div>
+    </fieldset>
   );
 };
 

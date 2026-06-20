@@ -15,6 +15,7 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
   const setRows = useINVOICEStore((state) => state.setRows);
   const setCustomerField = useCUSTOMERStore((state) => state.setCustomerField);
   const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
+  const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
 
   const resetInvType = () => {
     setHeaderField(`invType`, `DIRECT`);
@@ -105,7 +106,10 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
                 : `Load Quote`}
           </button>
           <button
-            onClick={resetInvType}
+            onClick={() => {
+              resetInvType();
+              resetINVOICE();
+            }}
             className="px-2 text-white py-2 rounded-xl group bg-red-400 hover:bg-red-600 transition-colors duration-300"
           >
             <RefreshCcw
