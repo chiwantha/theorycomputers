@@ -11,9 +11,8 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
   const jobId = useINVOICEStore((state) => state.jobId);
   const quoteId = useINVOICEStore((state) => state.quoteId);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
-  const setDownPayment = useINVOICEStore((state) => state.setDownPayment);
+  const setPaid = useINVOICEStore((state) => state.setPaid);
   const setRows = useINVOICEStore((state) => state.setRows);
-  const setHeds = useINVOICEStore((state) => state.setHeds);
   const setCustomerField = useCUSTOMERStore((state) => state.setCustomerField);
   const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
 
@@ -22,7 +21,6 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
     setHeaderField(`jobId`, ``);
     setHeaderField(`quoteId`, ``);
     setHeaderField(`docType`, `INVOICE`);
-    setDownPayment(``);
     resetCustomer();
   };
 
@@ -51,7 +49,11 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
       const data = await get_job_data(jobId);
       // alert(JSON.stringify(data?.headerRes));
       setRows(data?.jobItems);
-      setHeds(data?.headerRes[0]);
+      setPaid(
+        data?.paymentsRes[0]?.payment_type === `DOWN`
+          ? data?.paymentsRes[0]?.amount
+          : 0,
+      );
     }
   };
 

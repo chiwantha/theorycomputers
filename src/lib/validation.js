@@ -176,7 +176,7 @@ export function validateInvItems(inv_items) {
       return { error: `Invalid quantity for item ${product.itemName}` };
     }
 
-    if (product.warrantyId) {
+    if (product.warrantyId && product.warrantyId !== 1) {
       if (!product.warrantyName) {
         return { error: `Invalid warranty name for item ${product.itemName}` };
       }

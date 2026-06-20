@@ -20,6 +20,7 @@ import { generateDocNo } from "@/lib/utils";
 const PaymentSection = () => {
   const { data: userData } = useSession();
   const [pending, setPending] = useState(false);
+
   const invNo = useINVOICEStore((state) => state.invNo);
   const docType = useINVOICEStore((state) => state.docType);
   const invType = useINVOICEStore((state) => state.invType);
@@ -27,6 +28,7 @@ const PaymentSection = () => {
   const quoteId = useINVOICEStore((state) => state.quoteId);
 
   const grossTotal = useINVOICEStore((state) => state.grossTotal);
+  const paid = useINVOICEStore((state) => state.paid);
   const discount = useINVOICEStore((state) => state.discount);
   const netTotal = useINVOICEStore((state) => state.netTotal);
 
@@ -47,6 +49,8 @@ const PaymentSection = () => {
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
   const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
   const resetINVPayment = useINVOICEStore((state) => state.resetINVPayment);
+
+  const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
 
   const paymentMethods = [
     {
@@ -237,6 +241,7 @@ const PaymentSection = () => {
       data.append(`jobId`, invoiceData.jobId);
       data.append(`grossTotal`, invoiceData.grossTotal);
       data.append(`discount`, invoiceData.discount);
+      data.append(`paid`, invoiceData.paid);
       data.append(`netTotal`, invoiceData.netTotal);
       data.append(`paymentMethod`, invoiceData.paymentMethod);
       data.append(`cashAmount`, invoiceData.cashAmount);
@@ -299,10 +304,12 @@ const PaymentSection = () => {
             : paymentMethod == "CARD"
               ? cardType == `` || cardDigits == ``
               : paymentMethod == `CREDIT`
-                ? dueDate == `` || invType !== `JOB`
-                  ? Number(downPayment) + Number(creditAmount) !=
-                      Number(netTotal) || Number(creditAmount) > netTotal
-                  : false
+                ? dueDate == `` ||
+                  downPayment === "" ||
+                  Number(downPayment) < 0 ||
+                  Number(downPayment) + Number(creditAmount) !=
+                    Number(netTotal) ||
+                  Number(creditAmount) > Number(netTotal)
                 : false;
 
     return btnDisable;
@@ -314,16 +321,20 @@ const PaymentSection = () => {
       <div className="flex flex-col ">
         <div className="grid grid-cols-2 gap-2 items-center">
           <span className="pl-4 text-gray-400">Gross Total</span>
-          <span className=" py-1 font-semibold px-4 ">{grossTotal}</span>
+          <span className=" py-1 font-semibold px-4 ">
+            {Number(grossTotal).toFixed(2)}
+          </span>
         </div>
 
         <Separator />
 
-        {downPayment && invType === `JOB` ? (
+        {paid ? (
           <>
             <div className="grid grid-cols-2 gap-2 items-center">
-              <span className="pl-4 text-gray-400">Down Payment</span>
-              <span className=" py-1 font-semibold px-4 ">{downPayment}</span>
+              <span className="pl-4 text-gray-400">Advanced</span>
+              <span className=" py-1 font-semibold px-4 ">
+                {Number(paid).toFixed(2)}
+              </span>
             </div>
             <Separator />
           </>
@@ -347,7 +358,9 @@ const PaymentSection = () => {
 
         <div className="flex mt-2 justify-center items-center flex-col py-4 ">
           <span className=" text-gray-400">Net Total</span>
-          <span className=" py-0.5 font-bold px-4 text-xl">{netTotal}</span>
+          <span className=" py-0.5 font-bold px-4 text-xl">
+            {Number(netTotal).toFixed(2)}
+          </span>
         </div>
       </div>
 
@@ -486,12 +499,10 @@ const PaymentSection = () => {
                   label={`DownPayment`}
                   placeholder={`1500`}
                   value={downPayment}
-                  readonly={invType === `JOB`}
-                  disabled={invType === `JOB`}
                   onChange={(e) => {
                     const value =
                       e.target.value == `` ? `` : Number(e.target.value);
-                    setDownPayment(value);
+                    setHeaderField(`downPayment`, value);
                     setHeaderField(`creditAmount`, netTotal - value);
                   }}
                 />
@@ -499,7 +510,7 @@ const PaymentSection = () => {
                 <div className="bg-red-400 flex items-center justify-center flex-col p-4 rounded-lg">
                   <span className=" text-gray-100">Total Due</span>
                   <span className="text-white py-0.5 font-bold px-4 text-4xl">
-                    {creditAmount}
+                    {Number(creditAmount).toFixed(2)}
                   </span>
                 </div>
 
@@ -542,7 +553,10 @@ const PaymentSection = () => {
           }
           pd={`py-4 px-4 font-bold text-xl aspect-square `}
           bg={`bg-red-400 text-white hover:bg-red-500`}
-          click={() => resetINVOICE()}
+          click={() => {
+            resetCustomer();
+            resetINVOICE();
+          }}
         />
       </div>
     </div>

@@ -20,7 +20,7 @@ INNER JOIN customers
     ON job_header.customer_id = customers.id
 WHERE
     DATE(job_header.created_at) = CURDATE()
-    OR job_header.state IN (0, 2)
+    OR job_header.state IN (0,1, 2)
 ORDER BY job_header.state ASC, job_header.created_at DESC;`;
 
     const res = await query(sql);
@@ -98,12 +98,11 @@ export const POST = async (request) => {
     // console.log(`test 1 passed ✅ !`);
 
     // INSERT HEADER
-    const jobHeaderSql = `INSERT INTO job_header (job_no, customer_id, warranty, advance, gross, discount, net) VALUES (?,?,?,?,?,?,?)`;
+    const jobHeaderSql = `INSERT INTO job_header (job_no, customer_id, warranty, gross, discount, net) VALUES (?,?,?,?,?,?)`;
     const [resJobHeader] = await connection.execute(jobHeaderSql, [
       jobNo,
       customer_id_use,
       warranty == "true" ? 1 : 0,
-      advance,
       grossTotal,
       discount,
       netTotal,

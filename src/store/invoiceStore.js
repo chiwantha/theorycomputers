@@ -20,6 +20,7 @@ export const useINVOICEStore = create((set, get) => ({
   jobId: ``,
 
   // ammounts
+  paid: 0,
   downPayment: ``,
   grossTotal: 0,
   discount: 0,
@@ -56,18 +57,15 @@ export const useINVOICEStore = create((set, get) => ({
   setDiscount: (discount) => {
     set({
       discount,
-      netTotal: get().grossTotal - discount - Number(get().downPayment || 0),
+      netTotal: get().grossTotal - discount - get().paid,
     });
   },
 
   // discount
-  setDownPayment: (downPayment) => {
+  setPaid: (paid) => {
     set({
-      downPayment,
-      netTotal:
-        get().invType !== `DIRECT`
-          ? get().grossTotal - get().discount - Number(downPayment || ``)
-          : get().netTotal,
+      paid,
+      netTotal: get().grossTotal - get().discount - paid,
     });
   },
 
@@ -82,7 +80,7 @@ export const useINVOICEStore = create((set, get) => ({
       cardDigits: ``,
       cardType: ``,
       cashReceived: ``,
-      downPayment: get().invType === `DIRECT` ? `` : get().downPayment,
+      downPayment: ``,
     });
   },
 
@@ -101,6 +99,7 @@ export const useINVOICEStore = create((set, get) => ({
       jobId: ``,
 
       // ammounts
+      paid: 0,
       downPayment: ``,
       grossTotal: 0,
       discount: 0,
@@ -159,7 +158,7 @@ export const useINVOICEStore = create((set, get) => ({
     set({
       rows,
       grossTotal,
-      netTotal: grossTotal - get().discount - Number(get().downPayment || 0),
+      netTotal: grossTotal - get().discount - Number(get().paid),
     });
   },
 
@@ -208,7 +207,7 @@ export const useINVOICEStore = create((set, get) => ({
     set({
       rows,
       grossTotal,
-      netTotal: grossTotal - get().discount - Number(get().downPayment || 0),
+      netTotal: grossTotal - get().discount - Number(get().paid),
     });
   },
 
@@ -239,7 +238,7 @@ export const useINVOICEStore = create((set, get) => ({
     set({
       rows,
       grossTotal,
-      netTotal: grossTotal - get().discount - Number(get().downPayment || 0),
+      netTotal: grossTotal - get().discount - Number(get().paid),
     });
   },
 
@@ -276,10 +275,6 @@ export const useINVOICEStore = create((set, get) => ({
       grossTotal,
       netTotal: grossTotal - get().discount - Number(get().downPayment || 0),
     });
-  },
-
-  setHeds: (headerData) => {
-    get().setDownPayment(headerData?.advance);
   },
 
   toggleSerials: (tempId) => {

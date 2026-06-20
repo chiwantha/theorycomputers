@@ -35,11 +35,8 @@ const JobCp = ({ paymentsRes }) => {
   useEffect(() => {
     // alert(JSON.stringify(paymentsRes));
     if (paymentsRes?.payment_type === `DOWN`) {
-      setHeaderField(
-        `advancedPayment`,
-        `${Number(paymentsRes?.amount).toFixed(2)} / ${paymentsRes?.payment_method}`,
-      );
-    } else alert(`No !`);
+      setHeaderField(`advancedPayment`, Number(paymentsRes?.amount).toFixed(2));
+    }
   }, [paymentsRes]);
 
   const stateConfig = {
@@ -195,26 +192,24 @@ const JobCp = ({ paymentsRes }) => {
         {/* job totals */}
         <div className="flex flex-col p-4 rounded-xl text-gray-600 shadow-md bg-white">
           <div className="grid grid-cols-2 gap-2  items-center">
-            <span className="pl-4 ">Gross Total</span>
+            <span className="pl-4 ">Job Total</span>
             <span className=" py-1 font-semibold px-4 ">
               {grossTotal.toFixed(2)}
             </span>
           </div>
-          <Separator />
-          <div className="grid grid-cols-2 gap-2  items-center">
-            <span className="pl-4 ">Net Total</span>
-            <span className=" py-1  font-semibold px-4 ">
-              {netTotal.toFixed(2)}
-            </span>
-          </div>
-
           <div
-            className="grid grid-cols-2 gap-2 mt-3 text-white
+            className="grid grid-cols-2 gap-2 my-3 text-white
           bg-green-400 rounded-lg p-2 items-center"
           >
             <span className="pl-4 ">Advance</span>
             <span className=" py-1  font-semibold px-4 ">
               {advancedPayment}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2  items-center">
+            <span className="pl-4 ">Net Total</span>
+            <span className=" py-1  font-semibold px-4 ">
+              {(netTotal.toFixed(2) - advancedPayment).toFixed(2)}
             </span>
           </div>
         </div>
