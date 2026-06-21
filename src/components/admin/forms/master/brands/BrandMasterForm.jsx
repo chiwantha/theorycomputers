@@ -60,13 +60,10 @@ const BrandMasterForm = ({ defaultData, form_props, close_drawer }) => {
         return;
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/brands`,
-        {
-          method,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/admin/master/brands`, {
+        method,
+        body: data,
+      });
 
       if (!res.ok) {
         toast.error(

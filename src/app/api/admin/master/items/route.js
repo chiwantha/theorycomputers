@@ -34,6 +34,10 @@ export const POST = async (request) => {
     const brand = data.get("brand");
     const category = data.get("category");
     const description = data.get("description") || null;
+    const warranty =
+      data.get("warranty") === "null" || data.get("warranty") === ""
+        ? null
+        : Number(data.get("warranty"));
     const cost = data.get("cost");
     const selling = data.get("selling");
     const reorder = data.get("reorder");
@@ -61,7 +65,9 @@ export const POST = async (request) => {
     // console.log(...data, { imagesave: savedImage });
     // return NextResponse.json(true, { status: 200 });
 
-    const save_query = `INSERT INTO mst_items ( code, name, description, image, category_id, brand_id, cost, selling, is_serial, reorder_level, type, online ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const save_query = `INSERT INTO mst_items ( code, name, description, image, category_id,
+     brand_id, warranty_id, cost, selling, is_serial, reorder_level, type, online )
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     const res = await query(save_query, [
       code,
@@ -70,6 +76,7 @@ export const POST = async (request) => {
       savedImage,
       category,
       brand,
+      warranty,
       cost,
       selling,
       serial,
@@ -102,6 +109,10 @@ export const PUT = async (request) => {
     const brand = data.get("brand");
     const category = data.get("category");
     const description = data.get("description") || null;
+    const warranty =
+      data.get("warranty") === "null" || data.get("warranty") === ""
+        ? null
+        : Number(data.get("warranty"));
     const cost = data.get("cost");
     const selling = data.get("selling");
     const reorder = data.get("reorder");
@@ -130,7 +141,7 @@ export const PUT = async (request) => {
       return NextResponse.json({ error: `Id Not Found !` }, { status: 404 });
     }
 
-    const sql = `UPDATE mst_items SET code=?, name=?, description=?, image=?, category_id=?, brand_id=?, cost=?, selling=?, is_serial=?, reorder_level=?, type=?, online=? WHERE id=?`;
+    const sql = `UPDATE mst_items SET code=?, name=?, description=?, image=?, category_id=?, brand_id=?, warranty_id=?, cost=?, selling=?, is_serial=?, reorder_level=?, type=?, online=? WHERE id=?`;
 
     const values = [
       code,
@@ -139,6 +150,7 @@ export const PUT = async (request) => {
       savedImage,
       category,
       brand,
+      warranty,
       cost,
       selling,
       serial,

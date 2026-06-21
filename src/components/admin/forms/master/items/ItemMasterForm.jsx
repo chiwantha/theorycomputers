@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { validateFields } from "@/lib/validation";
 
 const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
-  const { category_list, brand_list } = form_props || {};
+  const { category_list, brand_list, warranty_list } = form_props || {};
   const [pending, setIsPending] = useState(false);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
@@ -43,6 +43,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         name: defaultData.row.name,
         brand_id: defaultData.row.brand_id,
         category_id: defaultData.row.category_id,
+        warranty_id: defaultData.row.warranty_id,
         description: defaultData.row.description,
         image: defaultData.row.image,
         cost: defaultData.row.cost,
@@ -59,6 +60,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         name: ``,
         brand_id: ``,
         category_id: ``,
+        warranty_id: ``,
         description: ``,
         image: ``,
         cost: ``,
@@ -69,6 +71,27 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         online: ``,
       });
   }, [defaultData]);
+
+  useEffect(() => {
+    if (!defaultData) {
+      setFormData({
+        id: ``,
+        code: ``,
+        name: ``,
+        brand_id: ``,
+        category_id: ``,
+        warranty_id: ``,
+        description: ``,
+        image: ``,
+        cost: ``,
+        selling: ``,
+        reorder: ``,
+        serial: ``,
+        type: ``,
+        online: ``,
+      });
+    }
+  }, []);
 
   const handleCrud = async () => {
     setIsPending(true);
@@ -122,6 +145,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
       data.append("name", formData.name);
       data.append("brand", formData.brand_id);
       data.append("category", formData.category_id);
+      data.append("warranty", formData.warranty_id);
       data.append("description", formData.description);
       data.append("image", formData.image);
       data.append("cost", formData.cost);
@@ -131,13 +155,10 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
       data.append("type", formData.type);
       data.append("online", formData.online);
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items/`,
-        {
-          method,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/admin/master/items/`, {
+        method,
+        body: data,
+      });
 
       if (!res.ok) {
         toast.error(
@@ -240,6 +261,18 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
           />
           <Separator />
           <div className="col-span-full grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="col-span-full">
+              <NextDropdown
+                label={`Warranty`}
+                id={`item_warranty`}
+                placeholder={`Blank for No Warranty`}
+                items={warranty_list}
+                defaultValue={defaultData ? formData.warranty_id : null}
+                onChange={(value) =>
+                  setFormData({ ...formData, warranty_id: value })
+                }
+              />
+            </div>
             <NextInput
               label={`Cost`}
               id={`item_cost`}

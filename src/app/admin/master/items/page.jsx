@@ -1,6 +1,6 @@
 import ItemMasterForm from "@/components/admin/forms/master/items/ItemMasterForm";
 import Table from "@/components/common/table/Table";
-import { get_brands, get_categories } from "@/lib/data";
+import { get_brands, get_categories, get_warranties } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +47,12 @@ const MasterItems = async () => {
       data_className: "",
     },
     {
+      header: "Warranty",
+      data_name: "warranty_name",
+      className: "md:table-cell hidden",
+      data_className: "",
+    },
+    {
       header: "Cost",
       data_name: "cost",
       className: "md:table-cell hidden",
@@ -65,6 +71,7 @@ const MasterItems = async () => {
   const dropdowns = {
     categories: await get_categories(),
     brands: await get_brands(),
+    warrantyList: await get_warranties(),
   };
 
   const data = await get_master_items_list();
@@ -81,6 +88,7 @@ const MasterItems = async () => {
         form_props={{
           category_list: dropdowns?.categories || [],
           brand_list: dropdowns?.brands || [],
+          warranty_list: dropdowns?.warrantyList || [],
         }}
         action
       />

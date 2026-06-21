@@ -74,13 +74,10 @@ const WarrantyMasterForm = ({ defaultData, form_props, close_drawer }) => {
         return;
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/warranty`,
-        {
-          method,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/admin/master/warranty`, {
+        method,
+        body: data,
+      });
 
       if (!res.ok) {
         toast.error(

@@ -61,13 +61,10 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
         return;
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/master/categories`,
-        {
-          method,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/admin/master/categories`, {
+        method,
+        body: data,
+      });
 
       if (!res.ok) {
         toast.error(
