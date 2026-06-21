@@ -12,13 +12,16 @@ const dbConfig = {
   queueLimit: 0,
 
   timezone: "+00:00",
-  charset: "utf8mb4_unicode_ci",
+  charset: "utf8mb4",
 
-  connectTimeout: 20000,
+  connectTimeout: 10000,
 
-  // 🔥 important
   enableKeepAlive: true,
-  keepAliveInitialDelay: 0,
+  keepAliveInitialDelay: 10000,
+
+  // add these
+  idleTimeout: 60000,
+  maxIdle: 5,
 };
 
 // 🔥 Singleton (VERY IMPORTANT for Next.js)

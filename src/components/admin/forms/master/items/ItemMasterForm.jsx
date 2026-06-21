@@ -72,27 +72,6 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
       });
   }, [defaultData]);
 
-  useEffect(() => {
-    if (!defaultData) {
-      setFormData({
-        id: ``,
-        code: ``,
-        name: ``,
-        brand_id: ``,
-        category_id: ``,
-        warranty_id: ``,
-        description: ``,
-        image: ``,
-        cost: ``,
-        selling: ``,
-        reorder: ``,
-        serial: ``,
-        type: ``,
-        online: ``,
-      });
-    }
-  }, []);
-
   const handleCrud = async () => {
     setIsPending(true);
 
@@ -173,9 +152,26 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         } successfully !`,
       );
 
-      router.refresh();
+      setFormData({
+        id: ``,
+        code: ``,
+        name: ``,
+        brand_id: null,
+        category_id: null,
+        warranty_id: null,
+        description: ``,
+        image: ``,
+        cost: ``,
+        selling: ``,
+        reorder: ``,
+        serial: null,
+        type: null,
+        online: null,
+      });
       setSuccess(true);
       close_drawer(true);
+      setIsPending(false);
+      router.refresh();
     } catch (err) {
       console.log("Operation Failed:", err);
       toast.error("Something went wrong !");
