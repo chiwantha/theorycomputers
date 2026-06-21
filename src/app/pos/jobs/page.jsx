@@ -1,10 +1,13 @@
 import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
 import JobGrid from "@/components/pos/grid/jobgrid/JobGrid";
-import React from "react";
+
+export const dynamic = "force-dynamic";
 
 async function get_job_list() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/pos/jobs`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/pos/jobs`, {
+      cache: "no-store",
+    });
 
     if (!res.ok) {
       return [];
