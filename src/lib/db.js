@@ -33,38 +33,77 @@ if (!global._mysqlPool) {
 
 pool = global._mysqlPool;
 
-// ✅ Query function with retry + safe connection handling
+// ✅ Query function with connection validation + retry
 export async function query(sql, params = []) {
   let connection;
 
+  const getConnectionWithTimeout = async () => {
+    return await Promise.race([
+      pool.getConnection(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("DB connection timeout")), 5000),
+      ),
+    ]);
+  };
+
   try {
-    connection = await pool.getConnection();
+    connection = await getConnectionWithTimeout();
+
+    // 🔥 validate connection before using it
+    try {
+      await connection.ping();
+    } catch (pingError) {
+      console.log("Dead MySQL connection detected, recreating...");
+
+      connection.destroy();
+
+      connection = await getConnectionWithTimeout();
+
+      await connection.ping();
+    }
 
     const [results] = await connection.execute(sql, params);
+
     return results;
   } catch (error) {
-    console.error("Database query error:", error);
+    console.error("Database query error:", error.code, error.message);
 
-    // 🔁 Retry once for connection-related errors
+    // 🔁 retry once for connection problems
     if (
       error.code === "PROTOCOL_CONNECTION_LOST" ||
       error.code === "ECONNRESET" ||
-      error.code === "ETIMEDOUT"
+      error.code === "ETIMEDOUT" ||
+      error.code === "EPIPE" ||
+      error.code === "PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR"
     ) {
-      try {
-        console.log("Retrying database query...");
+      console.log("Retrying database query...");
 
-        const [results] = await pool.execute(sql, params);
+      let retryConnection;
+
+      try {
+        retryConnection = await getConnectionWithTimeout();
+
+        await retryConnection.ping();
+
+        const [results] = await retryConnection.execute(sql, params);
+
         return results;
       } catch (retryError) {
-        console.error("Retry failed:", retryError);
+        console.error("Retry failed:", retryError.code, retryError.message);
+
         throw retryError;
+      } finally {
+        if (retryConnection) {
+          retryConnection.release();
+        }
       }
     }
 
     throw error;
   } finally {
-    if (connection) connection.release();
+    if (connection) {
+      connection.release();
+    }
   }
 }
 

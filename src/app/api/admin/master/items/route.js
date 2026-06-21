@@ -4,9 +4,11 @@ import { NextResponse } from "next/server";
 
 export const GET = async (request) => {
   try {
-    const sql = `SELECT mst_items.* , mst_category.name AS category, mst_category.id AS category_id, mst_brand.name AS brand, mst_brand.id AS brand_id  FROM mst_items
+    const sql = `SELECT mst_items.* , mst_category.name AS category, mst_category.id AS category_id, mst_brand.name AS brand, mst_brand.id AS brand_id 
+    , COALESCE(mst_warranty.name, '-') AS warranty_name FROM mst_items
     INNER JOIN mst_category ON mst_items.category_id = mst_category.id
     INNER JOIN mst_brand ON mst_items.brand_id = mst_brand.id
+    LEFT JOIN mst_warranty ON mst_items.warranty_id = mst_warranty.id
     WHERE mst_items.state = 1`;
 
     const data = await query(sql);
