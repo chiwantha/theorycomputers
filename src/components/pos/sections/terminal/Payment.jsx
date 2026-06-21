@@ -410,7 +410,6 @@ const PaymentSection = () => {
               : `bg-blue-500 text-white hover:bg-blue-600`
           }
           click={() => {
-            resetINVPayment();
             if (docType === `INVOICE`) {
               handlePay();
             } else if (docType === `QUOTATION`) {
