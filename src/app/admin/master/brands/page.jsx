@@ -30,10 +30,10 @@ const MasterBrands = async () => {
         tablename={`Brands`}
         rows={data}
         colunms={colunms}
-        action
         form_props={true}
         form={BrandMasterForm}
         searchkeys={["name"]}
+        action={{ view: false, edit: true, delete: true }}
       />
     </div>
   );

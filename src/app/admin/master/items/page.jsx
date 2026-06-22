@@ -73,7 +73,7 @@ const MasterItems = async () => {
           brand_list: dropdowns?.brands || [],
           warranty_list: dropdowns?.warrantyList || [],
         }}
-        action
+        action={{ view: false, edit: true, delete: true }}
       />
     </div>
   );

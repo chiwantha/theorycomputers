@@ -32,7 +32,7 @@ const MasterCategories = async () => {
         tablename={`Categories`}
         rows={data}
         colunms={colunms}
-        action
+        action={{ view: false, edit: true, delete: true }}
         form={CategoryMasterForm}
         form_props={true}
         searchkeys={["name"]}

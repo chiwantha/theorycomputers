@@ -38,7 +38,7 @@ const MasterWarranty = async () => {
         rows={data}
         form={WarrantyMasterForm}
         form_props={true}
-        action
+        action={{ view: false, edit: true, delete: true }}
         searchkeys={["name", "type", "duration"]}
       />
     </div>
