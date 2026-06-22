@@ -1,24 +1,6 @@
 import SupplierMasterForm from "@/components/admin/forms/master/suppliers/SupplierMasterForm";
 import Table from "@/components/common/table/Table";
-
-export const dynamic = "force-dynamic";
-
-async function get_supplier_masater_list() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/master/suppliers`,
-    );
-
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log(`Error Fetching Suppliers ! : `, err);
-    return [];
-  }
-}
+import { load_master_suppliers } from "@/data/master";
 
 const MasterSuppliers = async () => {
   const colunms = [
@@ -65,7 +47,7 @@ const MasterSuppliers = async () => {
       data_className: "",
     },
   ];
-  const data = await get_supplier_masater_list();
+  const data = await load_master_suppliers();
   return (
     <div>
       <Table

@@ -1,24 +1,7 @@
 import SerialsInventoryForm from "@/components/admin/forms/inventory/serials/SerialsInventoryForm";
 import Table from "@/components/common/table/Table";
+import { load_inventory_serials } from "@/data/inventory";
 
-export const dynamic = "force-dynamic";
-
-async function get_serial_inventory_list() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/serials`,
-    );
-
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log(`Error Fetching Stock Inventory List : `, err);
-    return [];
-  }
-}
 const InventorySerials = async () => {
   const colunms = [
     {
@@ -53,7 +36,7 @@ const InventorySerials = async () => {
     },
   ];
 
-  const data = await get_serial_inventory_list();
+  const data = await load_inventory_serials();
   return (
     <div>
       <Table

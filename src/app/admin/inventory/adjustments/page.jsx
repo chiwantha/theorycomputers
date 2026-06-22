@@ -1,26 +1,8 @@
 import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
 import Button from "@/components/common/button/Button";
 import Table from "@/components/common/table/Table";
+import { load_inventory_adjustments } from "@/data/inventory";
 import React from "react";
-
-export const dynamic = "force-dynamic";
-
-async function get_inventory_adj_list() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/adjustments`,
-    );
-
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log(`Error Fetching Inventory Adjustments List : `, err);
-    return [];
-  }
-}
 
 const StockAdjustmentsPage = async () => {
   const colunms = [
@@ -70,7 +52,7 @@ const StockAdjustmentsPage = async () => {
     },
   ];
 
-  const data = await get_inventory_adj_list();
+  const data = await load_inventory_adjustments();
   return (
     <div className="flex flex-col space-y-4">
       <div className="justify-between flex items-center">

@@ -1,24 +1,6 @@
 import WarrantyMasterForm from "@/components/admin/forms/master/warranty/WarrantyMasterForm";
 import Table from "@/components/common/table/Table";
-
-export const dynamic = "force-dynamic";
-
-async function get_warranty_masater_list() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/master/warranty`,
-    );
-
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log(`Error Fetching Warranty ! : `, err);
-    return [];
-  }
-}
+import { load_master_warranties } from "@/data/master";
 
 const MasterWarranty = async () => {
   const colunms = [
@@ -47,7 +29,7 @@ const MasterWarranty = async () => {
       data_className: "",
     },
   ];
-  const data = await get_warranty_masater_list();
+  const data = await load_master_warranties();
   return (
     <div>
       <Table

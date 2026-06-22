@@ -1,27 +1,9 @@
 import CategoryMasterForm from "@/components/admin/forms/master/categories/CategoryMasterForm";
 import Table from "@/components/common/table/Table";
-
-export const dynamic = "force-dynamic";
-
-async function get_master_category_list() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/master/categories`,
-    );
-
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log("Error Fetching Brands : ", err);
-    return [];
-  }
-}
+import { load_master_categories } from "@/data/master";
 
 const MasterCategories = async () => {
-  const data = await get_master_category_list();
+  const data = await load_master_categories();
 
   const colunms = [
     {

@@ -1,24 +1,7 @@
 import ItemMasterForm from "@/components/admin/forms/master/items/ItemMasterForm";
 import Table from "@/components/common/table/Table";
+import { load_master_items } from "@/data/master";
 import { get_brands, get_categories, get_warranties } from "@/lib/data";
-
-export const dynamic = "force-dynamic";
-
-async function get_master_items_list() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/master/items`,
-    );
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log("Error Fetching The Item Master : ", err);
-    return [];
-  }
-}
 
 const MasterItems = async () => {
   const colunms = [
@@ -74,7 +57,7 @@ const MasterItems = async () => {
     warrantyList: await get_warranties(),
   };
 
-  const data = await get_master_items_list();
+  const data = await load_master_items();
   const search = ["name", "category"];
 
   return (

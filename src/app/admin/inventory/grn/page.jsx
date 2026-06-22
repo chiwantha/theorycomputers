@@ -1,25 +1,7 @@
 import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
 import Button from "@/components/common/button/Button";
 import Table from "@/components/common/table/Table";
-
-export const dynamic = "force-dynamic";
-
-async function get_grn_inventory_list() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/grn`,
-    );
-
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log(`Error Fetching Grn Inventory List : `, err);
-    return [];
-  }
-}
+import { load_inventory_grns } from "@/data/inventory";
 
 const InventoryGoodReceiveNote = async () => {
   const colunms = [
@@ -67,7 +49,7 @@ const InventoryGoodReceiveNote = async () => {
       data_className: "",
     },
   ];
-  const data = await get_grn_inventory_list();
+  const data = await load_inventory_grns();
   return (
     <div className="flex flex-col space-y-4">
       <div className="justify-between flex items-center">
