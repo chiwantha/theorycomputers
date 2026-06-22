@@ -83,13 +83,10 @@ const StockAdjustmentForm = ({ form_props }) => {
       data.append(`note`, stateData.note);
       data.append(`adjustment_items`, JSON.stringify(stateData.rows));
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/adjustments`,
-        {
-          method: `POST`,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/admin/inventory/adjustments`, {
+        method: `POST`,
+        body: data,
+      });
 
       if (!res.ok) {
         const data = await res.json();

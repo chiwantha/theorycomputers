@@ -208,7 +208,7 @@ const JobForm = ({ form_props, rows = true }) => {
 
       data.append(`jobItems`, JSON.stringify(jobData.rows));
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/pos/jobs`, {
+      const res = await fetch(`/api/pos/jobs`, {
         method: `POST`,
         body: data,
       });

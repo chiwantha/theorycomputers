@@ -84,13 +84,10 @@ const JobAction = () => {
 
       data.append(`jobItems`, JSON.stringify(jobData.rows));
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/pos/jobs/${job_id}`,
-        {
-          method: `PUT`,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/pos/jobs/${job_id}`, {
+        method: `PUT`,
+        body: data,
+      });
 
       if (!res.ok) {
         const data = await res.json();

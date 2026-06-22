@@ -89,13 +89,10 @@ const GrnInventoryForm = ({ form_props }) => {
       data.append(`total`, stateData.netTotal);
       data.append(`grn_items`, JSON.stringify(stateData.rows));
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/grn`,
-        {
-          method: `POST`,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/admin/inventory/grn`, {
+        method: `POST`,
+        body: data,
+      });
 
       if (!res.ok) {
         toast.error(`Grn failed !`);

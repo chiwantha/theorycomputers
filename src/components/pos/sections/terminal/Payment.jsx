@@ -263,13 +263,10 @@ const PaymentSection = () => {
 
       data.append(`invItems`, JSON.stringify(invoiceData?.rows));
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/pos/terminal`,
-        {
-          method: `POST`,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/pos/terminal`, {
+        method: `POST`,
+        body: data,
+      });
 
       if (!res.ok) {
         const data = await res.json();

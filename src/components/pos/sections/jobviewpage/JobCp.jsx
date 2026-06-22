@@ -145,21 +145,18 @@ const JobCp = ({ paymentsRes }) => {
     }
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/pos/jobs/${jobId}/updateState`,
-        {
-          method: `PUT`,
-          body: JSON.stringify({
-            state: value,
-            action: func,
-            customerPhone: customerPhone,
-            customerName: customerName,
-            jobNo: jobNo,
-            netTotal: netTotal,
-            reason: reason,
-          }),
-        },
-      );
+      const res = await fetch(`/api/pos/jobs/${jobId}/updateState`, {
+        method: `PUT`,
+        body: JSON.stringify({
+          state: value,
+          action: func,
+          customerPhone: customerPhone,
+          customerName: customerName,
+          jobNo: jobNo,
+          netTotal: netTotal,
+          reason: reason,
+        }),
+      });
 
       if (!res.ok) {
         const data = await res.json();

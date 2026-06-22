@@ -57,13 +57,10 @@ const SerialsInventoryForm = ({ defaultData, form_props, close_drawer }) => {
       data.append(`id`, formData.id);
       data.append(`serial`, formData.serial);
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/admin/inventory/serials`,
-        {
-          method,
-          body: data,
-        },
-      );
+      const res = await fetch(`/api/admin/inventory/serials`, {
+        method,
+        body: data,
+      });
 
       if (!res.ok) {
         toast.error(
