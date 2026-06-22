@@ -5,7 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 
-const SidebarItem = ({ name, icon, path, sub, index, isOpen, onToggle }) => {
+const SidebarItem = ({
+  name,
+  icon,
+  path,
+  sub,
+  index,
+  isOpen,
+  onToggle,
+  block,
+}) => {
   const pathname = usePathname();
 
   const isActive = path && pathname === path;
@@ -18,12 +27,14 @@ const SidebarItem = ({ name, icon, path, sub, index, isOpen, onToggle }) => {
       {/* Main Item */}
       {path ? (
         <Link
-          href={path}
+          href={block ? `#` : path}
           className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200
           ${
-            isActive
-              ? "bg-blue-500 text-white shadow-sm"
-              : "text-gray-700 hover:bg-gray-100"
+            block
+              ? `bg-red-300 text-white cursor-not-allowed`
+              : isActive
+                ? "bg-blue-500 text-white shadow-sm"
+                : "text-gray-700 hover:bg-gray-100"
           }`}
         >
           <span className="">{icon}</span>
@@ -34,9 +45,11 @@ const SidebarItem = ({ name, icon, path, sub, index, isOpen, onToggle }) => {
           onClick={() => onToggle(index)}
           className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200
           ${
-            isParentActive
-              ? "bg-blue-50 text-blue-600"
-              : "text-gray-700 hover:bg-gray-100"
+            block
+              ? `bg-red-300 text-white cursor-not-allowed`
+              : isParentActive
+                ? "bg-blue-500 text-white shadow-sm"
+                : "text-gray-700 hover:bg-gray-100"
           }`}
         >
           <div className="flex items-center gap-3">
@@ -69,12 +82,14 @@ const SidebarItem = ({ name, icon, path, sub, index, isOpen, onToggle }) => {
               return (
                 <Link
                   key={i}
-                  href={item.path}
+                  href={item.block ? `#` : item.path}
                   className={`flex items-center gap-4 px-4 py-2 rounded-lg text-sm transition-all duration-300
                   ${
-                    active
-                      ? "bg-blue-500 text-white"
-                      : "text-gray-600 hover:bg-gray-200"
+                    item.block
+                      ? `bg-red-300 text-white cursor-not-allowed`
+                      : active
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-600 hover:bg-gray-200"
                   }`}
                 >
                   {item.icon && <span>{item.icon}</span>}

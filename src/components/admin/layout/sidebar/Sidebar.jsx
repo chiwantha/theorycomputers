@@ -83,19 +83,21 @@ const admin_links = [
         path: "/admin/inventory/adjustments",
       },
       {
+        name: "Serials",
+        icon: <Barcode size={20} />,
+        path: "/admin/inventory/serials",
+      },
+      {
         name: "Returns",
         icon: <RotateCcw size={20} />,
         path: "/admin/inventory/returns",
+        block: true,
       },
       {
         name: "Damages",
         icon: <AlertTriangle size={20} />,
         path: "/admin/inventory/damages",
-      },
-      {
-        name: "Serials",
-        icon: <Barcode size={20} />,
-        path: "/admin/inventory/serials",
+        block: true,
       },
     ],
   },
@@ -109,11 +111,6 @@ const admin_links = [
         path: "/admin/reports/stock",
       },
     ],
-  },
-  {
-    name: "Settings",
-    icon: <Settings size={20} />,
-    path: "/admin/settings",
   },
 ];
 
@@ -144,12 +141,12 @@ const Sidebar = () => {
             {...link}
           />
         ))}
-        <Button
+        {/* <Button
           wfull={true}
           name={`Logout`}
           click={() => signOut({ callbackUrl: `/auth/usr-login` })}
           bg={`bg-red-400 hover:bg-red-600 text-white`}
-        />
+        /> */}
       </div>
     </div>
   );
