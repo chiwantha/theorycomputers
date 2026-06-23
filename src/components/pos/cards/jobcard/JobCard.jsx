@@ -3,11 +3,19 @@
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { getTimeSince } from "@/lib/utils";
-import { Phone, Plus, User } from "lucide-react";
+import { Dock, Phone, Plus, User } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
+const JobCard = ({
+  add,
+  id,
+  customer_name,
+  phone,
+  state,
+  created_at,
+  job_no,
+}) => {
   const getStatus = () => {
     switch (state) {
       case 0:
@@ -21,17 +29,17 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
       case 1:
         return {
           text: "Started",
-          badge: "bg-green-400",
+          badge: "bg-amber-400",
           button: "View",
-          buttonBg: "bg-green-400 hover:bg-green-500 text-white",
+          buttonBg: "bg-amber-400 hover:bg-amber-500 text-white",
         };
 
       case 2:
         return {
           text: "Finished",
-          badge: "bg-orange-500",
+          badge: "bg-emerald-500",
           button: "View",
-          buttonBg: "bg-green-500 hover:bg-green-600 text-white",
+          buttonBg: "bg-emerald-500 hover:bg-emerald-600 text-white",
         };
 
       case 3:
@@ -39,15 +47,15 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
           text: "Paid",
           badge: "bg-green-500",
           button: "View",
-          buttonBg: false,
+          buttonBg: `bg-green-500 hover:bg-green-600 text-white`,
         };
 
       case 4:
         return {
           text: "Cancelled",
-          badge: "bg-gray-500",
+          badge: "bg-red-500",
           button: "View",
-          buttonBg: false,
+          buttonBg: `bg-red-500 hover:bg-red-600 text-white`,
         };
 
       default:
@@ -64,9 +72,19 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
 
   return (
     <div
-      className={`min-h-50 bg-gray-50 rounded-xl border-gray-200 hover:border-blue-300 transition-all duration-300 flex ${
-        add ? "border-4 border-dashed text-blue-400" : "border p-4 md:p-6"
-      }`}
+      className={`min-h-50 rounded-xl  transition-all duration-300 flex 
+        ${add ? "border-4 border-dashed text-blue-400" : "border p-4 md:p-6"}
+        ${
+          state == 1
+            ? `bg-amber-50 border-amber-300 hover:border-amber-500`
+            : state == 2
+              ? `bg-emerald-50 border-emerald-300 hover:border-emerald-500`
+              : state >= 4
+                ? `bg-red-50 border-red-300 hover:border-red-500`
+                : state == 3
+                  ? `bg-green-50 border-green-300 hover:border-green-500`
+                  : `bg-gray-50 border-gray-200 hover:border-blue-300`
+        }`}
     >
       {add ? (
         <Link
@@ -78,9 +96,9 @@ const JobCard = ({ add, id, customer_name, phone, state, created_at }) => {
       ) : (
         <div className="flex flex-col w-full gap-1">
           {/* HEADER */}
-          <div className="flex items-center justify-between">
-            <span className="text-blue-500 font-bold tracking-tighter text-xl">
-              JOB #{id}
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-gray-500 font-bold tracking-tighter text-xl text-nowrap line-clamp-1 text-ellipsis">
+              {job_no.split(`-`).at(-1) || `Job No`}
             </span>
 
             <span

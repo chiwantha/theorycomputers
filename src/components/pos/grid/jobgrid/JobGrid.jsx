@@ -7,7 +7,7 @@ const JobGrid = ({ jobList = [], gridName, grid }) => {
   const data = jobList;
 
   const filteredJobs = data.filter((job) =>
-    `${job.state == 0 ? `pending` : `checkout`} ${job.customer_name} ${job.device_name} ${job.phone}`
+    ` ${job.customerName} ${job.customerPhone} ${job.jobNo}`
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
@@ -40,6 +40,7 @@ const JobGrid = ({ jobList = [], gridName, grid }) => {
             <JobCard
               key={index}
               id={card.jobId}
+              job_no={card.jobNo}
               customer_name={card.customerName}
               phone={card.customerPhone}
               state={card.jobState}

@@ -4,28 +4,22 @@ import JobAction from "@/components/pos/sections/jobviewpage/JobAction";
 import JobCp from "@/components/pos/sections/jobviewpage/JobCp";
 import JobCustomerVIew from "@/components/pos/sections/jobviewpage/JobCustomerVIew";
 import JobDetailsVIew from "@/components/pos/sections/jobviewpage/JobDetailsVIew";
+import { load_per_job } from "@/data/pos/job";
 import { get_items_for_job } from "@/lib/data";
-
-async function get_job_data(jobId) {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/pos/jobs/${jobId}`,
-    );
-
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log(`Error Fetching Job Data : `, err);
-    return [];
-  }
-}
 
 const page = async ({ params }) => {
   const { job_id } = await params;
-  const Job = await get_job_data(job_id);
+  const data = await load_per_job(job_id);
+  const Job = data?.jobData;
+  if (!data.success) {
+    return (
+      <div className="flex flex-col space-y-4">
+        <BreadCrumb />
+        <div className="p-5 bg-red-50 text-red-700 rounded-xl">{Job.error}</div>
+      </div>
+    );
+  }
+
   const itemsList = await get_items_for_job(job_id);
   // console.log(Job);
 

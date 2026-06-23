@@ -1,6 +1,6 @@
 import SupplierMasterForm from "@/components/admin/forms/master/suppliers/SupplierMasterForm";
 import Table from "@/components/common/table/Table";
-import { load_master_suppliers } from "@/data/master";
+import { load_master_suppliers } from "@/data/admin/master";
 
 const MasterSuppliers = async () => {
   const colunms = [

@@ -1,6 +1,6 @@
 import SerialsInventoryForm from "@/components/admin/forms/inventory/serials/SerialsInventoryForm";
 import Table from "@/components/common/table/Table";
-import { load_inventory_serials } from "@/data/inventory";
+import { load_inventory_serials } from "@/data/admin/inventory";
 
 const InventorySerials = async () => {
   const colunms = [

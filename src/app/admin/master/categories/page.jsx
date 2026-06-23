@@ -1,6 +1,6 @@
 import CategoryMasterForm from "@/components/admin/forms/master/categories/CategoryMasterForm";
 import Table from "@/components/common/table/Table";
-import { load_master_categories } from "@/data/master";
+import { load_master_categories } from "@/data/admin/master";
 
 const MasterCategories = async () => {
   const data = await load_master_categories();

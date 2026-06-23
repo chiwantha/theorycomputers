@@ -1,6 +1,6 @@
 import WarrantyMasterForm from "@/components/admin/forms/master/warranty/WarrantyMasterForm";
 import Table from "@/components/common/table/Table";
-import { load_master_warranties } from "@/data/master";
+import { load_master_warranties } from "@/data/admin/master";
 
 const MasterWarranty = async () => {
   const colunms = [

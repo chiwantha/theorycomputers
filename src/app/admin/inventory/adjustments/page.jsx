@@ -1,7 +1,7 @@
 import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
 import Button from "@/components/common/button/Button";
 import Table from "@/components/common/table/Table";
-import { load_inventory_adjustments } from "@/data/inventory";
+import { load_inventory_adjustments } from "@/data/admin/inventory";
 import React from "react";
 
 const StockAdjustmentsPage = async () => {

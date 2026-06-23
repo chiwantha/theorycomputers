@@ -1,6 +1,6 @@
 import BrandMasterForm from "@/components/admin/forms/master/brands/BrandMasterForm";
 import Table from "@/components/common/table/Table";
-import { load_master_brands } from "@/data/master";
+import { load_master_brands } from "@/data/admin/master";
 
 const MasterBrands = async () => {
   const colunms = [

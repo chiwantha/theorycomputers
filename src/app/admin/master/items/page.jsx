@@ -1,6 +1,6 @@
 import ItemMasterForm from "@/components/admin/forms/master/items/ItemMasterForm";
 import Table from "@/components/common/table/Table";
-import { load_master_items } from "@/data/master";
+import { load_master_items } from "@/data/admin/master";
 import { get_brands, get_categories, get_warranties } from "@/lib/data";
 
 const MasterItems = async () => {
