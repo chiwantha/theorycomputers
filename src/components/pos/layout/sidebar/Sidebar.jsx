@@ -86,11 +86,11 @@ const Sidebar = () => {
             {...path}
           />
         ))}
-        <Button
+        {/* <Button
           name={`Logout`}
           wfull={true}
           click={() => signOut({ callbackUrl: `/auth/usr-login` })}
-        />
+        /> */}
       </div>
     </div>
   );
