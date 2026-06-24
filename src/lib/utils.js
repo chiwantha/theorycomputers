@@ -42,7 +42,7 @@ export function getTimeSince(createdAt) {
   return `${minutes}Min`;
 }
 
-export function generateDocNo() {
+export function generateDocNo(document) {
   const now = new Date();
 
   const yy = String(now.getFullYear()).slice(-2);
@@ -52,7 +52,7 @@ export function generateDocNo() {
 
   const uuidPart = uuidv4().replace(/-/g, "").toUpperCase().slice(0, 6); // 👈 EXACT 4 chars
 
-  return `JOB-${datePart}-${uuidPart}`;
+  return `${document || `JOB`}-${datePart}-${uuidPart}`;
 }
 
 export function setDivDisabled(divId, disabled) {

@@ -93,7 +93,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                           updateRow(
                             row.tempId,
                             `warrantyName`,
-                            selectedWarranty?.name,
+                            selectedWarranty?.name || null,
                           );
 
                           const duration = Number(

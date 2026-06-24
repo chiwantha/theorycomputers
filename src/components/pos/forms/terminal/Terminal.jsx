@@ -43,9 +43,7 @@ const Terminal = ({
   useEffect(() => {
     resetINVOICE();
     resetCustomer();
-    setHeaderField(`invNo`, generateDocNo(`INV`));
-    setHeaderField(`itemList`, itemsList);
-    setHeaderField(`warrantyList`, warrantyList);
+    // setHeaderField(`invNo`, generateDocNo(`INV`));
   }, []);
 
   return (

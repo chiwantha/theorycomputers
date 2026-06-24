@@ -1,11 +1,5 @@
 import Terminal from "@/components/pos/forms/terminal/Terminal";
-import {
-  get_customers,
-  get_items,
-  get_jobs,
-  get_quotations,
-  get_warranties,
-} from "@/lib/data";
+import { get_customers, get_items, get_jobs, get_warranties } from "@/lib/data";
 
 const TerminalPage = async () => {
   const customersList = await get_customers();

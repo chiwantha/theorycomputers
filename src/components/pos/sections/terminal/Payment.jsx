@@ -21,7 +21,6 @@ const PaymentSection = () => {
   const { data: userData } = useSession();
   const [pending, setPending] = useState(false);
 
-  const invNo = useINVOICEStore((state) => state.invNo);
   const docType = useINVOICEStore((state) => state.docType);
   const invType = useINVOICEStore((state) => state.invType);
   const jobId = useINVOICEStore((state) => state.jobId);
@@ -105,17 +104,13 @@ const PaymentSection = () => {
   }, [netTotal, paymentMethod, docType]);
 
   const handleCrud = async () => {
-    if (docType === `INVOICE`) {
-      setHeaderField(`invNo`, generateDocNo(`INV`));
-    } else if (docType === `QUOTATION`) {
-      setHeaderField(`invNo`, generateDocNo(`QUT`));
-    }
     setPending(true);
 
     try {
       let validation;
       const customerData = useCUSTOMERStore.getState();
       const invoiceData = useINVOICEStore.getState();
+      console.log(invoiceData);
 
       // Customer Validation
       if (customerData?.customerState === 0) {
@@ -187,11 +182,10 @@ const PaymentSection = () => {
       }
       validation = validateFields(
         {
-          invNo,
           docType,
           paymentMethod,
         },
-        [`invNo`, `docType`, `paymentMethod`],
+        [`docType`, `paymentMethod`],
       );
       if (!validation.isValid) {
         toast.error(`Missing : ${validation.emptyFields.join(", ")} !`);
@@ -217,14 +211,13 @@ const PaymentSection = () => {
             [`cardAmount`, `cardType`, `cardDigits`],
           );
         } else if (paymentMethod === `MIX`) {
-          validation = validateFields(
-            {
-              cardAmount,
-              cashAmount,
-              bankAmount,
-            },
-            [`cardAmount`, `cashAmount`, `bankAmount`],
-          );
+          if (
+            Number(cardAmount) + Number(cashAmount) + Number(bankAmount) <
+            netTotal
+          ) {
+            toast.error(`Insuficent Funds !`);
+            return;
+          }
         } else if (paymentMethod === `CREDIT`) {
           validation = validateFields({ downPayment, creditAmount, dueDate }, [
             `downPayment`,
@@ -239,11 +232,14 @@ const PaymentSection = () => {
       }
 
       const data = new FormData();
-      data.append(`invNo`, invoiceData.invNo);
       data.append(`docType`, invoiceData.docType);
       data.append(`invType`, invoiceData.invType);
       data.append(`quoteId`, invoiceData.quoteId);
       data.append(`jobId`, invoiceData.jobId);
+      data.append(`customerState`, customerData.customerState);
+      data.append(`customerId`, customerData.customerId);
+      data.append(`customerName`, customerData.customerName);
+      data.append(`customerPhone`, customerData.customerPhone);
       data.append(`grossTotal`, invoiceData.grossTotal);
       data.append(`discount`, invoiceData.discount);
       data.append(`paid`, invoiceData.paid);
@@ -426,6 +422,7 @@ const PaymentSection = () => {
           click={() => {
             resetCustomer();
             resetINVOICE();
+            setHeaderField(`invNo`, generateDocNo(`INV`));
           }}
         />
       </div>

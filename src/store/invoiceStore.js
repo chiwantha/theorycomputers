@@ -141,9 +141,9 @@ export const useINVOICEStore = create((set, get) => ({
       cost: item.cost || 0,
       selling: item.selling || 0,
 
-      warrantyId: item.warrantyId,
-      warrantyName: item.warrantyName,
-      warrantyEndDate: item.warrantyEndDate,
+      warrantyId: item.warrantyId || null,
+      warrantyName: item.warrantyName || null,
+      warrantyEndDate: item.warrantyEndDate || null,
 
       quantity: item.quantity || 0,
       lineTotal: (item.selling || 0) * (item.quantity || 0),
