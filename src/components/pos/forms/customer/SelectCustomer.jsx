@@ -60,7 +60,14 @@ const SelectCustomer = ({ customersList, island = true }) => {
             items={customersList}
             name={`customer`}
             defaultValue={customerId}
-            onChange={(val) => setHeaderField(`customerId`, val)}
+            onChange={(val) => {
+              const selected = customersList.find(
+                (customer) => customer.value === val,
+              );
+              setHeaderField(`customerId`, val);
+              setHeaderField(`customerName`, selected.label.split(" - ")[0]);
+              setHeaderField(`customerPhone`, selected.phone);
+            }}
           />
         </div>
       ) : (

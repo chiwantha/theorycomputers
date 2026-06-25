@@ -54,6 +54,14 @@ Thank you.
     `,
 };
 
+export const invoiceTempaltes = {
+  THANKYOU: (data) => `
+Hello ${data.customerName},
+
+Thanks for your purchase & choosing Theory Computer Solutions.
+`,
+};
+
 export const customerTemplates = {
   CREATE: (data) => `
     Hi ${data.customerName},

@@ -112,6 +112,7 @@ export const POST = async (request) => {
     }
     const header_id = resJobHeader.insertId;
 
+    // INSERT ADVANCE PAYMENT
     if (Number(advance) !== 0 && advance) {
       const jobAdvancePaymentSql = `INSERT INTO trn_payments (reference, reference_id, payment_type, payment_method, amount, note)
       VALUES (?,?,?,?,?,?)`;
@@ -177,10 +178,11 @@ export const POST = async (request) => {
 
         // UPDATE STOCK
         if (item.itemType == "P") {
-          const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ?`;
+          const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ? quantity >= ?`;
           const [resUpdateStock] = await connection.execute(updateStockSql, [
             item.quantity,
             item.itemId,
+            item.quantity,
           ]);
           if (resUpdateStock.affectedRows === 0) {
             throw new Error(`Update Stock Failed !`);

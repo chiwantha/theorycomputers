@@ -16,8 +16,10 @@ import { validateFields } from "@/lib/validation";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { generateDocNo } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const PaymentSection = () => {
+  const router = useRouter();
   const { data: userData } = useSession();
   const [pending, setPending] = useState(false);
 
@@ -110,7 +112,7 @@ const PaymentSection = () => {
       let validation;
       const customerData = useCUSTOMERStore.getState();
       const invoiceData = useINVOICEStore.getState();
-      console.log(invoiceData);
+      console.log(customerData);
 
       // Customer Validation
       if (customerData?.customerState === 0) {
@@ -278,8 +280,11 @@ const PaymentSection = () => {
         return;
       }
 
+      const response = await res.json();
+      resetINVOICE();
+      resetCustomer();
       toast.success(`Saved !`);
-      // router.push(`/pos/terminal/${invNo}`);
+      router.push(`/pos/terminal/${response?.invoiceNo}`);
     } catch (err) {
       console.log("Operation Failed:", err);
       toast.error("Something went wrong !");

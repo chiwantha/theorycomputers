@@ -76,3 +76,23 @@
       20% 100%;
   }
 }
+
+@media print {
+  body {
+    background: white;
+  }
+
+  #invoice {
+    width: 210mm;
+    min-height: 297mm;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  button {
+    display: none;
+  }
+}

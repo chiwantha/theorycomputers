@@ -19,6 +19,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "fs": "^0.0.1-security",
+    "html2pdf": "^0.0.11",
+    "html2pdf.js": "^0.14.0",
     "lucide-react": "^0.575.0",
     "mysql2": "^3.18.1",
     "next": "^16.2.6",

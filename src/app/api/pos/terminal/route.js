@@ -1,4 +1,6 @@
+import { customerTemplates, invoiceTempaltes } from "@/constant/SmsTemplate";
 import pool from "@/lib/db";
+import { sendSms } from "@/lib/func";
 import { generateDocNo } from "@/lib/utils";
 import { validateInvItems } from "@/lib/validation";
 import { NextResponse } from "next/server";
@@ -116,11 +118,12 @@ export const POST = async (request) => {
     }
 
     // INSERT INV HEADER
-    const invHeaderSql = `INSERT INTO inv_header (inv_no, doc_type, date, inv_type, job_id, quote_id, gross_total, discount, net_total, settlement, credit_amount, due_date, note, user_id) 
-    VALUES (?,?,NOW(),?,?,?,?,?,?,?,?,?,?,?)`;
+    const invHeaderSql = `INSERT INTO inv_header (inv_no, doc_type, customer_id, date, inv_type, job_id, quote_id, gross_total, discount, net_total, settlement, credit_amount, due_date, note, user_id) 
+    VALUES (?,?,?,NOW(),?,?,?,?,?,?,?,?,?,?,?)`;
     const [resInvHeader] = await connection.execute(invHeaderSql, [
       invNo,
       docType,
+      customer_id_use,
       invType,
       jobId,
       quoteId,
@@ -139,13 +142,121 @@ export const POST = async (request) => {
 
     const header_id = resInvHeader.insertId;
 
-    // PAYMENTS
-    console.log(payment_rows);
-    throw new Error(`Okay OKay `);
+    // HANDLE PAYMENTS
+    if (payment_rows.length > 0) {
+      for (const row of payment_rows) {
+        const paymentsSql = `INSERT INTO trn_payments (reference, reference_id, payment_type, payment_method, amount, card_type, card_last4, bank_reference, note) VALUES (?,?,?,?,?,?,?,?,?)`;
+        const [resPayments] = await connection.execute(paymentsSql, [
+          `INVOICE`,
+          header_id,
+          row?.paymentType,
+          row?.paymentMethod,
+          row?.amount,
+          row?.cardType,
+          row?.cardDigits,
+          row?.bankReference,
+          null,
+        ]);
+        if (!resPayments.insertId) {
+          throw new Error(`Failed to Save Payments !`);
+        }
+      }
+    }
+
+    if (invItems.length > 0) {
+      for (const item of invItems) {
+        // console.log(item);
+        // HANDLE INVOICE ITEMS
+        const invItemsSql = `INSERT INTO inv_details (header_id, item_id, item_name, unit_cost, unit_selling, quantity, line_total, warranty_id, warranty_name, warranty_end_date) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+        const [resInvItems] = await connection.execute(invItemsSql, [
+          header_id,
+          item.itemId,
+          item.itemName,
+          item.cost,
+          item.selling,
+          item.quantity,
+          item.lineTotal,
+          item.warrantyId,
+          item.warrantyName,
+          item.warrantyEndDate,
+        ]);
+        if (!resInvItems.insertId) {
+          throw new Error(`Failed to Save Invoice Item ${item?.itemName} !`);
+        }
+
+        // UPDATE STOCK
+        if (item.itemType == "P" && docType === `INVOICE`) {
+          const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ? AND quantity >= ?`;
+          const [resUpdateStock] = await connection.execute(updateStockSql, [
+            item.quantity,
+            item.itemId,
+            item.quantity,
+          ]);
+          if (resUpdateStock.affectedRows === 0) {
+            throw new Error(`Update Stock Failed !`);
+          }
+        }
+
+        // HANDLE SERIAL
+        if (item.serial && docType === `INVOICE`) {
+          const serials = item.serials;
+          for (const serial of serials) {
+            // UPDATE SERIAL STOCK
+            const updateSerialStock = `UPDATE stock_items_serials SET stock = ? , reference = ? , reference_id = ? WHERE serial = ?`;
+            const [resUpdateSerialStock] = await connection.execute(
+              updateSerialStock,
+              [0, `INV`, header_id, serial],
+            );
+            if (resUpdateSerialStock.affectedRows === 0) {
+              throw new Error(`Update Serial Stock Failed !`);
+            }
+          }
+        }
+
+        // LOG STOCK MOVEMENTS
+        if (item.itemType == "P" && docType === `INVOICE`) {
+          const logStockMovements = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id) VALUES (?,?,?,?,?)`;
+          const [resStockMovements] = await connection.execute(
+            logStockMovements,
+            [item.itemId, `OUT`, item.quantity, `INV`, header_id],
+          );
+          if (!resStockMovements.insertId) {
+            throw new Error(`Stock Movements Logging Failed !`);
+          }
+        }
+      }
+    } else {
+      throw new Error(`Failed to Find Items !`);
+    }
+
     await connection.commit();
-    return NextResponse.json({ success: true }, { status: 200 });
+
+    if (customerState == `1`) {
+      await sendSms(
+        customerPhone,
+        customerTemplates.CREATE({
+          customerName: customerName,
+        }),
+      );
+    }
+
+    await sendSms(
+      customerPhone,
+      invoiceTempaltes.THANKYOU({
+        customerName,
+      }),
+    );
+
+    return NextResponse.json(
+      {
+        success: true,
+        invoiceNo: invNo,
+        invoiceId: header_id,
+      },
+      { status: 200 },
+    );
   } catch (err) {
-    // await connection.rollback();
+    await connection.rollback();
     console.log("Transaction Failed ! :", err.message);
     return NextResponse.json(
       { error: err.message || "Internal Server Error" },
