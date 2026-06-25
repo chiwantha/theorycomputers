@@ -4,6 +4,7 @@ import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { Phone, MapPin, Globe } from "lucide-react";
+import Image from "next/image";
 
 const items = [
   {
@@ -106,200 +107,58 @@ export default function InvoicePreview() {
         {/* A4 */}
         <div
           id="invoice"
-          className="bg-white w-[210mm] shadow-md border-gray-200 border min-h-[297mm] flex rounded-xl flex-col text-gray-800
+          className="bg-white w-[210mm] shadow-md border-gray-200 border min-h-[297mm] flex relative rounded-xl flex-col p-10 text-gray-800 space-y-10
           "
         >
-          {/* HEADER */}
-          <div
-            className="px-12 pt-10 pb-6
-            "
-          >
-            <div className="flex justify-between">
-              <div>
-                <h1 className=" text-5xl font-black tracking-tight">THEORY</h1>
-
-                <h2 className="text-xl tracking-[8px] ml-0.5 text-blue-600font-light ">
-                  COMPUTERS
-                </h2>
-
-                <p className="text-gray-500 mt-2">
-                  Your Official IT Solution Partner
-                </p>
-
-                <div className=" flex gap-6 mt-4 text-sm text-gray-600 flex-wrap  ">
-                  <span className="flex gap-2 items-center">
-                    <Phone size={15} />
-                    075 517 8503
-                  </span>
-
-                  <span className="flex gap-2 items-center">
-                    <MapPin size={15} />
-                    Delgoda, Sri Lanka
-                  </span>
-
-                  <span className="flex gap-2 items-center">
-                    <Globe size={15} />
-                    theorycomputers.lk
-                  </span>
-                </div>
+          <div className="w-full gap-4 flex items-center justify-between">
+            <div className="flex gap-4 items-center">
+              <div className="relative aspect-square w-17.5">
+                <Image
+                  alt="logo.png"
+                  src={`/app/logo.png`}
+                  fill
+                  className="object-contain object-center"
+                />
               </div>
-
-              <div className="text-right">
-                <div
-                  className="
-                  bg-blue-500
-                  text-white
-                  px-8
-                  py-5
-                  rounded-2xl
-                  shadow-lg
-                  "
-                >
-                  <p
-                    className="
-                    text-3xl
-                    font-black
-                    "
-                  >
-                    INVOICE
-                  </p>
-                </div>
-
-                <div
-                  className="
-                  mt-5
-                  text-sm
-                  text-gray-500
-                "
-                >
-                  <p>
-                    Invoice No :<b className="text-gray-800 mr-2">INV-000123</b>
-                  </p>
-
-                  <p>
-                    Date :<b className="text-gray-800 mr-2">25 Jun 2026</b>
-                  </p>
-                </div>
+              <div className="flex flex-col">
+                <span className="text-3xl font-bold text-gray-600 uppercase tracking-tight">
+                  Theory Computers
+                </span>
+                <span className="text-sm font-bold text-gray-400 capitalize">
+                  Your every it solution partner
+                </span>
               </div>
             </div>
+            <div className="bg-blue-500 rounded-b-xl absolute text-white text-2xl h-[120px] right-10 top-0 flex items-center justify-center font-semibold px-12">
+              INVOICE
+            </div>
           </div>
-
-          <Separator />
-
-          {/* CUSTOMER */}
-          <div className="grid gap-4 grid-cols-2 px-12 py-4">
-            <div className="text-left flex gap-1 flex-col">
-              <span className="capitalize font-semibold  text-blue-600">
-                CUSTOMER
+          <div className="grid grid-cols-3 gap-4 bg-gray-50 rounded-xl p-4">
+            <div className="flex flex-col">
+              <span className="text-blue-600 font-semibold tracking-tighter capitalize text-xl">
+                Customer
               </span>
-              <div className="flex flex-col -space-y-1">
-                <span>Kasun Chiwantha</span>
-                <span>0788806670</span>
-              </div>
-            </div>
-            <div className="text-right flex gap-1 flex-col">
-              <span className="capitalize font-semibold  text-blue-600">
-                PAYMENT
+              <Separator />
+              <span className="text-sm text-gray-600 line-clamp-1 text-ellipsis">
+                Kasun Chiwantha
               </span>
-              <div className="flex flex-col -space-y-1">
-                <span>CASH</span>
-              </div>
+              <span className="text-sm text-gray-600">0788806670</span>
             </div>
-          </div>
-
-          <Separator />
-
-          {/* ITEMS */}
-          <div
-            className="px-12 my-8 flex-1
-          "
-          >
-            <table className="w-full">
-              <thead>
-                <tr className=" border-b border-gray-200 ">
-                  <th className=" text-left pb-6">No</th>
-                  <th className=" text-left pb-6">Item Name</th>
-                  <th className="text-center pb-6">Qty</th>
-                  <th className=" text-right pb-6">Price</th>
-                  <th className=" text-right pb-6">Total</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {items.map((item, index) => (
-                  <tr key={index} className=" border-b border-gray-100">
-                    <td className="text-left">{index + 1}</td>
-                    <td className="py-2 flex flex-col -space-y-1">
-                      <span className="font-semibold tracking-normal">
-                        {item.name}
-                      </span>
-                      <span className="capitalize text-sm text-gray-400">
-                        3 Month Supplier Warranty
-                      </span>
-                    </td>
-                    <td className="text-center">{item.qty}</td>
-                    <td className="text-right">
-                      {item.price.toLocaleString()}
-                    </td>
-                    <td className="text-right font-semibold">
-                      {item.total.toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-                <tr>
-                  <td colSpan={2}></td>
-                  <td colSpan={2} className="py-2 border-b border-gray-200">
-                    <span>Sub Total</span>
-                  </td>
-                  <td
-                    colSpan={1}
-                    className="text-right py-2 border-b border-gray-200"
-                  >
-                    <b>{subtotal.toLocaleString()}</b>
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan={2}></td>
-                  <td colSpan={2} className="py-2 border-b border-gray-200">
-                    <span>Discount</span>
-                  </td>
-                  <td
-                    colSpan={1}
-                    className="text-right py-2 border-b border-gray-200"
-                  >
-                    <b>{discount.toLocaleString()}</b>
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan={2}></td>
-                  <td colSpan={2} className="py-2 border-b border-gray-200">
-                    <span>Net Total</span>
-                  </td>
-                  <td
-                    colSpan={1}
-                    className="text-right py-2 border-b border-gray-200"
-                  >
-                    <b>{total.toLocaleString()}</b>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* FOOTER */}
-          <div className=" mt-auto border-t px-12 py-8 flex justify-between ">
-            <div>
-              <p className="font-bold">Thank you for your business</p>
-
-              <p className="text-sm text-gray-500">
-                Computer Sales • Repairs • Networking
-              </p>
+            <div className="flex flex-col ">
+              <span className="text-blue-600 font-semibold tracking-tighter capitalize text-xl">
+                Document
+              </span>
+              <Separator />
+              <span className="text-sm text-gray-600">INV-1056-FG75R6</span>
+              <span className="text-sm text-gray-600">Cashier : Dimuthu</span>
             </div>
-
-            <div className="text-right">
-              <p className="font-bold">Authorized Signature</p>
-
-              <div className=" w-40 border-b mt-8" />
+            <div className="flex flex-col ">
+              <span className="text-blue-600 font-semibold tracking-tighter capitalize text-xl">
+                Payment
+              </span>
+              <Separator />
+              <span className="text-sm text-gray-600">Method : CASH</span>
+              <span className="text-sm text-gray-600">2026 JUNE 26</span>
             </div>
           </div>
         </div>
