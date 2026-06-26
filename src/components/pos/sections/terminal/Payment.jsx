@@ -284,6 +284,7 @@ const PaymentSection = () => {
       // resetINVOICE();
       // resetCustomer();
       toast.success(`Saved !`);
+      setHeaderField(`invNo`, response?.invoiceNo);
       router.push(`/pos/terminal/${response?.invoiceNo}`);
     } catch (err) {
       console.log("Operation Failed:", err);

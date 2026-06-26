@@ -4,6 +4,7 @@ import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { useINVOICEStore } from "@/store/invoiceStore";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 const DumitemsList = [
@@ -96,7 +97,7 @@ const handlePrint = () => {
 };
 
 export default function InvoicePreview({ additianalData }) {
-  const { cashierName } = additianalData || {};
+  const { data: cashierData } = useSession();
 
   const customerName = useCUSTOMERStore((state) => state.customerName);
   const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
@@ -202,8 +203,8 @@ export default function InvoicePreview({ additianalData }) {
                   ? `${invNo} ${invType === `JOB` ? ` / JOB ${jobId} ` : ``}`
                   : `0`}
               </span>
-              <span className="text-xs text-gray-600">
-                Cashier : {cashierName || `Unknown`}
+              <span className="text-xs text-gray-600 capitalize">
+                Cashier : {cashierData?.user?.name.split(" ")[0] || `Unknown`}
               </span>
             </div>
             <div className="flex flex-col">
