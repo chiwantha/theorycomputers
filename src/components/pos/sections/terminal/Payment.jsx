@@ -281,8 +281,8 @@ const PaymentSection = () => {
       }
 
       const response = await res.json();
-      resetINVOICE();
-      resetCustomer();
+      // resetINVOICE();
+      // resetCustomer();
       toast.success(`Saved !`);
       router.push(`/pos/terminal/${response?.invoiceNo}`);
     } catch (err) {
