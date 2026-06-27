@@ -11,6 +11,7 @@ const page = async ({ params }) => {
   const { job_id } = await params;
   const data = await load_per_job(job_id);
   const Job = data?.jobData;
+  console.log(Job);
   if (!data.success) {
     return (
       <div className="flex flex-col space-y-4">
@@ -21,7 +22,6 @@ const page = async ({ params }) => {
   }
 
   const itemsList = await get_items_for_job(job_id);
-  // console.log(Job);
 
   return (
     <div className="flex flex-col space-y-4">
