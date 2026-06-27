@@ -2,6 +2,8 @@ import CategoryMasterForm from "@/components/admin/forms/master/categories/Categ
 import Table from "@/components/common/table/Table";
 import { load_master_categories } from "@/data/admin/master";
 
+export const dynamic = "force-dynamic";
+
 const MasterCategories = async () => {
   const data = await load_master_categories();
 

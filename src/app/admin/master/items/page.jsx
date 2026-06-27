@@ -3,6 +3,8 @@ import Table from "@/components/common/table/Table";
 import { load_master_items } from "@/data/admin/master";
 import { get_brands, get_categories, get_warranties } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+
 const MasterItems = async () => {
   const colunms = [
     {

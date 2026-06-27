@@ -2,6 +2,8 @@ import SupplierMasterForm from "@/components/admin/forms/master/suppliers/Suppli
 import Table from "@/components/common/table/Table";
 import { load_master_suppliers } from "@/data/admin/master";
 
+export const dynamic = "force-dynamic";
+
 const MasterSuppliers = async () => {
   const colunms = [
     {

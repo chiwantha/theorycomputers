@@ -2,6 +2,8 @@ import BrandMasterForm from "@/components/admin/forms/master/brands/BrandMasterF
 import Table from "@/components/common/table/Table";
 import { load_master_brands } from "@/data/admin/master";
 
+export const dynamic = "force-dynamic";
+
 const MasterBrands = async () => {
   const colunms = [
     {

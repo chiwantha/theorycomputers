@@ -2,6 +2,8 @@ import WarrantyMasterForm from "@/components/admin/forms/master/warranty/Warrant
 import Table from "@/components/common/table/Table";
 import { load_master_warranties } from "@/data/admin/master";
 
+export const dynamic = "force-dynamic";
+
 const MasterWarranty = async () => {
   const colunms = [
     {
