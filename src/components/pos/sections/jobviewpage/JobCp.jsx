@@ -21,6 +21,7 @@ const JobCp = ({ paymentsRes }) => {
   const netTotal = useJOBStore((state) => state.netTotal);
   const advancedPayment = useJOBStore((state) => state.advancedPayment);
   const jobNo = useJOBStore((state) => state.jobNo);
+  const invNo = useJOBStore((state) => state.invNo);
   const section = useJOBStore((state) => state.section);
   const jobId = useJOBStore((state) => state.jobId);
   const state = useJOBStore((state) => state.state);
@@ -80,7 +81,7 @@ const JobCp = ({ paymentsRes }) => {
         bg: "bg-green-500 text-white hover:bg-green-600 font-bold text-lg",
         function: false,
         value: false,
-        link: true,
+        link: `/pos/terminal`,
       },
       secondary: {
         text: "RESTART",
@@ -93,12 +94,12 @@ const JobCp = ({ paymentsRes }) => {
 
     3: {
       primary: {
-        text: "PAID",
+        text: "PAID | VIEW INVOICE",
         bg: "bg-emerald-500 text-white hover:bg-emerald-600 font-bold text-lg",
         function: false,
         value: false,
-        link: false,
-        disabled: true,
+        link: `/pos/terminal/${invNo}`,
+        disabled: false,
       },
     },
 
@@ -136,7 +137,7 @@ const JobCp = ({ paymentsRes }) => {
 
     if (link) {
       setPending(false);
-      router.push(`/pos/terminal`);
+      router.push(link || `#`);
       return;
     }
 

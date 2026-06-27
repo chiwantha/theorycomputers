@@ -3,86 +3,9 @@
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { format_date } from "@/lib/validation";
-import { useCUSTOMERStore } from "@/store/customerStore";
-import { useINVOICEStore } from "@/store/invoiceStore";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
-const DumitemsList = [
-  {
-    name: "Gaming Mouse",
-    qty: 2,
-    price: 5000,
-    total: 10000,
-    warranty: `3 Month SUpplier Warranty`,
-  },
-  {
-    name: "Gaming Mouse",
-    qty: 2,
-    price: 5000,
-    total: 10000,
-    warranty: `3 Month SUpplier Warranty`,
-  },
-  {
-    name: "Mechanical Keyboard",
-    qty: 1,
-    price: 7500,
-    total: 7500,
-    warranty: `3 Month SUpplier Warranty`,
-  },
-  {
-    name: "SSD 1TB",
-    qty: 1,
-    price: 18000,
-    total: 18000,
-    warranty: `3 Month SUpplier Warranty`,
-  },
-  {
-    name: "Gaming Mouse",
-    qty: 2,
-    price: 5000,
-    total: 10000,
-  },
-  {
-    name: "Mechanical Keyboard",
-    qty: 1,
-    price: 7500,
-    total: 7500,
-  },
-  {
-    name: "SSD 1TB",
-    qty: 1,
-    price: 18000,
-    total: 18000,
-  },
-  {
-    name: "Gaming Mouse",
-    qty: 2,
-    price: 5000,
-    total: 10000,
-    warranty: `4 Month SUpplier Warranty`,
-  },
-  {
-    name: "SSD 1TB",
-    qty: 1,
-    price: 18000,
-    total: 18000,
-  },
-
-  {
-    name: "Gaming Mouse",
-    qty: 2,
-    price: 5000,
-    total: 10000,
-  },
-  {
-    name: "SSD 1TB",
-    qty: 1,
-    price: 18000,
-    total: 18000,
-  },
-];
 
 const handlePrint = () => {
   const printContent = document.getElementById("invoice");
@@ -124,7 +47,7 @@ const InvoicePreview = ({ invoiceData }) => {
 
   return (
     <div className="w-full flex flex-col items-center space-y-4">
-      <div className="bg-white w-full rounded-xl min-h-87.5"></div>
+      <div className="w-full border-gray-200 border rounded-xl min-h-87.5 pattern-bg"></div>
       <div className="flex flex-col gap-6 -mt-60">
         {/* Buttons */}
         <div className="flex gap-4 items-center ">
@@ -317,7 +240,7 @@ const InvoicePreview = ({ invoiceData }) => {
                 Discount
               </span>
               <span className="text-xl font-semibold text-red-600 mt-0.5">
-                {Number(invData?.header?.discountl || 0).toFixed(2)}
+                {Number(invData?.header?.discount || 0).toFixed(2)}
               </span>
             </div>
             <div className="flex flex-col p-3 bg-green-600 rounded-xl -space-y-0.5">

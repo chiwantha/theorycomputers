@@ -23,6 +23,7 @@ const JobDetailsVIew = ({ detailsData, headerData }) => {
   useEffect(() => {
     setHeaderField(`jobId`, headerData?.id);
     setHeaderField(`jobNo`, headerData?.job_no);
+    setHeaderField(`invNo`, headerData?.inv_no);
     setHeaderField(`warranty`, headerData?.warranty ? true : false);
     setHeaderField(`state`, headerData?.state);
     setHeaderField(`job_start`, headerData?.start);

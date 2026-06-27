@@ -12,6 +12,7 @@ export const useJOBStore = create((set, get) => ({
   // header
   jobId: ``,
   jobNo: ``,
+  invNo: ``,
   // customer_id ( we have that )
   warranty: false,
 
@@ -237,6 +238,7 @@ export const useJOBStore = create((set, get) => ({
       // header
       jobId: ``,
       jobNo: ``,
+      invNo: ``,
       // customer_id ( we have that )
       warranty: false,
 

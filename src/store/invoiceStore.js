@@ -42,6 +42,7 @@ export const useINVOICEStore = create((set, get) => ({
   // meta
   note: ``,
   status: 0,
+  quote_expiry: ``,
   billEdit: true,
 
   // items
@@ -122,6 +123,7 @@ export const useINVOICEStore = create((set, get) => ({
       // meta
       note: ``,
       status: 0,
+      quote_expiry: ``,
       billEdit: true,
 
       // items
