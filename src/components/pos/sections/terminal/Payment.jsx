@@ -42,7 +42,6 @@ const PaymentSection = () => {
   const creditAmount = useINVOICEStore((state) => state.creditAmount);
 
   const dueDate = useINVOICEStore((state) => state.dueDate);
-  const quote_expiry = useINVOICEStore((state) => state.quote_expiry);
   const cardDigits = useINVOICEStore((state) => state.cardDigits);
   const cardType = useINVOICEStore((state) => state.cardType);
   const cashReceived = useINVOICEStore((state) => state.cashReceived);
@@ -113,7 +112,7 @@ const PaymentSection = () => {
       let validation;
       const customerData = useCUSTOMERStore.getState();
       const invoiceData = useINVOICEStore.getState();
-      // console.log(customerData);
+      console.log(customerData);
 
       // Customer Validation
       if (customerData?.customerState === 0) {
@@ -232,11 +231,6 @@ const PaymentSection = () => {
           toast.error(`Missing : ${validation.emptyFields.join(", ")}`);
           return;
         }
-      } else if (docType === `QUOTATION`) {
-        if (!quote_expiry) {
-          toast.error(`Missing Quotation Expiry Date !`);
-          return;
-        }
       }
 
       const data = new FormData();
@@ -291,6 +285,7 @@ const PaymentSection = () => {
       // resetCustomer();
       toast.success(`Saved !`);
       setHeaderField(`invNo`, response?.invoiceNo);
+      setHeaderField(`date`, response?.date);
       router.push(`/pos/terminal/${response?.invoiceNo}`);
     } catch (err) {
       console.log("Operation Failed:", err);
@@ -395,27 +390,6 @@ const PaymentSection = () => {
           </span>
         </div>
       </fieldset>
-
-      <div
-        className={`
-    bg-white rounded-xl overflow-hidden shadow-md
-    transition-all duration-300 ease-in-out
-    ${
-      docType === `QUOTATION`
-        ? "max-h-250 opacity-100 p-4 space-y-4"
-        : "max-h-0 opacity-0 p-0"
-    }
-  `}
-      >
-        <NextInput
-          type="date"
-          label={`Quotation Expiry Date`}
-          required={true}
-          onChange={(e) => {
-            setHeaderField(`quote_expiry`, e.target.value);
-          }}
-        />
-      </div>
 
       <div className="items-center flex gap-2">
         <Button
