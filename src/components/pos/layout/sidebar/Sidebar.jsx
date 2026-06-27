@@ -90,6 +90,7 @@ const Sidebar = () => {
           name={`Logout`}
           wfull={true}
           click={() => signOut({ callbackUrl: `/auth/usr-login` })}
+          bg={`bg-red-400 hover:bg-red-600 text-white`}
         />
       </div>
     </div>
