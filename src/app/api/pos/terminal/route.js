@@ -163,6 +163,7 @@ export const POST = async (request) => {
       }
     }
 
+    // HANDLE ITEMS
     if (invItems.length > 0) {
       for (const item of invItems) {
         // console.log(item);
@@ -227,6 +228,23 @@ export const POST = async (request) => {
       }
     } else {
       throw new Error(`Failed to Find Items !`);
+    }
+
+    // HANDLE JOB STATUS
+    if (invType === `JOB`) {
+      if (!jobId) {
+        throw new Error(`Job Id Not Found !`);
+      }
+      const jobStatusSql = `UPDATE job_header SET state=?, invoice_Id=? WHERE id=?`;
+      const resJobStatus = await connection.execute(jobStatusSql, [
+        3,
+        header_id,
+        jobId,
+      ]);
+
+      if (resJobStatus.affectedRows === 0) {
+        throw new Error(`Update Job Payment Failed !`);
+      }
     }
 
     await connection.commit();
