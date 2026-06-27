@@ -2,10 +2,12 @@
 
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
+import { format_date } from "@/lib/validation";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { useINVOICEStore } from "@/store/invoiceStore";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const DumitemsList = [
   {
@@ -96,23 +98,29 @@ const handlePrint = () => {
   window.location.reload();
 };
 
-export default function InvoicePreview({ additianalData }) {
+const InvoicePreview = ({ invoiceData }) => {
   const { data: cashierData } = useSession();
+  const [invData, setInvoiceData] = useState(invoiceData?.data);
+  const [payments, setPayments] = useState({
+    jobAdvance: 0,
+    invAdvance: 0,
+  });
 
-  const customerName = useCUSTOMERStore((state) => state.customerName);
-  const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
+  useEffect(() => {
+    const JobdownPayment =
+      invData?.payments?.find((payment) => payment.doc === "JOB")?.amount ?? 0;
 
-  const invNo = useINVOICEStore((state) => state.invNo);
-  const docType = useINVOICEStore((state) => state.docType);
-  const paymentMethod = useINVOICEStore((state) => state.paymentMethod);
-  const date = useINVOICEStore((state) => state.date);
-  const invType = useINVOICEStore((state) => state.invType);
-  const jobId = useINVOICEStore((state) => state.jobId);
-  const quoteId = useINVOICEStore((state) => state.quoteId);
-  const grossTotal = useINVOICEStore((state) => state.grossTotal);
-  const discount = useINVOICEStore((state) => state.discount);
-  const netTotal = useINVOICEStore((state) => state.netTotal);
-  const rows = useINVOICEStore((state) => state.rows);
+    const InvoicedownPayment =
+      invData?.payments?.find(
+        (payment) =>
+          payment.doc === "INVOICE" && payment.payment_type === "DOWN",
+      )?.amount ?? 0;
+
+    setPayments({
+      jobAdvance: JobdownPayment,
+      invAdvance: InvoicedownPayment,
+    });
+  }, [invData]);
 
   return (
     <div className="w-full flex flex-col items-center space-y-4">
@@ -145,13 +153,11 @@ export default function InvoicePreview({ additianalData }) {
           />
         </div>
 
-        {/* Preview */}
-
         {/* A4 */}
         <div
           id="invoice"
           className="bg-white w-[210mm] shadow-md border-gray-200 border min-h-[297mm]
-   flex relative rounded-xl flex-col p-6 text-gray-800 space-y-4"
+                    flex relative rounded-xl flex-col p-6 text-gray-800 space-y-4"
         >
           {/* Header — unchanged */}
           <div className="w-full gap-4 flex items-center justify-between">
@@ -175,7 +181,9 @@ export default function InvoicePreview({ additianalData }) {
               </div>
             </div>
             <div className="bg-blue-500 rounded-b-xl absolute text-white text-2xl h-22 right-6 top-0 flex items-center justify-center font-semibold px-12">
-              {docType === `INVOICE` ? `INVOICE` : `QUOTATION`}
+              {invData?.header?.doc_type === `INVOICE`
+                ? `INVOICE`
+                : `QUOTATION`}
             </div>
           </div>
 
@@ -186,11 +194,11 @@ export default function InvoicePreview({ additianalData }) {
                 Customer
               </span>
               <Separator />
-              <span className="text-xs text-gray-600 line-clamp-1 text-ellipsis">
-                {customerName || `Customer Name`}
+              <span className="text-xs text-gray-600 line-clamp-1 text-ellipsis capitalize">
+                {invData?.header?.customerName || `Customer Name`}
               </span>
               <span className="text-xs text-gray-600">
-                {customerPhone || `Unknown`}
+                {invData?.header?.phone || `Unknown`}
               </span>
             </div>
             <div className="flex flex-col">
@@ -199,8 +207,8 @@ export default function InvoicePreview({ additianalData }) {
               </span>
               <Separator />
               <span className="text-xs text-gray-600">
-                {invNo
-                  ? `${invNo} ${invType === `JOB` ? ` / JOB ${jobId} ` : ``}`
+                {invData?.header?.inv_no
+                  ? `${invData?.header?.inv_no} ${invData?.header?.inv_type === `JOB` ? ` / JOB#${invData?.header?.job_id} ` : ``}`
                   : `0`}
               </span>
               <span className="text-xs text-gray-600 capitalize">
@@ -213,10 +221,15 @@ export default function InvoicePreview({ additianalData }) {
               </span>
               <Separator />
               <span className="text-xs text-gray-600">
-                Method : {paymentMethod || `Unknown`}
+                Method :{" "}
+                {invData?.header?.settlement === `CREDIT`
+                  ? `
+                ${invData?.header?.settlement} / ${Number(invData?.header?.credit_amount || 0).toFixed(2)}
+                `
+                  : invData?.header?.settlement || `Unknown`}
               </span>
               <span className="text-xs text-gray-600">
-                {date || `0000 JAN 00`}
+                {format_date(invData?.header?.date) || `0000 JAN 00`}
               </span>
             </div>
           </div>
@@ -237,8 +250,8 @@ export default function InvoicePreview({ additianalData }) {
               </tr>
             </thead>
             <tbody>
-              {rows.length > 0 ? (
-                rows.map((row, index) => (
+              {invData?.details.length > 0 ? (
+                invData?.details.map((row, index) => (
                   <tr
                     key={index}
                     className={`${index % 2 ? `bg-gray-50` : `bg-white`} text-gray-600`}
@@ -246,22 +259,22 @@ export default function InvoicePreview({ additianalData }) {
                     <td className="text-center text-sm py-0.5">{index + 1}</td>
                     <td className="px-3 py-1">
                       <div className="flex flex-col">
-                        <span className="text-sm">{row.itemName}</span>
-                        {row.warrantyId && (
+                        <span className="text-sm">{row.item_name}</span>
+                        {row.warranty_id && (
                           <span className="text-[12px] text-blue-500">
-                            {row.warrantyName}
+                            {row.warranty_name}
                           </span>
                         )}
                       </div>
                     </td>
                     <td className="px-3 py-1 text-center text-sm">
-                      {row.selling}
+                      {Number(row.unit_selling).toFixed(2)}
                     </td>
                     <td className="px-3 py-1 text-center text-sm">
                       {row.quantity}
                     </td>
                     <td className="pr-3 py-1 text-center text-sm">
-                      {row.lineTotal}
+                      {Number(row.line_total).toFixed(2)}
                     </td>
                   </tr>
                 ))
@@ -276,31 +289,57 @@ export default function InvoicePreview({ additianalData }) {
           </table>
 
           {/* Totals — unchanged */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="flex flex-col p-3 bg-blue-50 border border-blue-200 rounded-xl">
+          <div
+            className={`grid grid-cols-3 gap-3 ${payments.invAdvance && payments.jobAdvance ? `grid-cols-5` : payments.jobAdvance ? `grid-cols-4` : payments.invAdvance ? `grid-cols-4` : `grid-cols-3`}`}
+          >
+            <div className="flex flex-col p-3 bg-blue-50 border border-blue-200 rounded-xl -space-y-0.5">
               <span className="text-xs font-semibold text-blue-500 uppercase tracking-wide">
-                Gross
+                Gross Total
               </span>
               <span className="text-xl font-semibold text-blue-700 mt-0.5">
-                {grossTotal}
+                {Number(invData?.header?.gross_total || 0).toFixed(2)}
               </span>
             </div>
-            <div className="flex flex-col p-3 bg-red-50 border border-red-200 rounded-xl">
+            {payments.jobAdvance ? (
+              <div className="flex flex-col p-3 bg-red-50 border border-red-200 rounded-xl -space-y-0.5">
+                <span className="text-xs font-semibold text-red-400 uppercase tracking-wide">
+                  Job Adv
+                </span>
+                <span className="text-lg font-semibold text-red-600 mt-0.5">
+                  {Number(payments.jobAdvance || 0).toFixed(2)}
+                </span>
+              </div>
+            ) : (
+              false
+            )}
+            <div className="flex flex-col p-3 bg-red-50 border border-red-200 rounded-xl -space-y-0.5">
               <span className="text-xs font-semibold text-red-400 uppercase tracking-wide">
                 Discount
               </span>
               <span className="text-xl font-semibold text-red-600 mt-0.5">
-                {discount}
+                {Number(invData?.header?.discountl || 0).toFixed(2)}
               </span>
             </div>
-            <div className="flex flex-col p-3 bg-green-600 rounded-xl">
+            <div className="flex flex-col p-3 bg-green-600 rounded-xl -space-y-0.5">
               <span className="text-xs font-semibold text-white uppercase tracking-wide">
                 Net total
               </span>
               <span className="text-xl font-semibold text-white mt-0.5">
-                {netTotal}
+                {Number(invData?.header?.net_total || 0).toFixed(2)}
               </span>
             </div>
+            {payments.invAdvance ? (
+              <div className="flex flex-col p-3 bg-green-50 border border-green-500 rounded-xl -space-y-0.5">
+                <span className="text-xs font-semibold text-green-500 uppercase tracking-wide">
+                  Down Payment
+                </span>
+                <span className="text-xl font-semibold text-green-500 mt-0.5">
+                  {Number(payments.invAdvance || 0).toFixed(2)}
+                </span>
+              </div>
+            ) : (
+              false
+            )}
           </div>
 
           {/* ── FOOTER: mt-auto pins this block to the bottom always ── */}
@@ -352,4 +391,6 @@ export default function InvoicePreview({ additianalData }) {
       </div>
     </div>
   );
-}
+};
+
+export default InvoicePreview;

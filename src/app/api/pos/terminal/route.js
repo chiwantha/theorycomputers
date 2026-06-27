@@ -2,7 +2,7 @@ import { customerTemplates, invoiceTempaltes } from "@/constant/SmsTemplate";
 import pool from "@/lib/db";
 import { sendSms } from "@/lib/func";
 import { generateDocNo } from "@/lib/utils";
-import { validateInvItems } from "@/lib/validation";
+import { format_date, validateInvItems } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
@@ -252,6 +252,7 @@ export const POST = async (request) => {
         success: true,
         invoiceNo: invNo,
         invoiceId: header_id,
+        date: format_date(Date.now()),
       },
       { status: 200 },
     );
