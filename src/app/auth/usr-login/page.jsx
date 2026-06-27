@@ -26,19 +26,24 @@ const UserLoginPage = () => {
     });
 
     setPending(false);
+
     if (res?.error) {
       setError("Invalid Credentials!");
       return;
     }
 
-    const session = await getSession();
+    if (res?.ok) {
+      router.refresh();
 
-    const role = Number(session?.user?.role);
+      const session = await getSession();
 
-    if (role === 1) {
-      router.push("/admin");
-    } else {
-      router.push("/pos");
+      const role = Number(session?.user?.role);
+
+      if (role === 1) {
+        router.replace("/admin");
+      } else {
+        router.replace("/pos");
+      }
     }
   };
   return (
