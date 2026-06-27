@@ -168,9 +168,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         type: null,
         online: null,
       });
-      setSuccess(true);
       close_drawer(true);
-      setIsPending(false);
       router.refresh();
     } catch (err) {
       console.log("Operation Failed:", err);
@@ -349,7 +347,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
             click={() => {
               handleCrud();
             }}
-            disabled={pending || success}
+            disabled={pending}
           />
         </div>
       ) : (
