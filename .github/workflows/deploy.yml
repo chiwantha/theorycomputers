@@ -1,0 +1,58 @@
+name: Deploy Production
+
+on:
+  push:
+    branches:
+      - main
+
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+
+    steps:
+
+      - name: Deploy to VPS
+
+        uses: appleboy/ssh-action@v1.2.2
+
+        with:
+
+          host: ${{ secrets.VPS_HOST }}
+
+          username: ${{ secrets.VPS_USER }}
+
+          key: ${{ secrets.VPS_SSH_KEY }}
+
+          port: ${{ secrets.VPS_PORT }}
+
+
+          script: |
+
+            echo "Connected"
+
+            echo "u3u2PO87" | su - root -c '
+
+              cd /var/www/theorycomputers
+
+              git fetch origin
+
+              git reset --hard origin/main
+
+              cp prod.env .env
+
+              npm install
+
+              npm run build
+
+              pm2 reload 4
+
+            '
