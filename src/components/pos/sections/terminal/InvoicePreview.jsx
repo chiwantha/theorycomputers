@@ -2,7 +2,7 @@
 
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
-import { format_date } from "@/lib/validation";
+import { formatDateTimeYear } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -84,8 +84,8 @@ const InvoicePreview = ({ invoiceData }) => {
         >
           {/* Header — unchanged */}
           <div className="w-full gap-4 flex items-center justify-between">
-            <div className="flex gap-4 items-center">
-              <div className="relative aspect-square w-16">
+            <div className="flex gap-4 items-center w-full">
+              <div className="relative aspect-square w-24">
                 <Image
                   alt="logo.png"
                   src={`/app/logo.png`}
@@ -94,16 +94,27 @@ const InvoicePreview = ({ invoiceData }) => {
                   sizes="33vw"
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full">
                 <span className="text-2xl font-bold text-gray-600 uppercase tracking-tight">
                   Theory Computers
                 </span>
-                <span className="text-xs font-bold text-gray-400 capitalize">
-                  Your every it solution partner
+                <span className="text-xs font-bold text-blue-600 capitalize pl-0.5">
+                  Your Trusted IT Solutions Partner
                 </span>
+                <div className="flex gap-2 items-center mt-2  w-full text-gray-600">
+                  <span className=" py-1 px-4 text-[13px] rounded-lg bg-gray-100 w-full text-nowrap text-center">
+                    075 517 8503 - 077 115 2824
+                  </span>
+                  <span className=" py-1 px-4 text-sm rounded-lg bg-gray-100 w-full text-nowrap text-center">
+                    www.theorycomputers.lk
+                  </span>
+                  <span className=" py-1 px-4 text-[13px] rounded-lg bg-gray-100 w-full text-nowrap text-center">
+                    No 154/D Kanduboda, Delgoda
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="bg-blue-500 rounded-b-xl absolute text-white text-2xl h-22 right-6 top-0 flex items-center justify-center font-semibold px-12">
+            <div className="bg-blue-500 rounded-b-xl absolute text-white text-2xl h-16.25 right-6 top-0 flex items-center justify-center font-semibold px-12">
               {invData?.header?.doc_type === `INVOICE`
                 ? `INVOICE`
                 : `QUOTATION`}
@@ -144,7 +155,6 @@ const InvoicePreview = ({ invoiceData }) => {
               </span>
               <Separator />
               <span className="text-xs text-gray-600">
-                Method :{" "}
                 {invData?.header?.settlement === `CREDIT`
                   ? `
                 ${invData?.header?.settlement} / ${Number(invData?.header?.credit_amount || 0).toFixed(2)}
@@ -152,7 +162,8 @@ const InvoicePreview = ({ invoiceData }) => {
                   : invData?.header?.settlement || `Unknown`}
               </span>
               <span className="text-xs text-gray-600">
-                {format_date(invData?.header?.date) || `0000 JAN 00`}
+                {formatDateTimeYear(invData?.header?.created_at) ||
+                  `0000 JAN 00`}
               </span>
             </div>
           </div>

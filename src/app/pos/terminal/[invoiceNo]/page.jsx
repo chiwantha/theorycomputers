@@ -1,5 +1,5 @@
 import InvoicePreview from "@/components/pos/sections/terminal/InvoicePreview";
-import { get_customers, get_spc_invoices } from "@/lib/data";
+import { get_spc_invoices } from "@/lib/data";
 
 const InvoicePreviewPage = async ({ params }) => {
   const { invoiceNo } = await params;

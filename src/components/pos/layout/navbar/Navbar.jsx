@@ -2,11 +2,20 @@
 import Button from "@/components/common/button/Button";
 import { useSidebar } from "@/context/SidebarContext";
 import { Menu } from "lucide-react";
+import Image from "next/image";
 const Navbar = () => {
   const { toggleSidebar } = useSidebar();
   return (
     <div className="h-15 sticky w-full border-b border-gray-200 z-50 bg-white px-4 flex items-center justify-between">
-      Navbar
+      <div className="relative aspect-square h-10 ">
+        <Image
+          src={`/app/logo.png`}
+          alt="logo.png"
+          fill
+          sizes="50vw"
+          className="object-center object-cover"
+        />
+      </div>
       <Button
         click={toggleSidebar}
         name={<Menu />}

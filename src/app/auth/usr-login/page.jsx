@@ -5,14 +5,18 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getSession, signIn } from "next-auth/react";
+import { InputStyle } from "@/constant/Forms";
 
 const UserLoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e) => {
+    setPending(true);
+    setError(``);
     e.preventDefault();
 
     const res = await signIn("credentials", {
@@ -21,6 +25,7 @@ const UserLoginPage = () => {
       password,
     });
 
+    setPending(false);
     if (res?.error) {
       setError("Invalid Credentials!");
       return;
@@ -55,24 +60,30 @@ const UserLoginPage = () => {
           <span className="text-2xl uppercase font-bold text-gray-400">
             Welcome
           </span>
-          <div className="flex flex-col gap-2 sm:min-w-68.75">
-            <NextInput
+          <form
+            className="flex flex-col gap-2 sm:min-w-68.75"
+            onSubmit={handleLogin}
+          >
+            <input
+              className={InputStyle}
               placeholder={`username`}
               name={`username`}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <NextInput
+            <input
               placeholder={`password`}
               type="password"
+              className={InputStyle}
               name={`password`}
               onChange={(e) => setPassword(e.target.value)}
             />
-          </div>
-          <Button
-            name={`Login`}
-            bg={`bg-linear-to-r from-blue-400 to-blue-600 text-white w-full`}
-            click={handleLogin}
-          />
+            {error && <p className="text-red-500">{error}</p>}
+            <Button
+              name={pending ? `Logging In ...` : `Login`}
+              bg={`bg-linear-to-r from-blue-400 to-blue-600 text-white w-full ${pending ? `animate-pulse` : ``}`}
+              type={`submit`}
+            />
+          </form>
         </div>
       </div>
     </div>

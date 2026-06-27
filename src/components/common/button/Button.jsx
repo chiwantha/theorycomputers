@@ -13,6 +13,7 @@ const Button = ({
   rounded,
   disabled,
   prefetch,
+  type,
 }) => {
   const baseStyles = `
     transition-all duration-300 select-none
@@ -40,7 +41,7 @@ const Button = ({
 
   return (
     <button
-      type="button"
+      type={type || "button"}
       className={baseStyles}
       onClick={!disabled ? click : undefined}
       disabled={disabled}

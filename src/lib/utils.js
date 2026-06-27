@@ -91,3 +91,16 @@ export const formatDateTime = (dateString) => {
     d.getUTCMinutes(),
   ).padStart(2, "0")}`;
 };
+
+export const formatDateTimeYear = (dateString) => {
+  if (!dateString) return "-";
+
+  const d = new Date(dateString);
+
+  return `${String(d.getUTCDate()).padStart(2, "0")} ${d.toLocaleString("en", {
+    month: "short",
+    timeZone: "UTC",
+  })} ${d.getUTCFullYear()}, ${String(d.getUTCHours()).padStart(2, "0")}:${String(
+    d.getUTCMinutes(),
+  ).padStart(2, "0")}`;
+};
