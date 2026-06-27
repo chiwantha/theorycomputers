@@ -156,17 +156,17 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         id: ``,
         code: ``,
         name: ``,
-        brand_id: null,
-        category_id: null,
-        warranty_id: null,
+        brand_id: ``,
+        category_id: ``,
+        warranty_id: ``,
         description: ``,
         image: ``,
         cost: ``,
         selling: ``,
         reorder: ``,
-        serial: null,
-        type: null,
-        online: null,
+        serial: ``,
+        type: ``,
+        online: ``,
       });
       close_drawer(true);
       router.refresh();
@@ -221,7 +221,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
             placeholder={`Asus`}
             required={true}
             items={brand_list}
-            defaultValue={defaultData ? formData.brand_id : null}
+            defaultValue={formData.brand_id}
             onChange={(value) => setFormData({ ...formData, brand_id: value })}
           />
           <NextDropdown
@@ -230,7 +230,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
             placeholder={`Laptop`}
             required={true}
             items={category_list}
-            defaultValue={defaultData ? formData.category_id : null}
+            defaultValue={formData.category_id}
             onChange={(value) =>
               setFormData({ ...formData, category_id: value })
             }
@@ -245,7 +245,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
             onChange={(e) =>
               setFormData({ ...formData, description: e.target.value })
             }
-            value={formData.description}
+            value={formData.description || ``}
           />
           <NextImageInput
             label={`Image`}
@@ -261,7 +261,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
                 id={`item_warranty`}
                 placeholder={`Blank for No Warranty`}
                 items={warranty_list}
-                defaultValue={defaultData ? formData.warranty_id : null}
+                defaultValue={formData.warranty_id}
                 onChange={(value) =>
                   setFormData({ ...formData, warranty_id: value })
                 }
@@ -308,7 +308,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
                 { value: 1, label: `Yes` },
                 { value: 0, label: `No` },
               ]}
-              defaultValue={defaultData ? (formData.serial ? 1 : 0) : null}
+              defaultValue={formData.serial}
               onChange={(value) => setFormData({ ...formData, serial: value })}
             />
             <NextDropdown
@@ -320,7 +320,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
                 { value: `P`, label: `Product` },
                 { value: `S`, label: `Service` },
               ]}
-              defaultValue={defaultData ? formData.type : null}
+              defaultValue={formData.type}
               onChange={(value) => setFormData({ ...formData, type: value })}
             />
             <NextDropdown
@@ -332,7 +332,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
                 { value: 1, label: `Yes` },
                 { value: 0, label: `No` },
               ]}
-              defaultValue={defaultData ? (formData.online ? 1 : 0) : null}
+              defaultValue={formData.online}
               onChange={(value) => setFormData({ ...formData, online: value })}
             />
           </div>
