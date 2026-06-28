@@ -7,15 +7,13 @@ import {
   BarChart2,
   Hammer,
   Menu,
-  ReceiptEuro,
   ReceiptText,
   ShelvingUnit,
   User,
   Wrench,
 } from "lucide-react";
 import { useState } from "react";
-import Button from "@/components/common/button/Button";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const paths = [
   {
@@ -86,12 +84,6 @@ const Sidebar = () => {
             {...path}
           />
         ))}
-        <Button
-          name={`Logout`}
-          wfull={true}
-          click={() => signOut({ callbackUrl: `/auth/usr-login` })}
-          bg={`bg-red-400 hover:bg-red-600 text-white`}
-        />
       </div>
     </div>
   );

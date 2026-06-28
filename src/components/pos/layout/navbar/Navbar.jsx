@@ -1,5 +1,7 @@
 "use client";
 import Button from "@/components/common/button/Button";
+import NotificationBar from "@/components/common/cards/notifications/NotificationBar";
+import UserPop from "@/components/common/userpop/UserPop";
 import { useSidebar } from "@/context/SidebarContext";
 import { Menu } from "lucide-react";
 import Image from "next/image";
@@ -16,12 +18,16 @@ const Navbar = () => {
           className="object-center object-cover"
         />
       </div>
-      <Button
-        click={toggleSidebar}
-        name={<Menu />}
-        bg={`bg-gray-100 hover:bg-gray-200 text-gray-700 lg:hidden`}
-        pd={`py-2 px-2`}
-      />
+      <div className="flex gap-4 items-center">
+        <NotificationBar />
+        <UserPop />
+        <Button
+          click={toggleSidebar}
+          name={<Menu />}
+          bg={`bg-gray-100 hover:bg-gray-200 text-gray-700 lg:hidden`}
+          pd={`py-2 px-2`}
+        />
+      </div>
     </div>
   );
 };

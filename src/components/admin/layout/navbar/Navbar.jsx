@@ -1,5 +1,7 @@
 "use client";
 import Button from "@/components/common/button/Button";
+import NotificationBar from "@/components/common/cards/notifications/NotificationBar";
+import UserPop from "@/components/common/userpop/UserPop";
 import { useSidebar } from "@/context/SidebarContext";
 import { Menu } from "lucide-react";
 import Image from "next/image";
@@ -19,6 +21,8 @@ const Navbar = () => {
         />
       </div>
       <div className="flex gap-4 items-center">
+        <NotificationBar />
+        <UserPop />
         <Button
           click={toggleSidebar}
           name={<Menu />}
