@@ -18,6 +18,7 @@ import {
   ClipboardMinus,
   PenTool,
   ShieldCheck,
+  Wrench,
 } from "lucide-react";
 
 import SidebarItem from "./sidebarItem/SidebarItem";
@@ -45,6 +46,11 @@ const admin_links = [
         name: "Items",
         icon: <Package size={20} />,
         path: "/admin/master/items",
+      },
+      {
+        name: "Services",
+        icon: <Wrench size={20} />,
+        path: "/admin/master/services",
       },
       {
         name: "Categories",

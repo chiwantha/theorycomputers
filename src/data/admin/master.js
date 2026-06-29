@@ -8,7 +8,7 @@ export const load_master_items = async (item_id) => {
     INNER JOIN mst_category ON mst_items.category_id = mst_category.id
     INNER JOIN mst_brand ON mst_items.brand_id = mst_brand.id
     LEFT JOIN mst_warranty ON mst_items.warranty_id = mst_warranty.id
-    WHERE mst_items.state = 1`;
+    WHERE mst_items.state = 1 AND mst_items.type = "P"`;
     const sql2 = `SELECT mst_items.* , mst_category.name AS category, mst_category.id AS category_id, mst_brand.name AS brand, mst_brand.id AS brand_id 
     , COALESCE(mst_warranty.name, '-') AS warranty_name FROM mst_items
     INNER JOIN mst_category ON mst_items.category_id = mst_category.id
@@ -17,6 +17,39 @@ export const load_master_items = async (item_id) => {
     WHERE mst_items.state = 1 AND mst_items.id=${item_id}`;
 
     if (item_id) {
+      sql_query = sql2;
+    } else {
+      sql_query = sql;
+    }
+
+    const data = await query(sql_query);
+
+    if (!data || data.length == 0) {
+      return [];
+    }
+
+    return data;
+  } catch (err) {
+    console.log(`Error Loading Items List !`, err);
+    return [];
+  }
+};
+export const load_master_services = async (service_id) => {
+  try {
+    let sql_query;
+    const sql = `SELECT mst_items.* , mst_category.name AS category, mst_category.id AS category_id
+    , COALESCE(mst_warranty.name, '-') AS warranty_name FROM mst_items
+    INNER JOIN mst_category ON mst_items.category_id = mst_category.id
+    LEFT JOIN mst_warranty ON mst_items.warranty_id = mst_warranty.id
+    WHERE mst_items.state = 1  AND mst_items.type = "S"`;
+    const sql2 = `SELECT mst_items.* , mst_category.name AS category, mst_category.id AS category_id, mst_brand.id AS brand_id 
+    , COALESCE(mst_warranty.name, '-') AS warranty_name FROM mst_items
+    INNER JOIN mst_category ON mst_items.category_id = mst_category.id
+    INNER JOIN mst_brand ON mst_items.brand_id = mst_brand.id
+    LEFT JOIN mst_warranty ON mst_items.warranty_id = mst_warranty.id
+    WHERE mst_items.state = 1 AND mst_items.id=${service_id}`;
+
+    if (service_id) {
       sql_query = sql2;
     } else {
       sql_query = sql;

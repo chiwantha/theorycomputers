@@ -33,7 +33,7 @@ export const POST = async (request) => {
 
     const code = data.get("code") || null;
     const name = data.get("name");
-    const brand = data.get("brand");
+    const brand = data.get("brand") || null;
     const category = data.get("category");
     const description = data.get("description") || null;
     const warranty =
@@ -42,7 +42,7 @@ export const POST = async (request) => {
         : Number(data.get("warranty"));
     const cost = data.get("cost");
     const selling = data.get("selling");
-    const reorder = data.get("reorder");
+    const reorder = data.get("reorder") || null;
     const serial = data.get("serial");
     const type = data.get("type");
     const online = data.get("online");

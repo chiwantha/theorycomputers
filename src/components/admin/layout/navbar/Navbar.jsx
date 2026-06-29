@@ -20,7 +20,7 @@ const Navbar = () => {
           className="object-center object-cover"
         />
       </div>
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-2 items-center">
         <NotificationBar />
         <UserPop />
         <Button
