@@ -10,6 +10,7 @@ import { useJOBStore } from "@/store/jobStore";
 import { divDisable } from "@/constant/Forms";
 
 const JobRow = ({ item_list, defaultRows = false }) => {
+  const jobNo = useJOBStore((state) => state.jobNo);
   const warranty = useJOBStore((state) => state.warranty);
   const section = useJOBStore((state) => state.section);
   const rows = useJOBStore((state) => state.rows);

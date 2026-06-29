@@ -178,7 +178,7 @@ export const POST = async (request) => {
 
         // UPDATE STOCK
         if (item.itemType == "P") {
-          const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ? quantity >= ?`;
+          const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ? AND quantity >= ?`;
           const [resUpdateStock] = await connection.execute(updateStockSql, [
             item.quantity,
             item.itemId,
