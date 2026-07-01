@@ -58,16 +58,18 @@ const JobRow = ({ item_list, defaultRows = false }) => {
 
           <tbody>
             {rows.map((row) => {
+              // console.log("Row : ", row);
               let itemType = "P";
               let itemStock = 0;
               let iteminStock = true;
+              let reserved = row.reserved;
               if (row.itemId && row.itemId !== ``) {
                 const selectedItem = item_list.find(
                   (item) => item.value === row.itemId,
                 );
 
                 itemType = selectedItem?.type;
-                itemStock = selectedItem?.stock;
+                itemStock = Number(selectedItem?.stock) + Number(reserved);
                 iteminStock = itemType == "P" ? itemStock > 0 : itemType == "S";
               }
               return (

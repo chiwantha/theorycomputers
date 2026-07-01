@@ -63,6 +63,7 @@ export const useJOBStore = create((set, get) => ({
 
       unitPrice: item.unitPrice || 0,
       quantity: item.quantity || 0,
+      reserved: item.quantity || 0,
       lineTotal:
         item.billing == "WARRANTY" ? 0 : item.unitPrice * item.quantity || 0,
 
@@ -178,6 +179,7 @@ export const useJOBStore = create((set, get) => ({
 
       unitPrice: Number(row.unit_price),
       quantity: Number(row.quantity),
+      reserved: Number(row.quantity),
       lineTotal: Number(row.line_total),
 
       // defaults

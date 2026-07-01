@@ -148,6 +148,7 @@ export const useINVOICEStore = create((set, get) => ({
       warrantyEndDate: item.warrantyEndDate || null,
 
       quantity: item.quantity || 0,
+      reserved: get().jobId ? item.quantity : 0,
       lineTotal: (item.selling || 0) * (item.quantity || 0),
 
       serial: item.serial || false,
@@ -263,6 +264,7 @@ export const useINVOICEStore = create((set, get) => ({
       cost: Number(row.unit_cost || 0),
       selling: Number(row.unit_price),
       quantity: Number(row.quantity),
+      reserved: get().jobId ? Number(row.quantity) : 0,
       lineTotal: Number(row.line_total),
 
       serial: row.serial == 1 ? true : false,

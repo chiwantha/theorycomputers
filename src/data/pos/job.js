@@ -33,7 +33,7 @@ ORDER BY job_header.state ASC, job_header.created_at DESC`;
 };
 
 export const load_per_job = async (job_id) => {
-  console.log(job_id);
+  // console.log(job_id);
   try {
     const headerSql = `SELECT jh.*, ih.inv_no AS inv_no FROM job_header jh 
     LEFT JOIN inv_header ih ON ih.id = jh.invoice_id WHERE jh.id = ?`;

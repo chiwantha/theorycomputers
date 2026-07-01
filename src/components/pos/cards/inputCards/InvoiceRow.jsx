@@ -6,7 +6,6 @@ import NextInput from "@/components/common/form/nextinput/NextInput";
 
 import { Trash, Plus, Barcode } from "lucide-react";
 import React, { useEffect } from "react";
-import { divDisable } from "@/constant/Forms";
 import { useINVOICEStore } from "@/store/invoiceStore";
 
 const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
@@ -51,9 +50,11 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
 
           <tbody>
             {rows.map((row) => {
+              console.log(`Row : `, row);
               let itemType = "P";
               let itemStock = 0;
               let iteminStock = true;
+              let reserved = row.reserved;
               if (row.itemId && row.itemId !== ``) {
                 const selectedItem = item_list.find(
                   (item) => item.value === row.itemId,
@@ -61,7 +62,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                 // console.log(`Selected Item : `, selectedItem);
 
                 itemType = selectedItem?.type;
-                itemStock = selectedItem?.stock;
+                itemStock = Number(selectedItem?.stock) + Number(reserved);
                 iteminStock = itemType == "P" ? itemStock > 0 : itemType == "S";
               }
               return (
