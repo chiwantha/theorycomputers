@@ -186,7 +186,7 @@ export const POST = async (request) => {
         }
 
         // UPDATE STOCK
-        if (item.itemType == "P" && docType === `INVOICE`) {
+        if (item.itemType == "P" && docType === `INVOICE` && !jobId) {
           const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ? AND quantity >= ?`;
           const [resUpdateStock] = await connection.execute(updateStockSql, [
             item.quantity,
@@ -199,7 +199,7 @@ export const POST = async (request) => {
         }
 
         // HANDLE SERIAL
-        if (item.serial && docType === `INVOICE`) {
+        if (item.serial && docType === `INVOICE` && !jobId) {
           const serials = item.serials;
           for (const serial of serials) {
             // UPDATE SERIAL STOCK
@@ -215,7 +215,7 @@ export const POST = async (request) => {
         }
 
         // LOG STOCK MOVEMENTS
-        if (item.itemType == "P" && docType === `INVOICE`) {
+        if (item.itemType == "P" && docType === `INVOICE` && !jobId) {
           const logStockMovements = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id) VALUES (?,?,?,?,?)`;
           const [resStockMovements] = await connection.execute(
             logStockMovements,
@@ -235,7 +235,7 @@ export const POST = async (request) => {
       if (!jobId) {
         throw new Error(`Job Id Not Found !`);
       }
-      const jobStatusSql = `UPDATE job_header SET state=?, invoice_Id=? WHERE id=?`;
+      const jobStatusSql = `UPDATE job_header SET state=?, invoice_Id=?, updated_at=NOW() WHERE id=?`;
       const resJobStatus = await connection.execute(jobStatusSql, [
         3,
         header_id,
@@ -262,6 +262,7 @@ export const POST = async (request) => {
       customerPhone,
       invoiceTempaltes.THANKYOU({
         customerName,
+        docType,
       }),
     );
 

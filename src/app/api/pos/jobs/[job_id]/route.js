@@ -156,7 +156,7 @@ export const PUT = async (request, { params }) => {
     await connection.beginTransaction();
 
     if (section === "HEADER") {
-      const sql = `UPDATE job_details SET username=?, password=?, accessories=?, problem=? WHERE header_id=? `;
+      const sql = `UPDATE job_details SET username=?, password=?, accessories=?, problem=?, updated_at=NOW() WHERE header_id=? `;
       const [resHeaderUpdate] = await connection.execute(sql, [
         username || null,
         password || null,
@@ -168,7 +168,7 @@ export const PUT = async (request, { params }) => {
         throw new Error(`Update Job Details Failed !`);
       }
     } else if (section === "ITEMS") {
-      // LOAD CURRENT FOR REVERSE STOCK
+      // REVERSE STOCK
       await reverseStock(connection, job_id);
 
       // INSERT NEW JOB ITEMS

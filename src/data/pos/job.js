@@ -16,6 +16,7 @@ INNER JOIN customers
     ON job_header.customer_id = customers.id
 WHERE
     DATE(job_header.created_at) = CURDATE()
+    OR DATE(job_header.updated_at) = CURDATE()
     OR job_header.state IN (0,1, 2)
 ORDER BY job_header.state ASC, job_header.created_at DESC`;
 
