@@ -7,6 +7,7 @@ import NextInput from "@/components/common/form/nextinput/NextInput";
 import { Trash, Plus, Barcode } from "lucide-react";
 import React, { useEffect } from "react";
 import { useINVOICEStore } from "@/store/invoiceStore";
+import ComboboxAdapter from "@/components/ui/combobox-adapter";
 
 const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
   const rows = useINVOICEStore((state) => state.rows);
@@ -26,9 +27,9 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
   return (
     <fieldset
       disabled={!billEdit}
-      className={!billEdit ? `cursor-not-allowed ` : ``}
+      className={`${!billEdit ? `cursor-not-allowed` : ``} overflow-hidden `}
     >
-      <div className="overflow-x-auto lg:overflow-visible">
+      <div className="overflow-x-auto">
         <table className="min-w-full table-auto">
           <thead>
             <tr className="text-sm">
@@ -70,7 +71,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                   <tr>
                     {/* ITEM */}
                     <td className="pb-2">
-                      <NextDropdown
+                      {/* <NextDropdown
                         items={item_list}
                         value={row.itemId}
                         placeholder="Select Item"
@@ -139,12 +140,78 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                             selected?.is_serial || false,
                           );
                         }}
+                      /> */}
+
+                      <ComboboxAdapter
+                        name={`item_lsit`}
+                        items={item_list}
+                        placeholder={`Select item`}
+                        defaultValue={row.itemId}
+                        onChange={(val, selected) => {
+                          const selectedWarranty = warranty_list.find(
+                            (warranty) => warranty.id === selected?.warranty_id,
+                          );
+
+                          console.log(`Warranty : `, selectedWarranty?.name);
+                          updateRow(
+                            row.tempId,
+                            "warrantyId",
+                            selected?.warranty_id || null,
+                          );
+                          updateRow(
+                            row.tempId,
+                            `warrantyName`,
+                            selectedWarranty?.name || null,
+                          );
+
+                          const duration = Number(
+                            selectedWarranty?.duration || 0,
+                          );
+
+                          if (
+                            duration === 0 ||
+                            selectedWarranty?.duration == null
+                          ) {
+                            updateRow(row.tempId, "warrantyEndDate", null);
+                          } else {
+                            const warrantyEndDate = new Date();
+                            warrantyEndDate.setDate(
+                              warrantyEndDate.getDate() +
+                                Math.round(duration * 30.44),
+                            );
+
+                            updateRow(
+                              row.tempId,
+                              "warrantyEndDate",
+                              warrantyEndDate.toISOString().split("T")[0],
+                            );
+                          }
+
+                          updateRow(row.tempId, "itemId", val);
+                          updateRow(row.tempId, "itemName", selected?.name);
+                          updateRow(row.tempId, "itemType", selected?.type);
+
+                          updateRow(row.tempId, "cost", selected?.cost);
+                          updateRow(row.tempId, "selling", selected?.selling);
+
+                          updateRow(
+                            row.tempId,
+                            "quantity",
+                            selected?.type == "S" ? 1 : 0,
+                          );
+
+                          updateRow(
+                            row.tempId,
+                            "serial",
+                            selected?.is_serial || false,
+                          );
+                        }}
                       />
                     </td>
 
                     {/* warranty */}
                     <td className="pb-2 pl-2">
-                      <NextDropdown
+                      {/* <NextDropdown
                         items={warranty_list}
                         value={2}
                         placeholder="Select Warranty"
@@ -156,6 +223,43 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                           );
 
                           updateRow(row.tempId, `warrantyId`, val);
+                          updateRow(
+                            row.tempId,
+                            `warrantyName`,
+                            selectedWarranty?.name,
+                          );
+
+                          const duration = Number(
+                            selectedWarranty?.duration || 0,
+                          );
+
+                          if (
+                            duration === 0 ||
+                            selectedWarranty?.duration == null
+                          ) {
+                            updateRow(row.tempId, "warrantyEndDate", null);
+                          } else {
+                            const warrantyEndDate = new Date();
+                            warrantyEndDate.setDate(
+                              warrantyEndDate.getDate() +
+                                Math.round(duration * 30.44),
+                            );
+
+                            updateRow(
+                              row.tempId,
+                              "warrantyEndDate",
+                              warrantyEndDate.toISOString().split("T")[0],
+                            );
+                          }
+                        }} 
+                      /> */}
+                      <ComboboxAdapter
+                        name={`warranty_selection`}
+                        items={warranty_list}
+                        placeholder={`Select Warranty`}
+                        defaultValue={row.warrantyId}
+                        onChange={(value, selectedWarranty) => {
+                          updateRow(row.tempId, `warrantyId`, value);
                           updateRow(
                             row.tempId,
                             `warrantyName`,

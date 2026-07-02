@@ -2,6 +2,7 @@
 
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
+import ComboboxAdapter from "@/components/ui/combobox-adapter";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { RefreshCcw } from "lucide-react";
 import { useEffect } from "react";
@@ -44,7 +45,9 @@ const SelectCustomer = ({ customersList, island = true }) => {
           </button>
         </div>
         <button
-          onClick={() => resetCustomer()}
+          onClick={() => {
+            resetCustomer();
+          }}
           className="px-2 text-white py-2 rounded-xl group bg-red-400 hover:bg-red-600 transition-colors duration-300"
         >
           <RefreshCcw
@@ -56,7 +59,7 @@ const SelectCustomer = ({ customersList, island = true }) => {
       {/* exsisting customer */}
       {customerState == 0 ? (
         <div className="">
-          <NextDropdown
+          {/* <NextDropdown
             items={customersList}
             name={`customer`}
             defaultValue={customerId}
@@ -67,6 +70,21 @@ const SelectCustomer = ({ customersList, island = true }) => {
               setHeaderField(`customerId`, val);
               setHeaderField(`customerName`, selected.label.split(" - ")[0]);
               setHeaderField(`customerPhone`, selected.phone);
+            }}
+          /> */}
+
+          <ComboboxAdapter
+            name={`customer`}
+            items={customersList}
+            defaultValue={customerId}
+            placeholder="Select Customer ..."
+            onChange={(value, customer) => {
+              setHeaderField("customerId", value);
+              setHeaderField(
+                "customerName",
+                customer?.label.split(" - ")[0] || "",
+              );
+              setHeaderField("customerPhone", customer?.phone || "");
             }}
           />
         </div>
