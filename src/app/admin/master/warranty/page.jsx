@@ -37,6 +37,7 @@ const MasterWarranty = async () => {
       <Table
         tablename={`Warranty`}
         colunms={colunms}
+        rowsPerPage={15}
         rows={data}
         form={WarrantyMasterForm}
         form_props={true}

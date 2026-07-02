@@ -55,6 +55,7 @@ const MasterSuppliers = async () => {
       <Table
         tablename={`Suppliers`}
         colunms={colunms}
+        rowsPerPage={15}
         rows={data}
         form={SupplierMasterForm}
         form_props={true}

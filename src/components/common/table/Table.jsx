@@ -14,6 +14,7 @@ const Table = ({
   form_props,
   action = false,
   newButtonLink,
+  rowsPerPage = 12,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortKey, setSortKey] = useState(null);
@@ -21,8 +22,6 @@ const Table = ({
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [changeData, setChangeData] = useState(null);
-
-  const rowsPerPage = 12;
 
   const filteredRows = useMemo(() => {
     if (!searchTerm) return rows;

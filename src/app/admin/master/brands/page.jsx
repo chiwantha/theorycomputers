@@ -33,6 +33,7 @@ const MasterBrands = async () => {
         rows={data}
         colunms={colunms}
         form_props={true}
+        rowsPerPage={15}
         form={BrandMasterForm}
         searchkeys={["name"]}
         action={{ view: false, edit: true, delete: true }}
