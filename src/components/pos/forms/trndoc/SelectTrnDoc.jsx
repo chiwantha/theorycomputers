@@ -1,5 +1,6 @@
 import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
+import ComboboxAdapter from "@/components/ui/combobox-adapter";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { useINVOICEStore } from "@/store/invoiceStore";
 import { RefreshCcw } from "lucide-react";
@@ -122,9 +123,9 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
       {/* exsisting customer */}
       {invType == `JOB` ? (
         <div className="">
-          <NextDropdown
+          <ComboboxAdapter
+            name={`Select Job`}
             placeholder={`Select Job ...`}
-            name={`job`}
             items={
               jobList || [
                 { value: 0, label: `Job 1` },
@@ -133,19 +134,18 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
               ]
             }
             defaultValue={jobId}
-            onChange={(val) => {
-              const selected = jobList.find((job) => job.id === val);
+            onChange={(value, selected) => {
               setCustomerField(`customerState`, 0);
               setCustomerField(`customerId`, selected?.customer_id);
-              setHeaderField(`jobId`, val);
+              setHeaderField(`jobId`, value);
             }}
           />
         </div>
       ) : invType == `QUOTATION` ? (
         <div className="">
-          <NextDropdown
-            placeholder={`Select Quote ...`}
+          <ComboboxAdapter
             name={`quote`}
+            placeholder={`Select Quote ...`}
             items={
               quoteList || [
                 { value: 0, label: `Qoute 1` },

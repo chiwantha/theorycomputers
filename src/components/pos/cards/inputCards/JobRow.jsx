@@ -8,6 +8,7 @@ import { Trash, Plus, Barcode } from "lucide-react";
 import React, { useEffect } from "react";
 import { useJOBStore } from "@/store/jobStore";
 import { divDisable } from "@/constant/Forms";
+import ComboboxAdapter from "@/components/ui/combobox-adapter";
 
 const JobRow = ({ item_list, defaultRows = false }) => {
   const jobNo = useJOBStore((state) => state.jobNo);
@@ -77,18 +78,13 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                   <tr>
                     {/* ITEM */}
                     <td className="pb-2">
-                      <NextDropdown
+                      <ComboboxAdapter
                         items={item_list}
-                        value={row.itemId}
                         placeholder="Select Item"
                         className="min-w-75"
                         defaultValue={row.itemId}
-                        onChange={(val) => {
-                          const selected = item_list.find(
-                            (item) => item.value === val,
-                          );
-
-                          updateRow(row.tempId, "itemId", val);
+                        onChange={(value, selected) => {
+                          updateRow(row.tempId, "itemId", value);
                           updateRow(row.tempId, "itemName", selected?.name);
                           updateRow(row.tempId, "unitPrice", selected?.selling);
                           updateRow(row.tempId, "itemType", selected?.type);
@@ -110,14 +106,14 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                     {/* Billing */}
                     {warranty && (
                       <td className="pb-2 pl-2">
-                        <NextDropdown
+                        <ComboboxAdapter
                           items={[
                             { value: `NORMAL`, label: `Normal` },
                             { value: `WARRANTY`, label: `Warranty` },
                           ]}
                           defaultValue={row.billing}
-                          placeholder="Normal"
                           className="min-w-50"
+                          placeholder="Normal"
                           onChange={(val) => {
                             updateRow(row.tempId, "billing", val);
                           }}
@@ -212,18 +208,15 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                           {Array.from({
                             length: row.quantity,
                           }).map((_, i) => (
-                            <NextDropdown
+                            <ComboboxAdapter
                               key={i}
-                              items={
-                                item_list.find(
-                                  (item) => item.value === row.itemId,
-                                )?.serials
-                              }
+                              name={`Select Serial`}
+                              items={selectedRowItem?.serials}
                               placeholder={`Select Serial ${i + 1}`}
                               defaultValue={row.serials[i] || ``}
-                              onChange={(val) =>
-                                updateSerial(row.tempId, i, val)
-                              }
+                              onChange={(value) => {
+                                updateSerial(row.tempId, i, value);
+                              }}
                             />
                           ))}
                         </div>

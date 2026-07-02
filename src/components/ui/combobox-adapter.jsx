@@ -14,6 +14,7 @@ export default function ComboboxAdapter({
   placeholder = "Select...",
   defaultValue = "",
   onChange,
+  className,
 }) {
   const selectedItem =
     items.find((item) => item.value === defaultValue) || null;
@@ -28,12 +29,19 @@ export default function ComboboxAdapter({
         onChange?.(item?.value || "", item);
       }}
     >
-      <ComboboxInput placeholder={placeholder} className={InputStyleSdc} />
+      <ComboboxInput
+        placeholder={placeholder}
+        className={`${InputStyleSdc} ${className}`}
+      />
 
       <ComboboxContent
-        className={`mt-1 bg-white rounded-xl border-none ring-0`}
+        className={`my-1 bg-white rounded-xl border-none ring-0 `}
       >
-        <ComboboxEmpty>No items found.</ComboboxEmpty>
+        <ComboboxEmpty
+          className={`border-gray-300 border text-gray-600 outline-none rounded-xl py-4 text-base`}
+        >
+          No items found !
+        </ComboboxEmpty>
 
         <ComboboxList
           className={`border-gray-300 border outline-none rounded-xl `}
