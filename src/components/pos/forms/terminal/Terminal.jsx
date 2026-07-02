@@ -104,7 +104,7 @@ const Terminal = ({
 
             {/* Invoice Rows */}
             <div className="col-span-full">
-              <div className="bg-white p-4 rounded-xl shadow-md">
+              <div className="bg-white p-4 rounded-xl shadow-md overflow-hidden">
                 <InvoiceRow
                   item_list={itemsList}
                   warranty_list={warrantyList}
