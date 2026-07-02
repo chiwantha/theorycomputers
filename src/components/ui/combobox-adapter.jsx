@@ -6,57 +6,68 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { InputStyle, InputStyleSdc } from "@/constant/Forms";
+import { InputStyleSdc, LabelStyle } from "@/constant/Forms";
+import RequiredSymbole from "../common/form/required/RequiredSymbole";
 
 export default function ComboboxAdapter({
+  label,
   items = [],
   name,
   placeholder = "Select...",
   defaultValue = "",
   onChange,
   className,
+  required,
 }) {
   const selectedItem =
     items.find((item) => item.value === defaultValue) || null;
 
   return (
-    <Combobox
-      name={name}
-      items={items}
-      value={selectedItem}
-      itemToStringValue={(item) => item?.label || ""}
-      onValueChange={(item) => {
-        onChange?.(item?.value || "", item);
-      }}
-    >
-      <ComboboxInput
-        placeholder={placeholder}
-        className={`${InputStyleSdc} ${className}`}
-      />
+    <div className={"flex flex-col gap-1"}>
+      {label && (
+        <label className={LabelStyle}>
+          {label} {required === true && <RequiredSymbole />}
+        </label>
+      )}
 
-      <ComboboxContent
-        className={`my-1 bg-white rounded-xl border-none ring-0 `}
+      <Combobox
+        name={name}
+        items={items}
+        value={selectedItem}
+        itemToStringValue={(item) => item?.label || ""}
+        onValueChange={(item) => {
+          onChange?.(item?.value || "", item);
+        }}
       >
-        <ComboboxEmpty
-          className={`border-gray-300 border text-gray-600 outline-none rounded-xl py-4 text-base`}
-        >
-          No items found !
-        </ComboboxEmpty>
+        <ComboboxInput
+          placeholder={placeholder}
+          className={`${InputStyleSdc} ${className}`}
+        />
 
-        <ComboboxList
-          className={`border-gray-300 border outline-none rounded-xl `}
+        <ComboboxContent
+          className={`my-1 bg-white rounded-xl border-none ring-0 `}
         >
-          {(item) => (
-            <ComboboxItem
-              key={item.value}
-              value={item}
-              className={`hover:bg-blue-100 rounded-lg py-2 px-2`}
-            >
-              {item.label}
-            </ComboboxItem>
-          )}
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox>
+          <ComboboxEmpty
+            className={`border-gray-300 border text-gray-600 outline-none rounded-xl py-4 text-base`}
+          >
+            No items found !
+          </ComboboxEmpty>
+
+          <ComboboxList
+            className={`border-gray-300 border outline-none rounded-xl `}
+          >
+            {(item) => (
+              <ComboboxItem
+                key={item.value}
+                value={item}
+                className={`hover:bg-blue-100 rounded-lg py-2 px-2`}
+              >
+                {item.label}
+              </ComboboxItem>
+            )}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+    </div>
   );
 }
