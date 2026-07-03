@@ -6,7 +6,7 @@ const DashCard = ({ title, value, className, icon }) => {
   return (
     <div
       className={cn(
-        "group relative min-h-[130px] flex items-center overflow-hidden rounded-2xl border border-gray-300 bg-white p-4 shadow-md transition-all duration-300 hover:border-blue-300",
+        "group relative min-h-32.5 flex items-center overflow-hidden rounded-2xl border border-gray-300 bg-white p-4 shadow-md transition-all duration-300 hover:border-blue-300",
         className,
       )}
     >
