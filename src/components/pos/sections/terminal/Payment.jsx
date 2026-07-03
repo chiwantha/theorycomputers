@@ -45,6 +45,7 @@ const PaymentSection = () => {
   const cardDigits = useINVOICEStore((state) => state.cardDigits);
   const cardType = useINVOICEStore((state) => state.cardType);
   const cashReceived = useINVOICEStore((state) => state.cashReceived);
+  const quoteExpiryDate = useINVOICEStore((state) => state.quoteExpiryDate);
 
   const setDiscount = useINVOICEStore((state) => state.setDiscount);
   const billEdit = useINVOICEStore((state) => state.billEdit);
@@ -155,7 +156,7 @@ const PaymentSection = () => {
             return;
           }
 
-          if (row.serial) {
+          if (row.serial && docType === `INVOICE`) {
             const validSerials = row.serials.filter(
               (serial) => serial?.trim() !== "",
             );
@@ -178,7 +179,7 @@ const PaymentSection = () => {
         toast.error(`Job Id Missing !`);
         return;
       }
-      if (invType === "QUOTATION" && !quoteId) {
+      if (invType === "QUOTE" && !quoteId) {
         toast.error(`Quotation Id Missing !`);
         return;
       }
@@ -233,6 +234,13 @@ const PaymentSection = () => {
         }
       }
 
+      if (docType === `QUOTATION`) {
+        if (!quoteExpiryDate || quoteExpiryDate == ``) {
+          toast.error(`Quotation Expiary Missing !`);
+          return;
+        }
+      }
+
       const data = new FormData();
       data.append(`docType`, invoiceData.docType);
       data.append(`invType`, invoiceData.invType);
@@ -253,6 +261,7 @@ const PaymentSection = () => {
       data.append(`creditAmount`, invoiceData.creditAmount);
       data.append(`downPayment`, invoiceData.downPayment);
       data.append(`dueDate`, invoiceData.dueDate);
+      data.append(`quoteExpiryDate`, invoiceData.quoteExpiryDate);
       data.append(`cardType`, invoiceData.cardType);
       data.append(`cardDigits`, invoiceData.cardDigits);
       data.append(`bankReference`, null);
@@ -390,6 +399,21 @@ const PaymentSection = () => {
           </span>
         </div>
       </fieldset>
+
+      {docType === `QUOTATION` && (
+        <div className="bg-white rounded-xl shadow-md p-4">
+          <NextInput
+            name={`expiary date`}
+            type="date"
+            required={true}
+            label={`Quote Expiary Date`}
+            value={quoteExpiryDate}
+            onChange={(e) => {
+              setHeaderField(`quoteExpiryDate`, e.target.value);
+            }}
+          />
+        </div>
+      )}
 
       <div className="items-center flex gap-2">
         <Button

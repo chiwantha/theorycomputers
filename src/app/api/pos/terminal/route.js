@@ -29,13 +29,14 @@ export const POST = async (request) => {
       data.get(`paymentMethod`) == `CREDIT` ? `CREDIT` : `IMMEDIATE`;
     const creditAmount = data.get(`creditAmount`) || null;
     const dueDate = data.get(`dueDate`) || null;
+    const quoteExpiryDate = data.get(`quoteExpiryDate`) || null;
     const userId = data.get(`userId`);
     const note = data.get(`note`) || null;
 
     // INVOICE ITEMS
     const invItems = JSON.parse(data.get("invItems"));
     if (invItems.length > 0) {
-      const validation = validateInvItems(invItems);
+      const validation = validateInvItems(invItems, docType);
       if (validation.error) {
         throw new Error(validation.error);
       }
@@ -118,8 +119,8 @@ export const POST = async (request) => {
     }
 
     // INSERT INV HEADER
-    const invHeaderSql = `INSERT INTO inv_header (inv_no, doc_type, customer_id, date, inv_type, job_id, quote_id, gross_total, discount, net_total, settlement, credit_amount, due_date, note, user_id) 
-    VALUES (?,?,?,NOW(),?,?,?,?,?,?,?,?,?,?,?)`;
+    const invHeaderSql = `INSERT INTO inv_header (inv_no, doc_type, customer_id, date, inv_type, job_id, quote_id, gross_total, discount, net_total, settlement, credit_amount, due_date, quote_expiry_date, note, user_id) 
+    VALUES (?,?,?,NOW(),?,?,?,?,?,?,?,?,?,?,?,?)`;
     const [resInvHeader] = await connection.execute(invHeaderSql, [
       invNo,
       docType,
@@ -133,6 +134,7 @@ export const POST = async (request) => {
       settlement,
       creditAmount,
       dueDate,
+      quoteExpiryDate,
       note,
       userId,
     ]);

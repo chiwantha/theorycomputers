@@ -146,7 +146,7 @@ export function validateJobItems(job_items) {
   return { success: true };
 }
 
-export function validateInvItems(inv_items) {
+export function validateInvItems(inv_items, docType) {
   if (!Array.isArray(inv_items) || inv_items.length === 0) {
     return { error: "No Invoice items found!" };
   }
@@ -188,7 +188,7 @@ export function validateInvItems(inv_items) {
       }
     }
 
-    if (product.serial === 1) {
+    if (product.serial === 1 && docType === "INVOICE") {
       if (!Array.isArray(product.serials) || product.serials.length === 0) {
         return { error: `Serials missing for item ${product.itemName}` };
       }

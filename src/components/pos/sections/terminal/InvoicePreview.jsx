@@ -3,6 +3,7 @@
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { formatDateTimeYear } from "@/lib/utils";
+import { format_date } from "@/lib/validation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -155,15 +156,18 @@ const InvoicePreview = ({ invoiceData }) => {
               </span>
               <Separator />
               <span className="text-xs text-gray-600">
-                {invData?.header?.settlement === `CREDIT`
-                  ? `
-                ${invData?.header?.settlement} / ${Number(invData?.header?.credit_amount || 0).toFixed(2)}
+                {invData?.header?.doc_type === `INVOICE`
+                  ? invData?.header?.settlement === `CREDIT`
+                    ? `CREDIT / ${Number(invData?.header?.credit_amount || 0).toFixed(2)}
                 `
-                  : invData?.header?.settlement || `Unknown`}
+                    : invData?.header?.settlement || `Unknown`
+                  : `-`}
               </span>
               <span className="text-xs text-gray-600">
-                {formatDateTimeYear(invData?.header?.created_at) ||
-                  `0000 JAN 00`}
+                {invData?.header?.doc_type === `INVOICE`
+                  ? formatDateTimeYear(invData?.header?.created_at) ||
+                    `0000 JAN 00`
+                  : `Valid Until ${format_date(invData?.header?.quote_expiry_date)}`}
               </span>
             </div>
           </div>

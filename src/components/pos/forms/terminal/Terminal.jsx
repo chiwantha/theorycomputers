@@ -36,7 +36,6 @@ const Terminal = ({
 
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
   const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
-  const resetINVPayment = useINVOICEStore((state) => state.resetINVPayment);
 
   const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
 
@@ -67,7 +66,8 @@ const Terminal = ({
                         : "text-gray-600"
                     }`}
                     onClick={() => {
-                      resetINVPayment();
+                      resetINVOICE();
+                      resetCustomer();
                       setHeaderField("docType", "INVOICE");
                     }}
                   >
@@ -81,7 +81,8 @@ const Terminal = ({
                         : "text-gray-600"
                     }`}
                     onClick={() => {
-                      resetINVPayment();
+                      resetINVOICE();
+                      resetCustomer();
                       setHeaderField("docType", "QUOTATION");
                     }}
                     disabled={invType !== "DIRECT"}

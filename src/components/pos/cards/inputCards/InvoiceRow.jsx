@@ -11,6 +11,7 @@ import ComboboxAdapter from "@/components/ui/combobox-adapter";
 
 const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
   const rows = useINVOICEStore((state) => state.rows);
+  const docType = useINVOICEStore((state) => state.docType);
   const addRow = useINVOICEStore((state) => state.addRow);
   const updateRow = useINVOICEStore((state) => state.updateRow);
   const removeRow = useINVOICEStore((state) => state.removeRow);
@@ -251,7 +252,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                           <Button
                             name={<Barcode size={15} />}
                             pd="px-3 py-3"
-                            disabled={!row.serial}
+                            disabled={!row.serial || docType === "QUOTATION"}
                             click={() => toggleSerials(row.tempId)}
                           />
 
@@ -266,7 +267,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                     </tr>
 
                     {/* SERIALS */}
-                    {row.serial && row.showSerials && (
+                    {row.serial && row.showSerials && docType === "INVOICE" && (
                       <tr>
                         <td colSpan={6} className="pl-4 pb-2 space-y-2">
                           <div className="flex flex-col gap-2 border-l-2 border-gray-300 pl-2">
