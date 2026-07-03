@@ -1,30 +1,27 @@
+"use client";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import React from "react";
 
-const DashCard = ({ title, icon, value, link, className }) => {
+const DashCard = ({ title, value, className, icon }) => {
   return (
     <div
       className={cn(
-        `justify-center relative rounded-xl flex flex-col overflow-hidden
-         shadow-xs border-gray-200 hover:border-blue-300 bg-white
-           border transition-all duration-300 min-h-37.5 p-4 lg:p-6 w-full`,
+        "group relative min-h-[130px] flex items-center overflow-hidden rounded-2xl border border-gray-300 bg-white p-4 shadow-md transition-all duration-300 hover:border-blue-300",
         className,
       )}
     >
-      <div className="absolute aspect-square h-full -right-12.5 mask-l-from-2">
-        <Image
-          src={icon}
-          alt={icon}
-          fill
-          className="object-cover"
-          sizes="30vw"
-        />
+      <div className="relative flex flex-col gap-2">
+        {/* Content */}
+        <div className="">
+          <p className="text-sm font-medium uppercase tracking-wide text-gray-500">
+            {title || "Card Title"}
+          </p>
+
+          <h2 className=" text-4xl font-bold tracking-tight text-blue-600">
+            {value ?? 0}
+          </h2>
+        </div>
       </div>
-      <span className="text-nowrap text-ellipsis line-clamp-1 text-gray-400 capitalize">
-        {title || `Card Title`}
-      </span>
-      <h2 className="text-5xl font-bold text-blue-600">{value || 0}</h2>
     </div>
   );
 };
