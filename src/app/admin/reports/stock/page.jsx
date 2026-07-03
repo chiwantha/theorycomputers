@@ -1,23 +1,6 @@
 import Table from "@/components/common/table/Table";
+import { load_rpt_stock } from "@/data/admin/reports";
 
-export const dynamic = "force-dynamic";
-
-async function get_stock_inventory_list() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/admin/reports/stock`,
-    );
-
-    if (!res.ok) {
-      return [];
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.log(`Error Fetching Stock Inventory List : `, err);
-    return [];
-  }
-}
 const InventoryStock = async () => {
   const colunms = [
     {
@@ -59,7 +42,7 @@ const InventoryStock = async () => {
       type: `money`,
     },
   ];
-  const data = await get_stock_inventory_list();
+  const data = await load_rpt_stock();
   return (
     <div>
       <Table

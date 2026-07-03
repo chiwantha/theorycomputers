@@ -228,15 +228,19 @@ export const POST = async (request) => {
     // throw new Error(`Test Passed ✅ !`);
 
     if (customerState == `1`) {
-      await sendSms(
+      const result = await sendSms(
         customerPhone,
         customerTemplates.CREATE({
           customerName: customerName,
         }),
       );
+
+      if (!result.success) {
+        console.log(result.message);
+      }
     }
 
-    await sendSms(
+    const result = await sendSms(
       customerPhone,
       jobTemplates.CREATE({
         jobNo: jobNo,
@@ -244,45 +248,11 @@ export const POST = async (request) => {
       }),
     );
 
+    if (!result.success) {
+      console.log(result.message);
+    }
+
     await connection.commit();
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (err) {
-    await connection.rollback();
-    console.log("Transaction Failed ! :", err.message);
-    return NextResponse.json(
-      { error: err.message || "Internal Server Error" },
-      { status: 500 },
-    );
-  } finally {
-    connection.release();
-  }
-};
-
-export const PUT = async (request) => {
-  const connection = await pool.getConnection();
-  try {
-    const data = await request.json();
-    // await connection.beginTransaction();
-    // await connection.commit();
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (err) {
-    await connection.rollback();
-    console.log("Transaction Failed ! :", err.message);
-    return NextResponse.json(
-      { error: err.message || "Internal Server Error" },
-      { status: 500 },
-    );
-  } finally {
-    connection.release();
-  }
-};
-
-export const DELETE = async (request) => {
-  const connection = await pool.getConnection();
-  try {
-    const data = await request.json();
-    // await connection.beginTransaction();
-    // await connection.commit();
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
     await connection.rollback();

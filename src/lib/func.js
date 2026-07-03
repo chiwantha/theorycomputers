@@ -1,6 +1,24 @@
 const apiKey = "2102|xXnGJh3z6CBhVam9Jr3rgeD3M42iWLNh5iX7arqe";
 
 export const sendSms = async (to, message) => {
+  const phone = String(to).trim();
+
+  // Ignore if phone is 0
+  if (phone === "0") {
+    return {
+      success: false,
+      message: "Phone number is 0. SMS not sent.",
+    };
+  }
+
+  // Validate Sri Lankan mobile number
+  if (!/^07\d{8}$/.test(phone)) {
+    return {
+      success: false,
+      message: "Invalid Sri Lankan mobile number.",
+    };
+  }
+
   try {
     const res = await fetch("https://sms.send.lk/api/v3/sms/send", {
       method: "POST",
@@ -9,22 +27,31 @@ export const sendSms = async (to, message) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        recipient: to,
+        recipient: phone,
         sender_id: "K-Chord Grp",
-        message: message,
+        message,
       }),
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(JSON.stringify(data));
+      return {
+        success: false,
+        message: data?.message || "SMS sending failed.",
+      };
     }
 
-    return data;
+    return {
+      success: true,
+      message: "SMS sent successfully.",
+      data,
+    };
   } catch (error) {
-    console.error("SMS sending failed:", error.message);
-    throw error;
+    return {
+      success: false,
+      message: error.message || "Unexpected error while sending SMS.",
+    };
   }
 };
 
