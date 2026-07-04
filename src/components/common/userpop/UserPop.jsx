@@ -3,6 +3,7 @@ import { User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import Button from "../button/Button";
+import GreetingCard from "../cards/greetingcard/GreetingCard";
 
 const UserPop = () => {
   const [isOpen, setisOpen] = useState(false);
@@ -17,14 +18,17 @@ const UserPop = () => {
 
       <div
         className={`absolute top-15 right-0 w-75 bg-white border border-gray-300 shadow-lg rounded-xl origin-top-right
-        transition-all duration-300 ease-in-out overflow-hidden h-56 flex flex-col justify-between items-center
+        transition-all duration-300 ease-in-out overflow-hidden  flex flex-col justify-between items-center
         ${
           isOpen
             ? "opacity-100 scale-100 translate-y-0 pointer-events-auto p-4"
             : "opacity-0 scale-95 -translate-y-2 pointer-events-none p-0"
         }`}
       >
-        <div className="">Account Details</div>
+        <div className="w-full">
+          <GreetingCard />
+        </div>
+
         <Button
           name={`Logout`}
           wfull={true}
