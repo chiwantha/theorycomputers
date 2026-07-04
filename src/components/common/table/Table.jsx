@@ -14,7 +14,7 @@ const Table = ({
   form_props,
   action = false,
   newButtonLink,
-  rowsPerPage = 12,
+  rowsPerPage = 15,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortKey, setSortKey] = useState(null);
@@ -91,12 +91,21 @@ const Table = ({
               />
             )
           ) : (
-            <Button name={`New `} rounded={`rounded-lg`} link={newButtonLink} />
+            <Button
+              name={newButtonLink?.name ? newButtonLink?.name : `New`}
+              rounded={`rounded-lg`}
+              bg={
+                newButtonLink.bg
+                  ? newButtonLink.bg
+                  : `bg-green-500 text-white hover:bg-green-600`
+              }
+              link={newButtonLink?.link ? newButtonLink?.link : `#`}
+            />
           )}
           <input
             type="text"
             placeholder={`Search by ${searchkeys.join(` / `)} ...`}
-            className="bg-gray-200 px-4 py-2 rounded-lg text-sm w-full sm:w-56 md:w-70 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="bg-gray-200 px-4 py-2 rounded-lg text-sm w-full sm:w-56 md:w-80 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setPage(1);

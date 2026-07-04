@@ -15,7 +15,7 @@ const page = async ({ params }) => {
   if (!data.success) {
     return (
       <div className="flex flex-col space-y-4">
-        <BreadCrumb />
+        {/* <BreadCrumb /> */}
         <div className="p-5 bg-red-50 text-red-700 rounded-xl">{Job.error}</div>
       </div>
     );

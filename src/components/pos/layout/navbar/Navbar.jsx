@@ -1,4 +1,5 @@
 "use client";
+import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
 import Button from "@/components/common/button/Button";
 import NotificationBar from "@/components/common/cards/notifications/NotificationBar";
 import UserPop from "@/components/common/userpop/UserPop";
@@ -9,7 +10,7 @@ const Navbar = () => {
   const { toggleSidebar } = useSidebar();
   return (
     <div className="h-15 sticky w-full border-b border-gray-200 z-50 bg-white px-4 flex items-center justify-between">
-      <div className="relative aspect-square h-10 ">
+      {/* <div className="relative aspect-square h-10 ">
         <Image
           src={`/app/logo.png`}
           alt="logo.png"
@@ -17,6 +18,9 @@ const Navbar = () => {
           sizes="50vw"
           className="object-center object-cover"
         />
+      </div> */}
+      <div className="sm:block hidden">
+        <BreadCrumb />
       </div>
       <div className="flex gap-2 items-center">
         <NotificationBar />

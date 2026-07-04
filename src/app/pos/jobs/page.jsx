@@ -8,7 +8,7 @@ const PosJobPage = async () => {
   const jobList = await load_job_list();
   return (
     <div className="flex flex-col space-y-4">
-      <BreadCrumb />
+      {/* <BreadCrumb /> */}
       <JobGrid jobList={jobList} />
     </div>
   );

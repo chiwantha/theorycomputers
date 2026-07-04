@@ -68,7 +68,6 @@ const MasterServices = async () => {
         colunms={colunms}
         rows={data}
         searchkeys={search}
-        rowsPerPage={15}
         tablename={`Service Master`}
         form={ServiceMasterForm}
         form_props={{

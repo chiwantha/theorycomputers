@@ -8,7 +8,7 @@ const NewGrnPage = async () => {
   const items = await get_items();
   return (
     <div className="flex flex-col space-y-4">
-      <BreadCrumb />
+      {/* <BreadCrumb /> */}
       <div className="bg-white p-4 rounded-xl shadow-lg">
         <GrnInventoryForm form_props={{ suppliers, items }} />
       </div>

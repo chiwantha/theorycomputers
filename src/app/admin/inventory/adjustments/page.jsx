@@ -54,19 +54,23 @@ const StockAdjustmentsPage = async () => {
 
   const data = await load_inventory_adjustments();
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col ">
       <div className="justify-between flex items-center">
-        <BreadCrumb />
-        <Button
+        {/* <BreadCrumb /> */}
+        {/* <Button
           link={`/admin/inventory/adjustments/new`}
           bg={`bg-green-500 hover:bg-green-600 text-white`}
           name={`New Adjustment`}
-        />
+        /> */}
       </div>
       <Table
         colunms={colunms}
         tablename={`Adjustment Logs`}
         rows={data}
+        newButtonLink={{
+          link: `/admin/inventory/adjustments/new`,
+          name: `New Adjustment`,
+        }}
         action={{ view: true, edit: false, delete: false }}
         searchkeys={[`adj_no`, `type`, `date`]}
       />

@@ -15,7 +15,7 @@ const page = async () => {
   const itemsList = await get_items();
   return (
     <div className="flex flex-col space-y-4">
-      <BreadCrumb />
+      {/* <BreadCrumb /> */}
       <JobForm
         form_props={{ customersList, categoriesList, brandsList, itemsList }}
       />

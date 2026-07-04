@@ -3,6 +3,7 @@ import GreetingCard from "@/components/common/cards/greetingcard/GreetingCard";
 import SidebarItem from "@/components/admin/layout/sidebar/sidebarItem/SidebarItem";
 import { useSidebar } from "@/context/SidebarContext";
 import {
+  BanknoteArrowDown,
   BanknoteArrowUp,
   BarChart2,
   Hammer,
@@ -18,7 +19,7 @@ import { useSession } from "next-auth/react";
 const paths = [
   {
     name: `Dashboard`,
-    path: `/pos/`,
+    path: `/pos`,
     icon: <Menu size={20} />,
   },
   {
@@ -32,26 +33,36 @@ const paths = [
     icon: <Hammer size={20} />,
   },
   {
-    name: `Reports`,
-    icon: <BarChart2 size={20} />,
-    sub: [
-      {
-        name: `Sales`,
-        path: `/pos/reports/sales`,
-        icon: <ReceiptText size={20} />,
-      },
-      {
-        name: `Jobs`,
-        path: `/pos/reports/jobs`,
-        icon: <Wrench size={20} />,
-      },
-      {
-        name: `Inventory`,
-        path: `/pos/reports/inventory`,
-        icon: <ShelvingUnit size={20} />,
-      },
-    ],
+    name: `Payments`,
+    path: `/pos/payments`,
+    icon: <BanknoteArrowUp size={20} />,
   },
+  {
+    name: `Expences`,
+    path: `/pos/expences`,
+    icon: <BanknoteArrowDown size={20} />,
+  },
+  // {
+  //   name: `Reports`,
+  //   icon: <BarChart2 size={20} />,
+  //   sub: [
+  //     {
+  //       name: `Sales`,
+  //       path: `/pos/reports/sales`,
+  //       icon: <ReceiptText size={20} />,
+  //     },
+  //     {
+  //       name: `Jobs`,
+  //       path: `/pos/reports/jobs`,
+  //       icon: <Wrench size={20} />,
+  //     },
+  //     {
+  //       name: `Inventory`,
+  //       path: `/pos/reports/inventory`,
+  //       icon: <ShelvingUnit size={20} />,
+  //     },
+  //   ],
+  // },
 ];
 
 const Sidebar = () => {

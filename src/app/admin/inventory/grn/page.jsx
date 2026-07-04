@@ -51,19 +51,23 @@ const InventoryGoodReceiveNote = async () => {
   ];
   const data = await load_inventory_grns();
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col">
       <div className="justify-between flex items-center">
-        <BreadCrumb />
-        <Button
+        {/* <BreadCrumb /> */}
+        {/* <Button
           link={`/admin/inventory/grn/new`}
           bg={`bg-green-500 hover:bg-green-600 text-white`}
           name={`New Grn`}
-        />
+        /> */}
       </div>
       <Table
         colunms={colunms}
         tablename={`Grn List`}
         rows={data}
+        newButtonLink={{
+          link: `/admin/inventory/grn/new`,
+          name: `New Grn`,
+        }}
         action={{ view: true, edit: false, delete: false }}
         searchkeys={[`grn_no`, `supplier_name`, `date`]}
       />

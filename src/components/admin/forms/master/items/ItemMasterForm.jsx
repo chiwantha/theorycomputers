@@ -28,6 +28,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
     image: ``,
     cost: ``,
     selling: ``,
+    is_selling_flex: ``,
     reorder: ``,
     serial: ``,
     online: ``,
@@ -48,6 +49,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         image: defaultData.row.image,
         cost: defaultData.row.cost,
         selling: defaultData.row.selling,
+        is_selling_flex: defaultData.row.is_selling_flex,
         reorder: defaultData.row.reorder_level,
         serial: defaultData.row.is_serial,
         online: defaultData.row.online,
@@ -64,6 +66,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         image: ``,
         cost: ``,
         selling: ``,
+        is_selling_flex: ``,
         reorder: ``,
         serial: ``,
         online: ``,
@@ -88,6 +91,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
           "category_id",
           "cost",
           "selling",
+          "is_selling_flex",
           "reorder",
           "serial",
           "online",
@@ -100,6 +104,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
           "category_id",
           "cost",
           "selling",
+          "is_selling_flex",
           "reorder",
           "serial",
           "online",
@@ -125,6 +130,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
       data.append("image", formData.image);
       data.append("cost", formData.cost);
       data.append("selling", formData.selling);
+      data.append("is_selling_flex", formData.is_selling_flex);
       data.append("reorder", formData.reorder);
       data.append("serial", formData.serial);
       data.append("type", `P`);
@@ -159,6 +165,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
         image: ``,
         cost: ``,
         selling: ``,
+        is_selling_flex: ``,
         reorder: ``,
         serial: ``,
         online: ``,
@@ -294,37 +301,45 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
               }
               value={formData.reorder}
             />
-            <div className="col-span-full gap-4 grid grid-cols-1 md:grid-cols-2">
-              <NextDropdown
-                placeholder={`Yes / No`}
-                label={`Serial`}
-                id={`item_serial`}
-                required={true}
-                items={[
-                  { value: 1, label: `Yes` },
-                  { value: 0, label: `No` },
-                ]}
-                defaultValue={formData.serial}
-                onChange={(value) =>
-                  setFormData({ ...formData, serial: value })
-                }
-              />
+            <NextDropdown
+              placeholder={`Yes / No`}
+              label={`Serial`}
+              id={`item_serial`}
+              required={true}
+              items={[
+                { value: 1, label: `Yes` },
+                { value: 0, label: `No` },
+              ]}
+              defaultValue={formData.serial}
+              onChange={(value) => setFormData({ ...formData, serial: value })}
+            />
 
-              <NextDropdown
-                placeholder={`Yes / No`}
-                label={`Online`}
-                id={`online`}
-                required={true}
-                items={[
-                  { value: 1, label: `Yes` },
-                  { value: 0, label: `No` },
-                ]}
-                defaultValue={formData.online}
-                onChange={(value) =>
-                  setFormData({ ...formData, online: value })
-                }
-              />
-            </div>
+            <NextDropdown
+              placeholder={`Yes / No`}
+              label={`Selling Flex`}
+              id={`flex_selling`}
+              required={true}
+              items={[
+                { value: 1, label: `Yes` },
+                { value: 0, label: `No` },
+              ]}
+              defaultValue={formData.is_selling_flex}
+              onChange={(value) =>
+                setFormData({ ...formData, is_selling_flex: value })
+              }
+            />
+            <NextDropdown
+              placeholder={`Yes / No`}
+              label={`Online`}
+              id={`online`}
+              required={true}
+              items={[
+                { value: 1, label: `Yes` },
+                { value: 0, label: `No` },
+              ]}
+              defaultValue={formData.online}
+              onChange={(value) => setFormData({ ...formData, online: value })}
+            />
           </div>
           <Separator />
           <Button

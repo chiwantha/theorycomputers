@@ -34,7 +34,6 @@ const MasterCategories = async () => {
         tablename={`Categories`}
         rows={data}
         colunms={colunms}
-        rowsPerPage={15}
         action={{ view: false, edit: true, delete: true }}
         form={CategoryMasterForm}
         form_props={true}

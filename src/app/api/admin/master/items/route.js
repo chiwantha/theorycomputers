@@ -44,6 +44,7 @@ export const POST = async (request) => {
     const selling = data.get("selling");
     const reorder = data.get("reorder") || null;
     const serial = data.get("serial");
+    const is_selling_flex = data.get("is_selling_flex");
     const type = data.get("type");
     const online = data.get("online");
     const image = data.get("image");
@@ -68,8 +69,8 @@ export const POST = async (request) => {
     // return NextResponse.json(true, { status: 200 });
 
     const save_query = `INSERT INTO mst_items ( code, name, description, image, category_id,
-     brand_id, warranty_id, cost, selling, is_serial, reorder_level, type, online )
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+     brand_id, warranty_id, cost, selling, is_selling_flex, is_serial, reorder_level, type, online )
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     const res = await query(save_query, [
       code,
@@ -81,6 +82,7 @@ export const POST = async (request) => {
       warranty,
       cost,
       selling,
+      is_selling_flex,
       serial,
       reorder,
       type,
@@ -117,6 +119,7 @@ export const PUT = async (request) => {
         : Number(data.get("warranty"));
     const cost = data.get("cost");
     const selling = data.get("selling");
+    const is_selling_flex = data.get("is_selling_flex");
     const reorder = data.get("reorder");
     const serial = data.get("serial");
     const type = data.get("type");
@@ -143,7 +146,7 @@ export const PUT = async (request) => {
       return NextResponse.json({ error: `Id Not Found !` }, { status: 404 });
     }
 
-    const sql = `UPDATE mst_items SET code=?, name=?, description=?, image=?, category_id=?, brand_id=?, warranty_id=?, cost=?, selling=?, is_serial=?, reorder_level=?, type=?, online=? WHERE id=?`;
+    const sql = `UPDATE mst_items SET code=?, name=?, description=?, image=?, category_id=?, brand_id=?, warranty_id=?, cost=?, selling=?, is_selling_flex=?, is_serial=?, reorder_level=?, type=?, online=? WHERE id=?`;
 
     const values = [
       code,
@@ -155,6 +158,7 @@ export const PUT = async (request) => {
       warranty,
       cost,
       selling,
+      is_selling_flex,
       serial,
       reorder,
       type,
