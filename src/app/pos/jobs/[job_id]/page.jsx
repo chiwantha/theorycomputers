@@ -1,4 +1,3 @@
-import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
 import JobRow from "@/components/pos/cards/inputCards/JobRow";
 import JobAction from "@/components/pos/sections/jobviewpage/JobAction";
 import JobCp from "@/components/pos/sections/jobviewpage/JobCp";
@@ -25,7 +24,6 @@ const page = async ({ params }) => {
 
   return (
     <div className="flex flex-col space-y-4">
-      <BreadCrumb />
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 gap-y-4 md:gap-y-0">
         <div className="col-span-2  flex flex-col space-y-4 order-2 md:order-1">
           <JobCustomerVIew customerData={Job?.customerRes[0] || false} />

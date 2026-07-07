@@ -10,7 +10,7 @@ const BreadCrumb = () => {
   const segments = pathname.split("/").filter(Boolean);
 
   return (
-    <div className="flex flex-wrap items-center gap-2 text-sm">
+    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 text-sm">
       {segments.map((segment, index) => {
         const href = "/" + segments.slice(0, index + 1).join("/");
 
@@ -27,7 +27,7 @@ const BreadCrumb = () => {
             <Link
               href={href}
               className={`
-                rounded-xl py-2 px-4 transition-colors duration-300
+                rounded-xl py-2 px-4 transition-colors duration-300 text-nowrap
                 ${
                   isLast
                     ? "bg-blue-500 text-white hover:bg-blue-600"

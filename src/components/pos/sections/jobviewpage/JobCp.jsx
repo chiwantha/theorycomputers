@@ -25,6 +25,7 @@ const JobCp = ({ paymentsRes }) => {
   const section = useJOBStore((state) => state.section);
   const jobId = useJOBStore((state) => state.jobId);
   const state = useJOBStore((state) => state.state);
+  const rows = useJOBStore((state) => state.rows);
   const created_at = useJOBStore((state) => state.created_at);
   const deadline = useJOBStore((state) => state.deadline);
   const job_start = useJOBStore((state) => state.job_start);
@@ -119,33 +120,40 @@ const JobCp = ({ paymentsRes }) => {
 
   const handleState = async (func, value, link) => {
     setPending(true);
-    let reason = ``;
-    if (func == `Cancel`) {
-      const result = await cancelModal.askCancel();
+    try {
+      let reason = ``;
+      if (func == `Cancel`) {
+        const result = await cancelModal.askCancel();
 
-      if (!result?.confirmed) {
-        setPending(false);
+        if (!result?.confirmed) {
+          setPending(false);
+          return;
+        }
+        reason = result?.reason;
+      }
+
+      if (!jobId) {
+        toast.error(`Job Id Missing !`);
         return;
       }
-      reason = result?.reason;
-    }
 
-    if (!jobId) {
-      toast.error(`Job Id Missing !`);
-      return;
-    }
+      if (link) {
+        setPending(false);
+        router.push(link || `#`);
+        return;
+      }
 
-    if (link) {
-      setPending(false);
-      router.push(link || `#`);
-      return;
-    }
+      if (!value) {
+        return;
+      }
 
-    if (!value) {
-      return;
-    }
+      if (func === `Finish`) {
+        if (rows <= 0) {
+          toast.error(`Cannot Finish Empty Job !`);
+          return;
+        }
+      }
 
-    try {
       const res = await fetch(`/api/pos/jobs/${jobId}/updateState`, {
         method: `PUT`,
         body: JSON.stringify({

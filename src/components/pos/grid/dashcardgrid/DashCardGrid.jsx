@@ -49,13 +49,13 @@ const cards = [
     icon: <Mail />,
     link: ``,
     value: 3259,
-    className: `hidden xl:flex bg-blue-50`,
+    className: ` bg-blue-50`,
   },
 ];
 
 const DashCardGrid = () => {
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       {cards.map((card, index) => (
         <DashCard
           key={index}
