@@ -4,6 +4,12 @@ import Button from "../button/Button";
 import Drawer from "../drawer/Drawer";
 import ActionColumn from "../actioncolumn/ActionColumn";
 import { format_date } from "@/lib/validation";
+import * as XLSX from "xlsx";
+import { RiFileExcel2Fill } from "react-icons/ri";
+import { MdPictureAsPdf } from "react-icons/md";
+
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const Table = ({
   colunms,
@@ -15,6 +21,7 @@ const Table = ({
   action = false,
   newButtonLink,
   rowsPerPage = 15,
+  report,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortKey, setSortKey] = useState(null);
@@ -63,6 +70,112 @@ const Table = ({
     }
   };
 
+  const exportExcel = () => {
+    // Convert table data to Excel-friendly JSON
+    const exportData = sortedRows.map((row) => {
+      const obj = {};
+
+      colunms.forEach((col) => {
+        let value = "";
+
+        // Skip action/render columns
+        if (col.render) {
+          value = "";
+        }
+        // Format dates
+        else if (col.data_name === "date") {
+          value = format_date(row[col.data_name]);
+        }
+        // Format money
+        else if (col.type === "money") {
+          value = Number(row[col.data_name] || 0).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+        }
+        // Everything else
+        else {
+          value = row[col.data_name];
+        }
+
+        // Use the column header as the Excel column name
+        obj[col.header] = value;
+      });
+
+      return obj;
+    });
+
+    // Create worksheet
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    // Optional: Auto-size columns
+    worksheet["!cols"] = colunms.map((col) => ({
+      wch: Math.max(String(col.header).length + 5, 20),
+    }));
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Add worksheet
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+
+    // Download file
+    XLSX.writeFile(workbook, `${tablename || "Report"}.xlsx`);
+  };
+
+  const exportPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape", // Better for wider tables
+    });
+
+    // Table headers
+    const headers = [
+      colunms.filter((col) => !col.render).map((col) => col.header),
+    ];
+
+    // Table rows
+    const body = sortedRows.map((row) =>
+      colunms
+        .filter((col) => !col.render)
+        .map((col) => {
+          if (col.type === "date") {
+            return format_date(row[col.data_name]);
+          }
+
+          if (col.type === "money") {
+            return Number(row[col.data_name] || 0).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+          }
+
+          return row[col.data_name] ?? "";
+        }),
+    );
+
+    doc.setFontSize(18);
+    doc.text(tablename || "Report", 14, 18);
+
+    autoTable(doc, {
+      head: headers,
+      body,
+      startY: 25,
+      styles: {
+        fontSize: 9,
+        cellPadding: 3,
+      },
+      headStyles: {
+        fillColor: [41, 128, 185], // Blue
+        textColor: 255,
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+    });
+
+    doc.save(`${tablename || "Report"}.pdf`);
+  };
+
   return (
     <div className="flex flex-col gap-2 bg-white p-2 rounded-xl shadow-lg">
       {/* 🔍 Search */}
@@ -72,6 +185,28 @@ const Table = ({
         </h2>
 
         <div className="flex gap-2">
+          {report && (
+            <div className="flex flex-nowrap items-center gap-2">
+              <Button
+                rounded={`rounded-lg`}
+                name={<RiFileExcel2Fill size={20} />}
+                pd={`p-2`}
+                bg={`bg-green-600 text-white hover:bg-green-700`}
+                click={() => {
+                  exportExcel();
+                }}
+              />
+              <Button
+                rounded={`rounded-lg`}
+                name={<MdPictureAsPdf size={20} />}
+                pd={`p-2`}
+                bg={`bg-red-600 text-white hover:bg-red-700`}
+                click={() => {
+                  exportPDF();
+                }}
+              />
+            </div>
+          )}
           {!newButtonLink ? (
             form_props && (
               <Drawer
@@ -115,7 +250,7 @@ const Table = ({
       </div>
 
       {/* 📊 Table */}
-      <div className="overflow-x-auto rounded-lg">
+      <div className="overflow-x-auto rounded-lg" id="table_component">
         <table className="min-w-full text-sm rounded-lg overflow-hidden">
           {/* Header */}
           <thead className=" bg-red-300 overflow-hidden">

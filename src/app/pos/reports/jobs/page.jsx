@@ -1,7 +1,7 @@
 import React from "react";
 
-const RptJobsPage = () => {
-  return <div>RptJobsPage</div>;
+const RptPosJobs = () => {
+  return <div>RptPosJobs</div>;
 };
 
-export default RptJobsPage;
+export default RptPosJobs;

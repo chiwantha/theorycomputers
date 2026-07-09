@@ -1,7 +1,7 @@
 import React from "react";
 
-const RptInventoryPage = () => {
-  return <div>RptInventoryPage</div>;
+const RptPosInventory = () => {
+  return <div>RptPosInventory</div>;
 };
 
-export default RptInventoryPage;
+export default RptPosInventory;
