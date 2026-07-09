@@ -4,7 +4,7 @@ import Button from "../button/Button";
 import Drawer from "../drawer/Drawer";
 import ActionColumn from "../actioncolumn/ActionColumn";
 import { format_date } from "@/lib/validation";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { MdPictureAsPdf } from "react-icons/md";
 
@@ -70,7 +70,7 @@ const Table = ({
     }
   };
 
-  const exportExcel = () => {
+  const exportExcel = async () => {
     // Convert table data to Excel-friendly JSON
     const exportData = sortedRows.map((row) => {
       const obj = {};
@@ -98,29 +98,60 @@ const Table = ({
           value = row[col.data_name];
         }
 
-        // Use the column header as the Excel column name
         obj[col.header] = value;
       });
 
       return obj;
     });
 
-    // Create worksheet
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = new ExcelJS.Workbook();
 
-    // Optional: Auto-size columns
-    worksheet["!cols"] = colunms.map((col) => ({
-      wch: Math.max(String(col.header).length + 5, 20),
-    }));
+    const worksheet = workbook.addWorksheet("Report");
 
-    // Create workbook
-    const workbook = XLSX.utils.book_new();
+    // Add headers
+    worksheet.columns = colunms
+      .filter((col) => !col.render)
+      .map((col) => ({
+        header: col.header,
+        key: col.header,
+        width: Math.max(String(col.header).length + 5, 20),
+      }));
 
-    // Add worksheet
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+    // Add rows
+    exportData.forEach((row) => {
+      worksheet.addRow(row);
+    });
 
-    // Download file
-    XLSX.writeFile(workbook, `${tablename || "Report"}.xlsx`);
+    // Make header bold
+    worksheet.getRow(1).font = {
+      bold: true,
+    };
+
+    // Freeze header row
+    worksheet.views = [
+      {
+        state: "frozen",
+        ySplit: 1,
+      },
+    ];
+
+    // Generate file
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // Download
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${tablename || "Report"}.xlsx`;
+
+    link.click();
+
+    window.URL.revokeObjectURL(url);
   };
 
   const exportPDF = () => {
@@ -200,7 +231,7 @@ const Table = ({
                 rounded={`rounded-lg`}
                 name={<MdPictureAsPdf size={20} />}
                 pd={`p-2`}
-                bg={`bg-red-600 text-white hover:bg-red-700`}
+                bg={`bg-red-500 text-white hover:bg-red-600`}
                 click={() => {
                   exportPDF();
                 }}
