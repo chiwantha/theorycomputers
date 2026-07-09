@@ -5,6 +5,11 @@ export const load_rpt_stock = async (item_id) => {
     let sql_query;
     const sql = `SELECT 
     stock.*, 
+     CASE 
+        WHEN stock.quantity < COALESCE(mst_items.reorder_level, 0) 
+        THEN 'LOW' 
+        ELSE 'NORMAL' 
+    END AS stock_level,
     mst_items.name, 
     mst_items.cost, 
     (stock.quantity * mst_items.cost) AS stock_average_worth

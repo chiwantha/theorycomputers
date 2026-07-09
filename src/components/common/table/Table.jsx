@@ -147,7 +147,7 @@ const Table = ({
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${tablename || "Report"}.xlsx`;
+    link.download = `${tablename + "-Report" || "Report"}.xlsx`;
 
     link.click();
 
@@ -156,7 +156,7 @@ const Table = ({
 
   const exportPDF = () => {
     const doc = new jsPDF({
-      orientation: "landscape", // Better for wider tables
+      orientation: colunms.length >= 5 ? "landscape" : "portrait", // Better for wider tables
     });
 
     // Table headers
@@ -196,7 +196,7 @@ const Table = ({
         cellPadding: 3,
       },
       headStyles: {
-        fillColor: [41, 128, 185], // Blue
+        fillColor: [59, 130, 246], // Blue
         textColor: 255,
       },
       alternateRowStyles: {
@@ -204,7 +204,7 @@ const Table = ({
       },
     });
 
-    doc.save(`${tablename || "Report"}.pdf`);
+    doc.save(`${tablename + "-Report" || "Report"}.pdf`);
   };
 
   return (
@@ -216,28 +216,6 @@ const Table = ({
         </h2>
 
         <div className="flex gap-2">
-          {report && (
-            <div className="flex flex-nowrap items-center gap-2">
-              <Button
-                rounded={`rounded-lg`}
-                name={<RiFileExcel2Fill size={20} />}
-                pd={`p-2`}
-                bg={`bg-green-600 text-white hover:bg-green-700`}
-                click={() => {
-                  exportExcel();
-                }}
-              />
-              <Button
-                rounded={`rounded-lg`}
-                name={<MdPictureAsPdf size={20} />}
-                pd={`p-2`}
-                bg={`bg-red-500 text-white hover:bg-red-600`}
-                click={() => {
-                  exportPDF();
-                }}
-              />
-            </div>
-          )}
           {!newButtonLink ? (
             form_props && (
               <Drawer
@@ -267,6 +245,28 @@ const Table = ({
               }
               link={newButtonLink?.link ? newButtonLink?.link : `#`}
             />
+          )}
+          {report && (
+            <div className="flex flex-nowrap items-center gap-2 bg-gray-200 rounded-lg">
+              <Button
+                rounded={`rounded-lg`}
+                name={<RiFileExcel2Fill size={20} />}
+                pd={`p-2`}
+                bg={`bg-green-600 text-white hover:bg-green-700`}
+                click={() => {
+                  exportExcel();
+                }}
+              />
+              <Button
+                rounded={`rounded-lg`}
+                name={<MdPictureAsPdf size={20} />}
+                pd={`p-2`}
+                bg={`bg-red-500 text-white hover:bg-red-600`}
+                click={() => {
+                  exportPDF();
+                }}
+              />
+            </div>
           )}
           <input
             type="text"

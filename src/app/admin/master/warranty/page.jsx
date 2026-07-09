@@ -39,6 +39,7 @@ const MasterWarranty = async () => {
         colunms={colunms}
         rows={data}
         form={WarrantyMasterForm}
+        report={true}
         form_props={true}
         action={{ view: false, edit: true, delete: true }}
         searchkeys={["name", "type", "duration"]}

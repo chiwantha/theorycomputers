@@ -35,6 +35,12 @@ const InventoryStock = async () => {
       data_className: "text-blue-400 font-medium",
     },
     {
+      header: "Stock Level",
+      data_name: "stock_level",
+      className: "",
+      data_className: "",
+    },
+    {
       header: "Stock Avg Worth",
       data_name: "stock_average_worth",
       className: "md:table-cell hidden",
@@ -48,8 +54,9 @@ const InventoryStock = async () => {
       <Table
         colunms={colunms}
         rows={data}
-        searchkeys={[`stock`, `name`]}
+        searchkeys={[`stock`, `name`, `stock_level`]}
         tablename={`Stock View`}
+        report={true}
       />
     </div>
   );

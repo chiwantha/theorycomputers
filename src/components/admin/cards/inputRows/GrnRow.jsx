@@ -7,6 +7,7 @@ import NextInput from "@/components/common/form/nextinput/NextInput";
 import { Trash, Plus, Barcode } from "lucide-react";
 import { useGRNStore } from "@/store/grnStore";
 import React from "react";
+import ComboboxAdapter from "@/components/ui/combobox-adapter";
 
 const GrnRow = ({ item_list }) => {
   const rows = useGRNStore((state) => state.rows);
@@ -44,18 +45,13 @@ const GrnRow = ({ item_list }) => {
                 <tr>
                   {/* ITEM */}
                   <td className="pb-2">
-                    <NextDropdown
+                    <ComboboxAdapter
                       items={item_list}
-                      value={row.itemId}
+                      defaultValue={row.itemId}
                       placeholder="Select Item"
                       className="min-w-75"
-                      onChange={(val) => {
-                        const selected = item_list.find(
-                          (item) => item.value === val,
-                        );
-
-                        updateRow(row.tempId, "itemId", val);
-
+                      onChange={(value, selected) => {
+                        updateRow(row.tempId, "itemId", value);
                         updateRow(
                           row.tempId,
                           "serial",

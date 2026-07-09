@@ -58,6 +58,7 @@ const MasterSuppliers = async () => {
         rows={data}
         form={SupplierMasterForm}
         form_props={true}
+        report={true}
         action={{ view: false, edit: true, delete: true }}
         searchkeys={["phone", "agent", "name", "email", `whatsapp`]}
       />

@@ -53,7 +53,11 @@ export const get_items = async () => {
     const sql = `
 SELECT 
     mst_items.id AS value,
-    mst_items.name AS label,
+    CASE 
+    WHEN mst_items.code IS NOT NULL AND mst_items.code <> '' 
+    THEN CONCAT(mst_items.name, ' - ', mst_items.code)
+    ELSE mst_items.name
+END AS label,
     mst_items.*,
     mst_category.name AS category,
     mst_items.is_serial,
@@ -159,7 +163,11 @@ export const get_items_for_job = async (job_id) => {
 SELECT 
     mst_items.id AS value,
     mst_items.id,
-    mst_items.name AS label,
+    CASE 
+    WHEN mst_items.code IS NOT NULL AND mst_items.code <> '' 
+    THEN CONCAT(mst_items.name, ' - ', mst_items.code)
+    ELSE mst_items.name
+END AS label,
     mst_items.*,
     mst_category.name AS category,
     mst_items.is_serial,

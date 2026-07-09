@@ -36,6 +36,7 @@ const MasterCategories = async () => {
         colunms={colunms}
         action={{ view: false, edit: true, delete: true }}
         form={CategoryMasterForm}
+        report={true}
         form_props={true}
         searchkeys={["name"]}
       />

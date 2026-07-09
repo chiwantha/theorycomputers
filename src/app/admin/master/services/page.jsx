@@ -70,6 +70,7 @@ const MasterServices = async () => {
         searchkeys={search}
         tablename={`Service Master`}
         form={ServiceMasterForm}
+        report={true}
         form_props={{
           category_list: dropdowns?.categories || [],
           brand_list: dropdowns?.brands || [],

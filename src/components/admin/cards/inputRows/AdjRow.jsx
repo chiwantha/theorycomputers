@@ -7,6 +7,7 @@ import NextInput from "@/components/common/form/nextinput/NextInput";
 import { Trash, Plus, Barcode } from "lucide-react";
 import React from "react";
 import { useADJStore } from "@/store/adjStore";
+import ComboboxAdapter from "@/components/ui/combobox-adapter";
 
 const AdjRow = ({ item_list }) => {
   const rows = useADJStore((state) => state.rows);
@@ -39,17 +40,13 @@ const AdjRow = ({ item_list }) => {
                 <tr>
                   {/* ITEM */}
                   <td className="pb-2">
-                    <NextDropdown
+                    <ComboboxAdapter
                       items={item_list}
-                      value={row.itemId}
+                      defaultValue={row.itemId}
                       placeholder="Select Item"
                       className="min-w-75"
-                      onChange={(val) => {
-                        const selected = item_list.find(
-                          (item) => item.value === val,
-                        );
-
-                        updateRow(row.tempId, "itemId", val);
+                      onChange={(value, selected) => {
+                        updateRow(row.tempId, "itemId", value);
                         updateRow(row.tempId, "itemName", selected?.name);
 
                         updateRow(
@@ -63,16 +60,16 @@ const AdjRow = ({ item_list }) => {
 
                   {/* TYPE */}
                   <td className="pb-2 pl-2">
-                    <NextDropdown
+                    <ComboboxAdapter
                       items={[
                         { value: `P`, label: `Plus` },
                         { value: `M`, label: `Minus` },
                       ]}
-                      value={row.type}
+                      defaultValue={row.type}
                       placeholder="Type"
                       className="min-w-50"
-                      onChange={(val) => {
-                        updateRow(row.tempId, "type", val);
+                      onChange={(value) => {
+                        updateRow(row.tempId, "type", value);
                       }}
                     />
                   </td>

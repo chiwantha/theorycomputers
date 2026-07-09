@@ -3,11 +3,14 @@ import { useSidebar } from "@/context/SidebarContext";
 import {
   BanknoteArrowDown,
   BanknoteArrowUp,
+  BarChart2,
   ChevronRight,
   Hammer,
   Menu,
   ReceiptText,
+  ShelvingUnit,
   User,
+  Wrench,
 } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -41,27 +44,27 @@ const paths = [
     path: `/pos/expences`,
     icon: <BanknoteArrowDown size={20} />,
   },
-  // {
-  //   name: `Reports`,
-  //   icon: <BarChart2 size={20} />,
-  //   sub: [
-  //     {
-  //       name: `Sales`,
-  //       path: `/pos/reports/sales`,
-  //       icon: <ReceiptText size={20} />,
-  //     },
-  //     {
-  //       name: `Jobs`,
-  //       path: `/pos/reports/jobs`,
-  //       icon: <Wrench size={20} />,
-  //     },
-  //     {
-  //       name: `Inventory`,
-  //       path: `/pos/reports/inventory`,
-  //       icon: <ShelvingUnit size={20} />,
-  //     },
-  //   ],
-  // },
+  {
+    name: `Reports`,
+    icon: <BarChart2 size={20} />,
+    sub: [
+      {
+        name: `Invoices`,
+        path: `/pos/reports/invoices`,
+        icon: <ReceiptText size={20} />,
+      },
+      {
+        name: `Jobs`,
+        path: `/pos/reports/jobs`,
+        icon: <Wrench size={20} />,
+      },
+      {
+        name: `Stock`,
+        path: `/pos/reports/stock`,
+        icon: <ShelvingUnit size={20} />,
+      },
+    ],
+  },
 ];
 
 const Sidebar = () => {
