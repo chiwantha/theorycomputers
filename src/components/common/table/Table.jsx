@@ -22,6 +22,7 @@ const Table = ({
   newButtonLink,
   rowsPerPage = 15,
   report,
+  push_link,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortKey, setSortKey] = useState(null);
@@ -155,16 +156,23 @@ const Table = ({
   };
 
   const exportPDF = () => {
-    const doc = new jsPDF({
-      orientation: colunms.length >= 5 ? "landscape" : "portrait", // Better for wider tables
+    const now = new Date();
+    const today = now.toLocaleDateString();
+    const time = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
     });
 
-    // Table headers
+    const doc = new jsPDF({
+      orientation: colunms.length >= 5 ? "landscape" : "portrait",
+    });
+
     const headers = [
       colunms.filter((col) => !col.render).map((col) => col.header),
     ];
 
-    // Table rows
     const body = sortedRows.map((row) =>
       colunms
         .filter((col) => !col.render)
@@ -184,27 +192,73 @@ const Table = ({
         }),
     );
 
-    doc.setFontSize(18);
-    doc.text(tablename || "Report", 14, 18);
+    // Header
+    const pageWidth = doc.internal.pageSize.width;
+
+    doc.setFontSize(16);
+    doc.setTextColor(0);
+
+    doc.text(tablename || "Report", 8, 15);
+
+    // Date on right
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+
+    doc.text(`Generated: ${today} ${time}`, pageWidth - 8, 15, {
+      align: "right",
+    });
 
     autoTable(doc, {
       head: headers,
       body,
-      startY: 25,
+
+      startY: 22,
+
+      // Reduced margins
+      margin: {
+        top: 22,
+        bottom: 15,
+        left: 8,
+        right: 8,
+      },
+
       styles: {
         fontSize: 9,
-        cellPadding: 3,
+        cellPadding: 2,
       },
+
       headStyles: {
-        fillColor: [59, 130, 246], // Blue
+        fillColor: [59, 130, 246],
         textColor: 255,
       },
+
       alternateRowStyles: {
         fillColor: [245, 245, 245],
       },
+
+      didDrawPage: (data) => {
+        const pageHeight = doc.internal.pageSize.height;
+        const pageWidth = doc.internal.pageSize.width;
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+
+        // Left footer - page + date
+        doc.text(
+          `Page ${doc.internal.getNumberOfPages()} | ${today}`,
+          8,
+          pageHeight - 8,
+        );
+
+        // Right footer
+        const footerText = "System Developed by K-Chord Pvt Ltd";
+        const textWidth = doc.getTextWidth(footerText);
+
+        doc.text(footerText, pageWidth - textWidth - 8, pageHeight - 8);
+      },
     });
 
-    doc.save(`${tablename + "-Report" || "Report"}.pdf`);
+    doc.save(`${tablename || "Report"}-Report.pdf`);
   };
 
   return (
@@ -346,6 +400,7 @@ const Table = ({
                         setOpen={setOpen}
                         row={row}
                         action={action}
+                        push_link={push_link}
                       />
                     </td>
                   )}

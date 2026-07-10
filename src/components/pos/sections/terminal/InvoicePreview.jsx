@@ -4,8 +4,10 @@ import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { formatDateTimeYear } from "@/lib/utils";
 import { format_date } from "@/lib/validation";
+import { ChevronLeft, Printer } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const handlePrint = () => {
@@ -23,6 +25,7 @@ const handlePrint = () => {
 };
 
 const InvoicePreview = ({ invoiceData }) => {
+  const router = useRouter();
   const { data: cashierData } = useSession();
   const [invData, setInvoiceData] = useState(invoiceData?.data);
   const [payments, setPayments] = useState({
@@ -49,31 +52,23 @@ const InvoicePreview = ({ invoiceData }) => {
   return (
     <div className="w-full flex flex-col items-center space-y-4">
       <div className="w-full border-gray-200 border rounded-xl min-h-87.5 pattern-bg"></div>
-      <div className="flex flex-col gap-6 -mt-60">
+      <div className="flex flex-col xl:flex-row gap-4 -mt-60">
         {/* Buttons */}
-        <div className="flex gap-4 items-center ">
+        <div className="flex gap-4 items-center xl:flex-col">
           <Button
-            name={`PRINT`}
+            name={<ChevronLeft size={30} />}
+            // link={`/pos/terminal`}
+            click={() => router.back()}
+            pd={`py-4 px-4 flex items-center justify-center`}
+            bg={`bg-gray-200 text-gray-500 hover:bg-gray-300 aspect-square `}
+            fg={`font-bold text-lg`}
+          />
+          <Button
+            name={<Printer size={30} />}
             click={handlePrint}
-            pd={`py-8 px-4 flex items-center justify-center`}
+            pd={`py-4 px-4 flex items-center justify-center`}
             bg={`bg-green-500 text-white hover:bg-green-600`}
             fg={`font-bold text-lg`}
-            wfull={true}
-          />
-          <Button
-            name={`TERMINAL`}
-            link={`/pos/terminal`}
-            pd={`py-8 px-4 flex items-center justify-center`}
-            bg={`bg-gray-200 text-gray-500 hover:bg-gray-300`}
-            fg={`font-bold text-lg`}
-            wfull={true}
-          />
-          <Button
-            name={`DASH`}
-            link={`/pos`}
-            pd={`py-8 px-4 flex items-center justify-center`}
-            fg={`font-bold text-lg`}
-            wfull={true}
           />
         </div>
 

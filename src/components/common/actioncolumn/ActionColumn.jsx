@@ -4,7 +4,7 @@ import Button from "../button/Button";
 import { Eye, Pencil, Trash } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-const ActionColumn = ({ setChangeData, setOpen, row, action }) => {
+const ActionColumn = ({ setChangeData, setOpen, row, action, push_link }) => {
   const pathname = usePathname();
   const actions =
     typeof action === "object"
@@ -18,7 +18,7 @@ const ActionColumn = ({ setChangeData, setOpen, row, action }) => {
           name={<Eye size={15} />}
           pd="px-2 py-2"
           bg="bg-green-500 hover:bg-green-600 text-white"
-          link={`${pathname}/${row.id}`}
+          link={push_link ? `${push_link}/${row.id}` : `${pathname}/${row.id}`}
           prefetch={true}
         />
       )}

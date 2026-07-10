@@ -12,13 +12,13 @@ import {
   ClipboardList,
   AlertTriangle,
   RotateCcw,
-  Settings,
   Database,
   Barcode,
   ClipboardMinus,
   PenTool,
   ShieldCheck,
   Wrench,
+  BadgeDollarSign,
 } from "lucide-react";
 
 import SidebarItem from "./sidebarItem/SidebarItem";
@@ -111,6 +111,11 @@ const admin_links = [
     name: "Reports",
     icon: <ClipboardMinus size={20} />,
     sub: [
+      {
+        name: "Sales",
+        icon: <BadgeDollarSign size={20} />,
+        path: "/admin/reports/sales",
+      },
       {
         name: "Stock",
         icon: <Warehouse size={20} />,

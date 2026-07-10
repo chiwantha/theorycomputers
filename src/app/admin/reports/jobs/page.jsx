@@ -2,7 +2,7 @@ import Table from "@/components/common/table/Table";
 import { load_rpt_job_list } from "@/data/common/reports";
 import React from "react";
 
-const RptPosJobs = async () => {
+const RptAdminJobs = async () => {
   const colunms = [
     {
       header: "Job No",
@@ -70,4 +70,4 @@ const RptPosJobs = async () => {
   );
 };
 
-export default RptPosJobs;
+export default RptAdminJobs;

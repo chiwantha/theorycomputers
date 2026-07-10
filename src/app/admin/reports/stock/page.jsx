@@ -1,5 +1,5 @@
 import Table from "@/components/common/table/Table";
-import { load_rpt_stock } from "@/data/admin/reports";
+import { load_rpt_stock } from "@/data/common/reports";
 
 const InventoryStock = async () => {
   const colunms = [
