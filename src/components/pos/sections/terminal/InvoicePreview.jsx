@@ -7,7 +7,7 @@ import { format_date } from "@/lib/validation";
 import { ChevronLeft, Printer } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const handlePrint = () => {
@@ -24,7 +24,7 @@ const handlePrint = () => {
   window.location.reload();
 };
 
-const InvoicePreview = ({ invoiceData }) => {
+const InvoicePreview = ({ invoiceData, backURL }) => {
   const router = useRouter();
   const { data: cashierData } = useSession();
   const [invData, setInvoiceData] = useState(invoiceData?.data);
@@ -58,7 +58,9 @@ const InvoicePreview = ({ invoiceData }) => {
           <Button
             name={<ChevronLeft size={30} />}
             // link={`/pos/terminal`}
-            click={() => router.back()}
+            click={() => {
+              router.push(backURL || `/terminal`);
+            }}
             pd={`py-4 px-4 flex items-center justify-center`}
             bg={`bg-gray-200 text-gray-500 hover:bg-gray-300 aspect-square `}
             fg={`font-bold text-lg`}

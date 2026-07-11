@@ -4,12 +4,10 @@ import {
   BanknoteArrowDown,
   BanknoteArrowUp,
   BarChart2,
-  ChevronRight,
   Hammer,
   Menu,
   ReceiptText,
   ShelvingUnit,
-  User,
   Wrench,
 } from "lucide-react";
 import { useState } from "react";
@@ -32,6 +30,16 @@ const paths = [
     name: `Jobs`,
     path: `/pos/jobs`,
     icon: <Hammer size={20} />,
+  },
+  {
+    name: `Payments`,
+    path: `/pos/payments`,
+    icon: <BanknoteArrowUp size={20} />,
+  },
+  {
+    name: `Expences`,
+    path: `/pos/expences`,
+    icon: <BanknoteArrowDown size={20} />,
   },
   {
     name: `Reports`,

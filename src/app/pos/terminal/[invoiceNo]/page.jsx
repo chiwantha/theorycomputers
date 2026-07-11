@@ -6,7 +6,7 @@ const InvoicePreviewPage = async ({ params }) => {
   const invoiceData = await load_per_invoice(invoiceNo);
   return (
     <div>
-      <InvoicePreview invoiceData={invoiceData} />
+      <InvoicePreview invoiceData={invoiceData} backURL={`/pos/terminal`} />
     </div>
   );
 };
