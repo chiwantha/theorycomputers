@@ -15,8 +15,6 @@ import {
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import SidebarItem from "./sidebarItem/SidebarItem";
-import Button from "@/components/common/button/Button";
-import { useSIDEBARstore } from "@/store/sidebarStore";
 import CompanyDetailsCard from "@/components/common/cards/detailscard/CompanyDetailsCard";
 
 const paths = [
@@ -34,16 +32,6 @@ const paths = [
     name: `Jobs`,
     path: `/pos/jobs`,
     icon: <Hammer size={20} />,
-  },
-  {
-    name: `Payments`,
-    path: `/pos/payments`,
-    icon: <BanknoteArrowUp size={20} />,
-  },
-  {
-    name: `Expences`,
-    path: `/pos/expences`,
-    icon: <BanknoteArrowDown size={20} />,
   },
   {
     name: `Reports`,
