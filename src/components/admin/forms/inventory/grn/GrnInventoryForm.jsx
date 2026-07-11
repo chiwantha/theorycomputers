@@ -129,6 +129,7 @@ const GrnInventoryForm = ({ form_props }) => {
             name={`grn_no`}
             label={`Grn No`}
             placeholder={`GRN0001`}
+            max={15}
             value={grnNo}
             onChange={(e) => setHeaderField(`grnNo`, e.target.value)}
           />

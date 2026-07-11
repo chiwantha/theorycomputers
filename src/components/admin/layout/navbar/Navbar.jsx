@@ -17,22 +17,24 @@ const Navbar = () => {
           src={`/app/logo.png`}
           alt="logo.png"
           fill
-          sizes="50vw"
+          sizes="50vw" 
           className="object-center object-cover"
         />
       </div> */}
       <div className="sm:block hidden">
         <BreadCrumb />
       </div>
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center justify-between sm:justify-end w-full">
         <NotificationBar />
-        <UserPop />
-        <Button
-          click={toggleSidebar}
-          name={<Menu />}
-          bg={`bg-gray-100 hover:bg-gray-200 text-gray-700 md:hidden`}
-          pd={`py-2 px-2`}
-        />
+        <div className="flex gap-2 items-center">
+          <UserPop />
+          <Button
+            click={toggleSidebar}
+            name={<Menu />}
+            bg={`bg-gray-100 hover:bg-gray-200 text-gray-700 lg:hidden`}
+            pd={`py-2 px-2`}
+          />
+        </div>
       </div>
     </div>
   );

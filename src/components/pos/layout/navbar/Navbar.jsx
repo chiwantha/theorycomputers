@@ -4,20 +4,29 @@ import Button from "@/components/common/button/Button";
 import NotificationBar from "@/components/common/cards/notifications/NotificationBar";
 import UserPop from "@/components/common/userpop/UserPop";
 import { useSidebar } from "@/context/SidebarContext";
-import { Menu } from "lucide-react";
+import { useSIDEBARstore } from "@/store/sidebarStore";
+import { Menu, PanelLeftClose, User } from "lucide-react";
 const Navbar = () => {
   const { toggleSidebar } = useSidebar();
+  const setSidebarField = useSIDEBARstore((state) => state.setSidebarField);
+  const posFullSidebar = useSIDEBARstore((state) => state.posFullSidebar);
   return (
     <div className="h-15 sticky w-full border-b border-gray-200 z-50 bg-white px-4 flex items-center justify-between">
-      {/* <div className="relative aspect-square h-10 ">
-        <Image
-          src={`/app/logo.png`}
-          alt="logo.png"
-          fill
-          sizes="50vw"
-          className="object-center object-cover"
-        />
-      </div> */}
+      <Button
+        click={() => {
+          setSidebarField(`posFullSidebar`, !posFullSidebar);
+        }}
+        name={
+          <PanelLeftClose
+            className={`transition-transform duration-300 ${!posFullSidebar ? ` rotate-180` : ``}`}
+          />
+        }
+        fg={`flex justify-center font-bold items-center `}
+        bg={`bg-gray-200 text-gray-600 hover:bg-gray-300`}
+        pd={`p-2`}
+        mg={`mr-2`}
+      />
+
       <div className="sm:block hidden">
         <BreadCrumb />
       </div>

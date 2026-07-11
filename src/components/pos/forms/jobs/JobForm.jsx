@@ -322,6 +322,7 @@ const JobForm = ({ form_props, rows = true }) => {
                 inputClassName={!serial && `bg-red-50`}
                 disabled={serial}
                 value={serialNo}
+                max={100}
                 readonly={true}
               />
             </div>

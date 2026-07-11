@@ -201,6 +201,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
           <NextInput
             label={`Item Code`}
             id={`item_code`}
+            max={10}
             name={`item_code`}
             placeholder={`LAP1504VA`}
             onChange={(e) => setFormData({ ...formData, code: e.target.value })}
@@ -210,6 +211,7 @@ const ItemMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Item Name`}
             id={`item_name`}
             name={`item_name`}
+            max={150}
             required={true}
             placeholder={`Asus Vivobook X1504VA`}
             className={`sm:col-span-2`}

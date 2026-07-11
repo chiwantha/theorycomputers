@@ -133,6 +133,7 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Name`}
             placeholder={`K-Chord ( Pvt ) Ltd`}
             name={`name`}
+            max={150}
             value={formData.name}
             onChange={(e) => setformdata({ ...formData, name: e.target.value })}
             className={`sm:col-span-2`}
@@ -142,6 +143,7 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Agent`}
             placeholder={`Kasun Chiwantha`}
             name={`agent`}
+            max={150}
             value={formData.agent}
             onChange={(e) =>
               setformdata({ ...formData, agent: e.target.value })
@@ -154,6 +156,7 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Phone`}
             placeholder={`0788806670`}
             name={`phone`}
+            max={10}
             value={formData.phone}
             onChange={(e) =>
               setformdata({ ...formData, phone: e.target.value })
@@ -164,6 +167,7 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`WhatsApp`}
             placeholder={`0761294262`}
             name={`whatsapp`}
+            max={10}
             value={formData.whatsapp}
             onChange={(e) =>
               setformdata({ ...formData, whatsapp: e.target.value })
@@ -173,6 +177,7 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Email`}
             placeholder={`contact@kchord.com`}
             name={`email`}
+            max={50}
             value={formData.email}
             onChange={(e) =>
               setformdata({ ...formData, email: e.target.value })
@@ -182,6 +187,7 @@ const SupplierMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Address`}
             placeholder={`No. 361/23 parangoda , Dekatana`}
             name={`address`}
+            max={150}
             value={formData.address}
             onChange={(e) =>
               setformdata({ ...formData, address: e.target.value })

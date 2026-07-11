@@ -126,6 +126,7 @@ const StockAdjustmentForm = ({ form_props }) => {
             label={`Adjustment No`}
             placeholder={`ADJ0001`}
             value={adjNo}
+            max={15}
             onChange={(e) => setHeaderField(`adjNo`, e.target.value)}
           />
           <NextDropdown

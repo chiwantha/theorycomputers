@@ -126,6 +126,7 @@ const WarrantyMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Name`}
             placeholder={`3 Month Shop Warranty`}
             name={`name`}
+            max={50}
             value={formData.name}
             onChange={(e) => setformdata({ ...formData, name: e.target.value })}
             className={`sm:col-span-2`}

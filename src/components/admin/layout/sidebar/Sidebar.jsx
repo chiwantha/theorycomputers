@@ -19,24 +19,25 @@ import {
   ShieldCheck,
   Wrench,
   BadgeDollarSign,
+  ReceiptText,
 } from "lucide-react";
 
 import SidebarItem from "./sidebarItem/SidebarItem";
 import GreetingCard from "../../../common/cards/greetingcard/GreetingCard";
 import { useSidebar } from "@/context/SidebarContext";
-import Button from "@/components/common/button/Button";
-import { signOut } from "next-auth/react";
+import CompanyDetailsCard from "@/components/common/cards/detailscard/CompanyDetailsCard";
 
 const admin_links = [
+  // {
+  //   name: `Pos`,
+  //   icon: <ShoppingCart size={20} />,
+  //   path: `/pos`,
+  //   styles: `bg-amber-500 text-white hover:bg-amber-600`,
+  // },
   {
     name: `Dashboard`,
     icon: <LayoutDashboard size={20} />,
     path: `/admin`,
-  },
-  {
-    name: `Pos`,
-    icon: <ShoppingCart size={20} />,
-    path: `/pos`,
   },
   {
     name: "Master",
@@ -117,6 +118,16 @@ const admin_links = [
         path: "/admin/reports/sales",
       },
       {
+        name: `Invoices`,
+        path: `/admin/reports/invoices`,
+        icon: <ReceiptText size={20} />,
+      },
+      {
+        name: "Jobs",
+        icon: <Wrench size={20} />,
+        path: "/admin/reports/jobs",
+      },
+      {
         name: "Stock",
         icon: <Warehouse size={20} />,
         path: "/admin/reports/stock",
@@ -141,7 +152,7 @@ const Sidebar = () => {
       transform transition-transform duration-300 bg-white flex flex-col gap-4
       ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} md:translate-x-0`}
     >
-      <GreetingCard />
+      <CompanyDetailsCard />
       <div className="flex flex-col gap-4">
         {admin_links.map((link, index) => (
           <SidebarItem

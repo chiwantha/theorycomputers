@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import SidebarItem from "./sidebarItem/SidebarItem";
 import Button from "@/components/common/button/Button";
 import { useSIDEBARstore } from "@/store/sidebarStore";
+import CompanyDetailsCard from "@/components/common/cards/detailscard/CompanyDetailsCard";
 
 const paths = [
   {
@@ -70,8 +71,7 @@ const paths = [
 const Sidebar = () => {
   const { data } = useSession();
   const { isSidebarOpen } = useSidebar();
-  const setSidebarField = useSIDEBARstore((state) => state.setSidebarField);
-  const posFullSidebar = useSIDEBARstore((state) => state.posFullSidebar);
+
   const [openIndex, setOpenIndex] = useState(null);
 
   const handleToggle = (index) => {
@@ -85,24 +85,8 @@ const Sidebar = () => {
       ${isSidebarOpen ? "translate-x-0 xs:-translate-x-full" : "-translate-x-full"} lg:translate-x-0`}
     >
       <div className="flex flex-col gap-4">
-        <Button
-          click={() => {
-            setSidebarField(`posFullSidebar`, !posFullSidebar);
-          }}
-          name={
-            <ChevronRight
-              size={20}
-              className={`transition-transform duration-300 ${posFullSidebar ? ` rotate-180` : ``}`}
-            />
-          }
-          fg={`flex justify-center font-bold items-center `}
-          bg={`bg-gray-200 text-gray-600 hover:bg-gray-300`}
-          pd={`py-3 px-3`}
-          wfull={true}
-        />
-        {data?.user?.role === 1 && (
-          <SidebarItem icon={<User />} path={`/admin`} name={`Admin`} />
-        )}
+        <CompanyDetailsCard />
+
         {paths.map((path, index) => (
           <SidebarItem
             key={index}

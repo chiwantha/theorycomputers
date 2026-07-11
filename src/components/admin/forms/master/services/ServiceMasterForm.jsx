@@ -172,6 +172,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
           <NextInput
             label={`Service Code`}
             id={`service_code`}
+            max={10}
             name={`service_code`}
             placeholder={`NOPOWREP`}
             onChange={(e) => setFormData({ ...formData, code: e.target.value })}
@@ -181,6 +182,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Service Name`}
             id={`service_name`}
             name={`service_name`}
+            max={150}
             required={true}
             placeholder={`No Power Repair`}
             className={`sm:col-span-2`}

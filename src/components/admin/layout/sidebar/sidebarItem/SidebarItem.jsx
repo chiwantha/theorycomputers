@@ -14,6 +14,7 @@ const SidebarItem = ({
   isOpen,
   onToggle,
   block,
+  styles,
 }) => {
   const pathname = usePathname();
 
@@ -34,7 +35,9 @@ const SidebarItem = ({
               ? `bg-red-300 text-white cursor-not-allowed`
               : isActive
                 ? "bg-blue-500 text-white shadow-sm"
-                : "text-gray-700 hover:bg-gray-100"
+                : styles
+                  ? styles
+                  : "text-gray-700 hover:bg-gray-100"
           }`}
         >
           <span className="">{icon}</span>

@@ -108,6 +108,7 @@ const CategoryMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Name`}
             placeholder={`Laptops`}
             name={`name`}
+            max={100}
             value={formData.name}
             onChange={(e) => setformdata({ ...formData, name: e.target.value })}
             required={true}

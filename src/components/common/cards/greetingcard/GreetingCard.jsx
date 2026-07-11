@@ -2,9 +2,12 @@
 
 import { Crown, User } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 const GreetingCard = () => {
+  const path = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -34,6 +37,25 @@ const GreetingCard = () => {
         <h2 className="line-clamp-1 uppercase text-ellipsis text-xl text-gray-700 font-bold">
           {session?.user?.name ? session.user.name.split(" ")[1] : "Guest"}
         </h2>
+
+        {session?.user?.role === 1 && (
+          <div className="grid rounded-xl bg-gray-100 grid-cols-2 mt-4 font-medium">
+            <button
+              disabled={path.split("/")[1] === `Pos`}
+              className={`${path.split("/")[1] === `pos` ? ` bg-blue-500 text-white` : `bg-transparent text-gray-600 hover:bg-gray-200 cursor-pointer`} py-1 px-4 rounded-lg`}
+              onClick={() => router.push(`/pos`)}
+            >
+              Pos
+            </button>
+            <button
+              disabled={path.split("/")[1] === `Admin`}
+              className={`${path.split("/")[1] === `admin` ? `bg-blue-500 text-white` : `bg-transparent text-gray-600 hover:bg-gray-200  cursor-pointer`} py-1 px-4 rounded-lg `}
+              onClick={() => router.push(`/admin`)}
+            >
+              Admin
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

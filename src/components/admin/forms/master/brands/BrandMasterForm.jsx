@@ -107,6 +107,7 @@ const BrandMasterForm = ({ defaultData, form_props, close_drawer }) => {
             label={`Name`}
             placeholder={`Asus`}
             name={`name`}
+            max={100}
             value={formData.name}
             onChange={(e) => setformdata({ ...formData, name: e.target.value })}
           />
