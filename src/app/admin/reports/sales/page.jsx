@@ -224,7 +224,8 @@ const RptAdminSales = () => {
 
   return (
     <div>
-      <Button click={generateSalesReport} name="Generate Sales Report" />
+      Comming Soon !
+      {/* <Button click={generateSalesReport} name="Generate Sales Report" /> */}
     </div>
   );
 };
