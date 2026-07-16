@@ -26,6 +26,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
     image: ``,
     cost: ``,
     selling: ``,
+    is_selling_flex: ``,
     online: ``,
   });
 
@@ -42,6 +43,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
         image: defaultData.row.image,
         cost: defaultData.row.cost,
         selling: defaultData.row.selling,
+        is_selling_flex: defaultData.row.is_selling_flex,
         online: defaultData.row.online,
       });
     else
@@ -55,6 +57,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
         image: ``,
         cost: ``,
         selling: ``,
+        is_selling_flex: ``,
         online: ``,
       });
   }, [defaultData]);
@@ -76,6 +79,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
           "category_id",
           "cost",
           "selling",
+          "is_selling_flex",
           "online",
         ]);
       } else if (method === "PUT") {
@@ -85,6 +89,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
           "category_id",
           "cost",
           "selling",
+          "is_selling_flex",
           "online",
         ]);
       } else {
@@ -107,6 +112,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
       data.append("image", formData.image);
       data.append("cost", formData.cost);
       data.append("selling", formData.selling);
+      data.append("is_selling_flex", formData.is_selling_flex);
       data.append("serial", 0);
       data.append("type", `S`);
       data.append("online", formData.online);
@@ -139,6 +145,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
         image: ``,
         cost: ``,
         selling: ``,
+        is_selling_flex: ``,
         online: ``,
       });
       close_drawer(true);
@@ -231,7 +238,7 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
             value={formData.image}
           />
           <Separator />
-          <div className="col-span-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="col-span-full">
               <NextDropdown
                 label={`Warranty`}
@@ -265,6 +272,22 @@ const ServiceMasterForm = ({ defaultData, form_props, close_drawer }) => {
               }
               value={formData.selling}
             />
+            <div className="col-span-full md:col-span-1">
+              <NextDropdown
+                placeholder={`Yes / No`}
+                label={`Selling Flex`}
+                id={`flex_selling`}
+                required={true}
+                items={[
+                  { value: 1, label: `Yes` },
+                  { value: 0, label: `No` },
+                ]}
+                defaultValue={formData.is_selling_flex}
+                onChange={(value) =>
+                  setFormData({ ...formData, is_selling_flex: value })
+                }
+              />
+            </div>
           </div>
           <Separator />
           <Button
