@@ -4,7 +4,7 @@ import Button from "../button/Button";
 import Drawer from "../drawer/Drawer";
 import ActionColumn from "../actioncolumn/ActionColumn";
 import { format_date } from "@/lib/validation";
-import ExcelJS from "exceljs";
+import writeXlsxFile from "write-excel-file";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { MdPictureAsPdf } from "react-icons/md";
 
@@ -71,7 +71,7 @@ const Table = ({
     }
   };
 
-  const exportExcel = async () => {
+  const exportExcelJs = async () => {
     // Convert table data to Excel-friendly JSON
     const exportData = sortedRows.map((row) => {
       const obj = {};
@@ -153,6 +153,35 @@ const Table = ({
     link.click();
 
     window.URL.revokeObjectURL(url);
+  };
+
+  const exportExcel = async () => {
+    const header = colunms
+      .filter((col) => !col.render)
+      .map((col) => ({
+        value: col.header,
+        fontWeight: "bold",
+      }));
+
+    const rows = sortedRows.map((row) =>
+      colunms
+        .filter((col) => !col.render)
+        .map((col) => {
+          if (col.data_name === "date") {
+            return format_date(row[col.data_name]);
+          }
+
+          if (col.type === "money") {
+            return Number(row[col.data_name] || 0);
+          }
+
+          return row[col.data_name] ?? "";
+        }),
+    );
+
+    await writeXlsxFile([header, ...rows], {
+      fileName: `${tablename || "Report"}-Report.xlsx`,
+    });
   };
 
   const exportPDF = () => {

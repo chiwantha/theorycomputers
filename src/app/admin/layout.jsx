@@ -1,8 +1,7 @@
 import Sidebar from "@/components/admin/layout/sidebar/Sidebar";
 import Navbar from "@/components/admin/layout/navbar/Navbar";
 import { SidebarProvider } from "@/context/SidebarContext";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -10,7 +9,8 @@ export const metadata = {
 };
 
 const AdminLayout = async ({ children }) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
+
   // console.log(session);
   if (!session || session?.user?.role !== 1) {
     redirect(`/auth/usr-login`);

@@ -1,6 +1,5 @@
 "use client";
 import Button from "@/components/common/button/Button";
-import NextInput from "@/components/common/form/nextinput/NextInput";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -53,6 +52,8 @@ const UserLoginPage = () => {
           src={`/app/back.jpg`}
           alt="login.jpg"
           fill
+          loading="eager"
+          sizes="33vw"
           className="object-center object-cover"
         />
         <span className="absolute z-50 bottom-4 font-light text-gray-600 capitalize right-4">

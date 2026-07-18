@@ -1,12 +1,12 @@
 import Sidebar from "@/components/pos/layout/sidebar/Sidebar";
 import { SidebarProvider } from "@/context/SidebarContext";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { auth } from "@/lib/auth";
+
 import { redirect } from "next/navigation";
 import Navbar from "@/components/pos/layout/navbar/Navbar";
 
 const ShopUserLayout = async ({ children }) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   // console.log(session);
   if (!session || (session?.user?.role !== 0 && session?.user?.role !== 1)) {
     redirect("/auth/usr-login");
