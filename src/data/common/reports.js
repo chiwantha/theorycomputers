@@ -83,8 +83,9 @@ export const load_rpt_job_list = async () => {
 
       WHERE
         DATE(jh.created_at) = CURDATE()
-        OR jh.state = 0
+        OR jh.state IN (0,1, 2)
         OR DATE(jh.updated_at) = CURDATE()
+
 
         ORDER BY
     jh.state ASC,
