@@ -1,4 +1,3 @@
-import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 import ComboboxAdapter from "@/components/ui/combobox-adapter";
 import { useCUSTOMERStore } from "@/store/customerStore";
