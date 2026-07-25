@@ -151,7 +151,7 @@ const PaymentSection = () => {
             return;
           }
 
-          if (!row.quantity && row.itemType == "P") {
+          if (!row.quantity) {
             toast.error(`Missing Quantity on ${row?.itemName} !`);
             return;
           }

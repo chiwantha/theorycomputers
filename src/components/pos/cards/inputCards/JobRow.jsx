@@ -1,7 +1,6 @@
 "use client";
 
 import Button from "@/components/common/button/Button";
-import NextDropdown from "@/components/common/form/nextinput/NextDropdown";
 import NextInput from "@/components/common/form/nextinput/NextInput";
 
 import { Trash, Plus, Barcode } from "lucide-react";
@@ -61,6 +60,7 @@ const JobRow = ({ item_list, defaultRows = false }) => {
             {rows.map((row) => {
               // console.log("Row : ", row);
               let itemType = "P";
+              let isSellingFlex = false;
               let itemStock = 0;
               let iteminStock = true;
               let reserved = row.reserved;
@@ -70,6 +70,7 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                 );
 
                 itemType = selectedItem?.type;
+                isSellingFlex = selectedItem?.is_selling_flex || false;
                 itemStock = Number(selectedItem?.stock) + Number(reserved);
                 iteminStock = itemType == "P" ? itemStock > 0 : itemType == "S";
               }
@@ -88,11 +89,7 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                           updateRow(row.tempId, "itemName", selected?.name);
                           updateRow(row.tempId, "unitPrice", selected?.selling);
                           updateRow(row.tempId, "itemType", selected?.type);
-                          updateRow(
-                            row.tempId,
-                            "quantity",
-                            selected?.type == "S" ? 1 : 0,
-                          );
+                          updateRow(row.tempId, "quantity", 0);
 
                           updateRow(
                             row.tempId,
@@ -125,14 +122,16 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                     <td className="pb-2 pl-2">
                       <NextInput
                         name={`unit_price`}
-                        readonly={true}
-                        value={Number(row.unitPrice || 0).toLocaleString(
-                          undefined,
-                          {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          },
-                        )}
+                        readonly={!isSellingFlex}
+                        inputClassName={isSellingFlex ? `bg-green-50` : ``}
+                        value={row.unitPrice}
+                        onChange={(e) =>
+                          updateRow(
+                            row.tempId,
+                            `unitPrice`,
+                            Number(e.target.value),
+                          )
+                        }
                       />
                     </td>
 
@@ -140,15 +139,9 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                     <td className="pl-2 pb-2 ">
                       <NextInput
                         type={
-                          !iteminStock || itemType == "S" ? `text` : "number"
+                          !iteminStock && itemType == "P" ? `text` : "number"
                         }
-                        value={
-                          !iteminStock
-                            ? `OUT OF STOCK`
-                            : itemType == "P"
-                              ? row.quantity
-                              : `Auto`
-                        }
+                        value={!iteminStock ? `OUT OF STOCK` : row.quantity}
                         inputClassName={
                           !iteminStock && `bg-red-50 pointer-events-none`
                         }
@@ -159,8 +152,15 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                             Number(e.target.value),
                           )
                         }
-                        max={iteminStock ? itemStock : 0}
-                        readonly={itemType == `S`}
+                        max={
+                          itemType == "P"
+                            ? iteminStock
+                              ? itemStock
+                              : 0
+                            : itemType == "S"
+                              ? 999
+                              : 0
+                        }
                         className={`min-w-30`}
                       />
                     </td>

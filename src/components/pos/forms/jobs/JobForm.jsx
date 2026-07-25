@@ -97,8 +97,6 @@ const JobForm = ({ form_props, rows = true }) => {
       const customerData = useCUSTOMERStore.getState();
       const jobData = useJOBStore.getState();
 
-      // console.log(jobData);
-
       // Customer Validation
       if (warranty) {
         validation = validateFields(customerData, [`customerId`]);
@@ -160,7 +158,7 @@ const JobForm = ({ form_props, rows = true }) => {
             return;
           }
 
-          if (!row.quantity && row.itemType == "P") {
+          if (!row.quantity) {
             toast.error(`Missing Quantity on ${row?.itemName} !`);
             return;
           }
