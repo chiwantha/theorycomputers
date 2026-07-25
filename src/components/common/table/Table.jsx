@@ -4,12 +4,13 @@ import Button from "../button/Button";
 import Drawer from "../drawer/Drawer";
 import ActionColumn from "../actioncolumn/ActionColumn";
 import { format_date } from "@/lib/validation";
-import ExcelJS from "exceljs";
+// import ExcelJS from "exceljs";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { MdPictureAsPdf } from "react-icons/md";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { toast } from "react-toastify";
 
 const Table = ({
   colunms,
@@ -62,88 +63,92 @@ const Table = ({
     page * rowsPerPage,
   );
 
-  const exportExcel = async () => {
-    // Convert table data to Excel-friendly JSON
-    const exportData = sortedRows.map((row) => {
-      const obj = {};
+  // const exportExcel = async () => {
+  //   // Convert table data to Excel-friendly JSON
+  //   const exportData = sortedRows.map((row) => {
+  //     const obj = {};
 
-      colunms.forEach((col) => {
-        let value = "";
+  //     colunms.forEach((col) => {
+  //       let value = "";
 
-        // Skip action/render columns
-        if (col.render) {
-          value = "";
-        }
-        // Format dates
-        else if (col.data_name === "date") {
-          value = format_date(row[col.data_name]);
-        }
-        // Format money
-        else if (col.type === "money") {
-          value = Number(row[col.data_name] || 0).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
-        }
-        // Everything else
-        else {
-          value = row[col.data_name];
-        }
+  //       // Skip action/render columns
+  //       if (col.render) {
+  //         value = "";
+  //       }
+  //       // Format dates
+  //       else if (col.data_name === "date") {
+  //         value = format_date(row[col.data_name]);
+  //       }
+  //       // Format money
+  //       else if (col.type === "money") {
+  //         value = Number(row[col.data_name] || 0).toLocaleString(undefined, {
+  //           minimumFractionDigits: 2,
+  //           maximumFractionDigits: 2,
+  //         });
+  //       }
+  //       // Everything else
+  //       else {
+  //         value = row[col.data_name];
+  //       }
 
-        obj[col.header] = value;
-      });
+  //       obj[col.header] = value;
+  //     });
 
-      return obj;
-    });
+  //     return obj;
+  //   });
 
-    const workbook = new ExcelJS.Workbook();
+  //   const workbook = new ExcelJS.Workbook();
 
-    const worksheet = workbook.addWorksheet("Report");
+  //   const worksheet = workbook.addWorksheet("Report");
 
-    // Add headers
-    worksheet.columns = colunms
-      .filter((col) => !col.render)
-      .map((col) => ({
-        header: col.header,
-        key: col.header,
-        width: Math.max(String(col.header).length + 5, 20),
-      }));
+  //   // Add headers
+  //   worksheet.columns = colunms
+  //     .filter((col) => !col.render)
+  //     .map((col) => ({
+  //       header: col.header,
+  //       key: col.header,
+  //       width: Math.max(String(col.header).length + 5, 20),
+  //     }));
 
-    // Add rows
-    exportData.forEach((row) => {
-      worksheet.addRow(row);
-    });
+  //   // Add rows
+  //   exportData.forEach((row) => {
+  //     worksheet.addRow(row);
+  //   });
 
-    // Make header bold
-    worksheet.getRow(1).font = {
-      bold: true,
-    };
+  //   // Make header bold
+  //   worksheet.getRow(1).font = {
+  //     bold: true,
+  //   };
 
-    // Freeze header row
-    worksheet.views = [
-      {
-        state: "frozen",
-        ySplit: 1,
-      },
-    ];
+  //   // Freeze header row
+  //   worksheet.views = [
+  //     {
+  //       state: "frozen",
+  //       ySplit: 1,
+  //     },
+  //   ];
 
-    // Generate file
-    const buffer = await workbook.xlsx.writeBuffer();
+  //   // Generate file
+  //   const buffer = await workbook.xlsx.writeBuffer();
 
-    // Download
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
+  //   // Download
+  //   const blob = new Blob([buffer], {
+  //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  //   });
 
-    const url = window.URL.createObjectURL(blob);
+  //   const url = window.URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${tablename + "-Report" || "Report"}.xlsx`;
+  //   const link = document.createElement("a");
+  //   link.href = url;
+  //   link.download = `${tablename + "-Report" || "Report"}.xlsx`;
 
-    link.click();
+  //   link.click();
 
-    window.URL.revokeObjectURL(url);
+  //   window.URL.revokeObjectURL(url);
+  // };
+
+  const exportExcel = () => {
+    toast.info(`Excel Reports Disabled Temporarily !`);
   };
 
   const exportPDF = () => {
