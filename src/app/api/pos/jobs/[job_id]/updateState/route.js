@@ -52,6 +52,14 @@ export const PUT = async (request, { params }) => {
           jobNo: data?.jobNo,
         }),
       );
+    } else if (data?.action == `Restart`) {
+      await sendSms(
+        data?.customerPhone,
+        jobTemplates.RESTARTED({
+          customerName: data?.customerName,
+          jobNo: data?.jobNo,
+        }),
+      );
     } else if (data?.action == `Finish`) {
       await sendSms(
         data?.customerPhone,
@@ -69,14 +77,6 @@ export const PUT = async (request, { params }) => {
           customerName: data?.customerName,
           jobNo: data?.jobNo,
           reason: data?.reason || `Customer requested cancellation`,
-        }),
-      );
-    } else if (data?.action == `Restart`) {
-      await sendSms(
-        data?.customerPhone,
-        jobTemplates.RESTARTED({
-          customerName: data?.category_name,
-          jobNo: data?.jobNo,
         }),
       );
     }

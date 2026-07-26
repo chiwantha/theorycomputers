@@ -20,7 +20,7 @@ WHERE mst_items.state = 1
     const data = {
       low_stock_count: low_stock_res?.[0]?.low_stock ?? 0,
       today_issued_count: issued_invoices_res?.[0]?.["COUNT(id)"] ?? 0,
-      sms_balance: Number(sms_balance?.data?.remaining_unit ?? 0),
+      sms_balance: sms_balance?.remaining_unit || 0,
     };
 
     return data;

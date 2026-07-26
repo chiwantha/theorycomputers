@@ -1,13 +1,11 @@
 import BarChartTemp from "@/components/common/charts/BarChartTemp";
 import LineChartTemp from "@/components/common/charts/LineChartTemp";
 import PieChartTemp from "@/components/common/charts/PieChartTemp";
-import Table from "@/components/common/table/Table";
 import DashCardGrid from "@/components/pos/grid/dashcardgrid/DashCardGrid";
 import {
   load_payment_methods,
   load_pos_chart_sale,
 } from "@/data/pos/dashboard";
-import { Eye } from "lucide-react";
 
 const ShopUserDashMenu = async () => {
   const sale_chart = await load_pos_chart_sale();
@@ -18,6 +16,7 @@ const ShopUserDashMenu = async () => {
   return (
     <div className=" flex flex-col gap-4">
       <DashCardGrid />
+      {/* charts */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <LineChartTemp
           data={sale_chart}
@@ -29,7 +28,7 @@ const ShopUserDashMenu = async () => {
           title="Sale By Type"
           description={`${month || `This Month`} performance`}
         />
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <PieChartTemp
             data={[
               {

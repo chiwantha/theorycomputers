@@ -3,11 +3,14 @@ import { cn } from "@/lib/utils";
 import { Image } from "lucide-react";
 import React from "react";
 
-const DashCard = ({ title, value, period, className, icon }) => {
+const DashCard = ({ title, value, period, className, icon, index }) => {
   return (
     <div
       className="relative rounded-xl bg-white hover:bg-gray-50 border border-gray-300 hover:border-blue-400 group min-h-36 p-4
-    transition-colors duration-300"
+    transition-colors duration-300 animate-fade-up opacity-0"
+      style={{
+        animationDelay: `${index * 100}ms`,
+      }}
     >
       <div className="absolute p-2 top-4 right-4 rounded-lg bg-blue-500 border text-white">
         {icon || <Image color="yellow" />}

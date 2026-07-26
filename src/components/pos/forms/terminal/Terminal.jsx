@@ -50,9 +50,14 @@ const Terminal = ({
       <div className="grid grid-cols-1 2xl:grid-cols-4 gap-4">
         {/* Left Side */}
         <div className="2xl:col-span-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 ">
             {/* Document Type */}
-            <div className="xl:col-span-1 col-span-full">
+            <div
+              style={{
+                animationDelay: `${1 * 100}ms`,
+              }}
+              className="xl:col-span-1 col-span-full animate-fade-up opacity-0"
+            >
               <div className="bg-white rounded-xl shadow-md h-full">
                 <div
                   className={`grid grid-cols-2 rounded-lg h-full ${
@@ -94,17 +99,32 @@ const Terminal = ({
             </div>
 
             {/* Transaction Document */}
-            <div className="xl:col-span-2">
+            <div
+              style={{
+                animationDelay: `${2 * 100}ms`,
+              }}
+              className="xl:col-span-2 animate-fade-up opacity-0"
+            >
               <SelectTrnDoc jobList={jobList} />
             </div>
 
             {/* Customer */}
-            <div className="xl:col-span-2">
+            <div
+              style={{
+                animationDelay: `${3 * 100}ms`,
+              }}
+              className="xl:col-span-2 animate-fade-up opacity-0"
+            >
               <SelectCustomer customersList={customersList} />
             </div>
 
             {/* Invoice Rows */}
-            <div className="col-span-full">
+            <div
+              style={{
+                animationDelay: `${5 * 100}ms`,
+              }}
+              className="col-span-full animate-fade-up opacity-0"
+            >
               <div className="bg-white p-4 rounded-xl shadow-md overflow-hidden">
                 <InvoiceRow
                   item_list={itemsList}
@@ -112,30 +132,16 @@ const Terminal = ({
                 />
               </div>
             </div>
-
-            {/* Debug Values  */}
-            <div className="hidden flex-col ">
-              <span>Gross : {grossTotal}</span>
-              <span>Advance : - {advance}</span>
-              <span>Discount : - {discount}</span>
-              <span>Net : {netTotal}</span>
-              <Separator />
-              <span>Method : {paymentMethod}</span>
-              <Separator />
-              <span>Cash : {cashAmount}</span>
-              <span>Card : {cardAmount}</span>
-              <span>Bank : {bankAmount}</span>
-              <span>Credit : {creditAmount}</span>
-              <Separator />
-              <span>CardType : {cardType}</span>
-              <span>cardDigit : {cardDigits}</span>
-              <span>dueDate : {dueDate}</span>
-            </div>
           </div>
         </div>
 
         {/* Right Side */}
-        <div className="2xl:col-span-1">
+        <div
+          style={{
+            animationDelay: `${3 * 100}ms`,
+          }}
+          className="2xl:col-span-1 animate-fade-up opacity-0"
+        >
           <PaymentSection />
         </div>
       </div>

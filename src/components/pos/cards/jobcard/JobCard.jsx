@@ -3,7 +3,7 @@
 import Button from "@/components/common/button/Button";
 import Separator from "@/components/common/separator/Separator";
 import { getTimeSince } from "@/lib/utils";
-import { Dock, Phone, Plus, User } from "lucide-react";
+import { Phone, Plus, User } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -15,6 +15,7 @@ const JobCard = ({
   state,
   created_at,
   job_no,
+  index = 0,
 }) => {
   const getStatus = () => {
     switch (state) {
@@ -72,7 +73,10 @@ const JobCard = ({
 
   return (
     <div
-      className={`min-h-50 rounded-xl  transition-all duration-300 flex 
+      style={{
+        animationDelay: `${index * 100}ms`,
+      }}
+      className={`min-h-50 rounded-xl  transition-all duration-300 flex animate-fade-up opacity-0
         ${add ? "border-4 border-dashed text-blue-400" : "border p-4 md:p-6"}
         ${
           state == 1

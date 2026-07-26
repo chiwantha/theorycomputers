@@ -46,6 +46,7 @@ const JobGrid = ({ jobList = [], gridName, grid }) => {
               state={card.jobState}
               invoice_Id={card.invoice_id}
               created_at={card.created_at}
+              index={index}
             />
           ))}
       </div>

@@ -1,5 +1,3 @@
-const apiKey = "2102|xXnGJh3z6CBhVam9Jr3rgeD3M42iWLNh5iX7arqe";
-
 export const sendSms = async (to, message) => {
   const phone = String(to).trim();
 
@@ -23,12 +21,12 @@ export const sendSms = async (to, message) => {
     const res = await fetch("https://sms.send.lk/api/v3/sms/send", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${process.env.SMS_API_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         recipient: phone,
-        sender_id: "K-Chord Grp",
+        sender_id: process.env.SENDER_ID,
         message,
       }),
     });
@@ -60,17 +58,20 @@ export const smsBalance = async () => {
     const res = await fetch("https://sms.send.lk/api/v3/balance", {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${process.env.SMS_API_TOKEN}`,
         "Content-Type": "application/json",
       },
     });
 
-    const data = await res.json();
-
     if (!res.ok) {
-      throw new Error(JSON.stringify(data));
+      return {
+        data: {
+          remaining_unit: "00",
+        },
+      };
     }
 
+    const { data } = await res.json();
     return data;
   } catch (error) {
     console.error("SMS balance fetch failed:", error.message);

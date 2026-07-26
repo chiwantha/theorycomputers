@@ -71,6 +71,7 @@ const DashCardGrid = () => {
           value={card.value}
           icon={card.icon}
           period={card.period}
+          index={index}
         />
       ))}
     </div>

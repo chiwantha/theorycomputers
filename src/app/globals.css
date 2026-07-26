@@ -133,3 +133,18 @@
 .perspective-2000 {
   perspective: 2000px;
 }
+
+@theme {
+  --animate-fade-up: fade-up 0.5s ease-out forwards;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
