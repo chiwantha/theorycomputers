@@ -130,8 +130,8 @@
   transform: rotateY(180deg);
 }
 
-.perspective-2000 {
-  perspective: 2000px;
+.perspective-9999 {
+  perspective: 9999px;
 }
 
 @theme {

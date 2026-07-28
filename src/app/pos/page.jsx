@@ -1,15 +1,20 @@
 import BarChartTemp from "@/components/common/charts/BarChartTemp";
 import LineChartTemp from "@/components/common/charts/LineChartTemp";
 import PieChartTemp from "@/components/common/charts/PieChartTemp";
+import Table from "@/components/common/table/Table";
 import DashCardGrid from "@/components/pos/grid/dashcardgrid/DashCardGrid";
 import {
   load_payment_methods,
+  load_pos_chart_revenue,
   load_pos_chart_sale,
+  load_pos_recent_invoices,
 } from "@/data/pos/dashboard";
 
 const ShopUserDashMenu = async () => {
   const sale_chart = await load_pos_chart_sale();
   const payment_method_counts = await load_payment_methods();
+  const revenue_chart = await load_pos_chart_revenue();
+  const recent_invoices = await load_pos_recent_invoices();
   const month = new Date().toLocaleString("en-US", {
     month: "long",
   });
@@ -48,102 +53,95 @@ const ShopUserDashMenu = async () => {
             description={`${month || `This Month`} performance`}
           />
           <BarChartTemp
-            stacked
-            data={[
-              {
-                month: "Jan",
-                revenue: 4200,
-                cost: 2300,
-                expenses: 650,
-                profit: 1250,
-              },
-              {
-                month: "Feb",
-                revenue: 3850,
-                cost: 1950,
-                expenses: 575,
-                profit: 1325,
-              },
-              {
-                month: "Mar",
-                revenue: 5120,
-                cost: 2740,
-                expenses: 720,
-                profit: 1660,
-              },
-              {
-                month: "Apr",
-                revenue: 4680,
-                cost: 2480,
-                expenses: 685,
-                profit: 1515,
-              },
-              {
-                month: "May",
-                revenue: 6340,
-                cost: 3350,
-                expenses: 810,
-                profit: 2180,
-              },
-              {
-                month: "Jun",
-                revenue: 5925,
-                cost: 3125,
-                expenses: 790,
-                profit: 2010,
-              },
-              {
-                month: "Jul",
-                revenue: 7150,
-                cost: 3790,
-                expenses: 920,
-                profit: 2440,
-              },
-              {
-                month: "Aug",
-                revenue: 6810,
-                cost: 3610,
-                expenses: 880,
-                profit: 2320,
-              },
-              {
-                month: "Sep",
-                revenue: 7485,
-                cost: 3960,
-                expenses: 980,
-                profit: 2545,
-              },
-              {
-                month: "Oct",
-                revenue: 8290,
-                cost: 4380,
-                expenses: 1050,
-                profit: 2860,
-              },
-              {
-                month: "Nov",
-                revenue: 7865,
-                cost: 4180,
-                expenses: 990,
-                profit: 2695,
-              },
-              {
-                month: "Dec",
-                revenue: 9450,
-                cost: 4980,
-                expenses: 1160,
-                profit: 3310,
-              },
-            ]}
+            // stacked
+            data={revenue_chart}
             xKey="month"
             bars={[
-              { key: "revenue", label: "Revenue", color: "#2563eb" },
-              { key: "cost", label: "Cost", color: "#FFAC1C" },
-              { key: "expenses", label: "Expenses", color: "#D22B2B" },
-              { key: "profit", label: "Profit", color: "#50C878" },
+              { key: "net_total", label: "Revenue", color: "#2563eb" },
+              { key: "discount", label: "Discounts", color: "#FFAC1C" },
+              { key: "expences", label: "Expences", color: "#DC143C" },
             ]}
-            title="Revenue vs Expenses"
-            description="Monthly performance"
+            title="Financials"
+            description="Daily performance"
+          />
+        </div>
+      </div>
+      {/* tables */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div
+          style={{
+            animationDelay: `${1 * 100}ms`,
+          }}
+          className="animate-fade-up opacity-0"
+        >
+          <Table
+            tablename={`Recent Invoices`}
+            rowsPerPage={5}
+            rows={recent_invoices}
+            push_link={`/pos/reports/invoices/`}
+            action={{ view: true, edit: false, delete: false }}
+            searchkeys={["inv_no", "items_count"]}
+            colunms={[
+              {
+                header: "Inv No",
+                data_name: "inv_no",
+                className: "",
+                data_className: "",
+              },
+              {
+                header: "Item Count",
+                data_name: "items_count",
+                className: "md:table-cell hidden",
+                data_className: "",
+              },
+              {
+                header: "Net Total",
+                data_name: "net_total",
+                className: "",
+                data_className: "text-blue-400 font-medium",
+                type: `money`,
+              },
+            ]}
+          />
+        </div>
+        <div
+          style={{
+            animationDelay: `${2 * 100}ms`,
+          }}
+          className="animate-fade-up opacity-0"
+        >
+          <Table
+            tablename={`Recent Orders`}
+            rowsPerPage={5}
+            rows={[]}
+            action={{ view: true, edit: false, delete: false }}
+            colunms={[
+              {
+                header: "Ord No",
+                data_name: "order_no",
+                className: "",
+                data_className: "",
+              },
+              {
+                header: "Item Count",
+                data_name: "items_count",
+                className: "md:table-cell hidden",
+                data_className: "",
+              },
+              {
+                header: "Net Total",
+                data_name: "net_total",
+                className: "",
+                data_className: "text-blue-400 font-medium",
+                type: `money`,
+              },
+              {
+                header: "Delivary",
+                data_name: "delivary",
+                className: "md:table-cell hidden",
+                data_className: "text-amber-500",
+              },
+            ]}
           />
         </div>
       </div>

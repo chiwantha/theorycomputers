@@ -18,6 +18,7 @@ export const useINVOICEStore = create((set, get) => ({
   invType: `DIRECT`,
   quoteId: ``,
   jobId: ``,
+  orderId: ``,
 
   // ammounts
   paid: 0,
@@ -99,6 +100,7 @@ export const useINVOICEStore = create((set, get) => ({
       invType: `DIRECT`,
       quoteId: ``,
       jobId: ``,
+      orderId: ``,
 
       // ammounts
       paid: 0,
@@ -154,6 +156,8 @@ export const useINVOICEStore = create((set, get) => ({
       serial: item.serial || false,
       showSerials: false,
       serials: [],
+
+      note: item.note,
     };
 
     const rows = [...get().rows, newRow];
@@ -271,6 +275,7 @@ export const useINVOICEStore = create((set, get) => ({
       serials: row.serials || [],
       showSerials: false,
 
+      note: row.note || ``,
       // defaults
     }));
 

@@ -7,6 +7,7 @@ import { Trash, Plus, Barcode } from "lucide-react";
 import React, { useEffect } from "react";
 import { useINVOICEStore } from "@/store/invoiceStore";
 import ComboboxAdapter from "@/components/ui/combobox-adapter";
+import RequiredSymbole from "@/components/common/form/required/RequiredSymbole";
 
 const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
   const rows = useINVOICEStore((state) => state.rows);
@@ -33,22 +34,27 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
         >
           <table className="min-w-full table-auto">
             <thead>
-              <tr className="text-sm">
-                <th className="w-[30%] min-w-70 text-left pl-4 pb-2">Item</th>
+              <tr className="text-sm text-gray-600">
+                <th className="w-[30%] min-w-70 text-left pl-4 pb-2">
+                  Item <RequiredSymbole />
+                </th>
 
                 <th className="w-[30%] min-w-45 text-left pl-4 pb-2">
                   Warranty
                 </th>
 
                 <th className="w-[12%] min-w-35 text-left pl-4 pb-2">
-                  Unit Price
+                  Unit Price <RequiredSymbole />
                 </th>
 
                 <th className="w-[8%] min-w-30 text-left pl-4 pb-2">
-                  Quantity
+                  Quantity <RequiredSymbole />
                 </th>
 
-                <th className="w-[12%] min-w-35 text-left pl-4 pb-2">Total</th>
+                <th className="w-[12%] min-w-35 text-left pl-4 pb-2">
+                  Total <RequiredSymbole />
+                </th>
+                <th className="w-[12%] min-w-35 text-left pl-4 pb-2">Note</th>
 
                 <th className="w-[8%] min-w-30 text-left pl-4 pb-2">Action</th>
               </tr>
@@ -255,6 +261,21 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                               maximumFractionDigits: 2,
                             },
                           )}
+                        />
+                      </td>
+
+                      {/* NOTE */}
+                      <td className="pb-2 pl-2">
+                        <NextInput
+                          textarea
+                          textareaRows={1}
+                          max={250}
+                          name={`note`}
+                          placeholder={`Note`}
+                          value={row.note}
+                          onChange={(e) =>
+                            updateRow(row.tempId, `note`, e.target.value)
+                          }
                         />
                       </td>
 

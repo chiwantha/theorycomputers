@@ -261,7 +261,7 @@ const Table = ({
     <div className="flex flex-col gap-2 bg-white p-2 rounded-xl shadow-lg">
       {/* 🔍 Search */}
       <div className="flex justify-between items-center sm:flex-row flex-col ">
-        <h2 className="text-lg font-semibold text-gray-700 px-2 sm:block hidden">
+        <h2 className="text-lg font-semibold text-gray-600 px-2 sm:block hidden line-clamp-1 text-ellipsis text-nowrap">
           {tablename || "Items"}
         </h2>
 

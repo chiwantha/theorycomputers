@@ -170,7 +170,7 @@ export const POST = async (request) => {
       for (const item of invItems) {
         // console.log(item);
         // HANDLE INVOICE ITEMS
-        const invItemsSql = `INSERT INTO inv_details (header_id, item_id, item_name, unit_cost, unit_selling, quantity, line_total, warranty_id, warranty_name, warranty_end_date) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+        const invItemsSql = `INSERT INTO inv_details (header_id, item_id, item_name, unit_cost, unit_selling, quantity, line_total, warranty_id, warranty_name, warranty_end_date, note) VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
         const [resInvItems] = await connection.execute(invItemsSql, [
           header_id,
           item.itemId,
@@ -182,6 +182,7 @@ export const POST = async (request) => {
           item.warrantyId,
           item.warrantyName,
           item.warrantyEndDate,
+          item.note || null,
         ]);
         if (!resInvItems.insertId) {
           throw new Error(`Failed to Save Invoice Item ${item?.itemName} !`);

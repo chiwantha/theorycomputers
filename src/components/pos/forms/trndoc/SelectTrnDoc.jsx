@@ -10,6 +10,7 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
   const invType = useINVOICEStore((state) => state.invType);
   const jobId = useINVOICEStore((state) => state.jobId);
   const quoteId = useINVOICEStore((state) => state.quoteId);
+  const orderId = useINVOICEStore((state) => state.orderId);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
   const setPaid = useINVOICEStore((state) => state.setPaid);
   const setRows = useINVOICEStore((state) => state.setRows);
@@ -21,6 +22,7 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
     setHeaderField(`invType`, `DIRECT`);
     setHeaderField(`jobId`, ``);
     setHeaderField(`quoteId`, ``);
+    setHeaderField(`orderId`, ``);
     setHeaderField(`docType`, `INVOICE`);
     resetCustomer();
   };
@@ -90,6 +92,15 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
           >
             Quote
           </button>
+          <button
+            className={`px-4 py-1.5 rounded-xl  transition-colors duration-300 ${invType == `ORDER` ? `bg-blue-500  text-white` : `text-gray-600`}`}
+            onClick={() => {
+              resetInvType();
+              setHeaderField(`invType`, `ORDER`);
+            }}
+          >
+            Order
+          </button>
         </div>
         <div className="flex gap-2 items-center">
           <button
@@ -154,6 +165,22 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
             }
             defaultValue={quoteId}
             onChange={(val) => setHeaderField(`quoteId`, val)}
+          />
+        </div>
+      ) : invType == `ORDER` ? (
+        <div className="">
+          <ComboboxAdapter
+            name={`order`}
+            placeholder={`Select Order ...`}
+            items={
+              quoteList || [
+                { value: 0, label: `Order 1` },
+                { value: 1, label: `Order 2` },
+                { value: 2, label: `Order 3` },
+              ]
+            }
+            defaultValue={orderId}
+            onChange={(val) => setHeaderField(`orderId`, val)}
           />
         </div>
       ) : (

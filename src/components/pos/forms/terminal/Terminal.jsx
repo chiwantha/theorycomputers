@@ -65,7 +65,7 @@ const Terminal = ({
                   }`}
                 >
                   <button
-                    className={`px-4 py-2 rounded-lg transition-colors ${
+                    className={`px-4 py-2 rounded-lg transition-colors col-span-2 ${
                       docType === "INVOICE"
                         ? "bg-green-500 text-white"
                         : "text-gray-600"
@@ -81,9 +81,24 @@ const Terminal = ({
 
                   <button
                     className={`px-4 py-2 rounded-lg transition-colors ${
+                      docType === "ORDER"
+                        ? "bg-amber-500 text-white"
+                        : "text-gray-600"
+                    }`}
+                    onClick={() => {
+                      resetINVOICE();
+                      resetCustomer();
+                      setHeaderField("docType", "ORDER");
+                    }}
+                    disabled={invType !== "DIRECT"}
+                  >
+                    Order
+                  </button>
+                  <button
+                    className={`px-4 py-2 rounded-lg transition-colors ${
                       docType === "QUOTATION"
                         ? "bg-blue-500 text-white"
-                        : "text-gray-600"
+                        : "text-gray-600 bg-gray-300"
                     }`}
                     onClick={() => {
                       resetINVOICE();
