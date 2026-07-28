@@ -1,8 +1,8 @@
-import JobRow from "@/components/pos/cards/inputCards/JobRow";
-import JobAction from "@/components/pos/sections/jobviewpage/JobAction";
-import JobCp from "@/components/pos/sections/jobviewpage/JobCp";
-import JobCustomerVIew from "@/components/pos/sections/jobviewpage/JobCustomerVIew";
-import JobDetailsVIew from "@/components/pos/sections/jobviewpage/JobDetailsVIew";
+import JobRow from "@/features/jobs/components/JobRow";
+import JobAction from "@/features/jobs/components/JobAction";
+import JobCp from "@/features/jobs/components/JobCp";
+import JobCustomerVIew from "@/features/jobs/components/JobCustomerVIew";
+import JobDetailsVIew from "@/features/jobs/components/JobDetailsVIew";
 import { load_per_job } from "@/data/pos/job";
 import { get_items_for_job } from "@/lib/data";
 

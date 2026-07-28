@@ -7,7 +7,7 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { InputStyleSdc, LabelStyle } from "@/constant/Forms";
-import RequiredSymbole from "../common/form/required/RequiredSymbole";
+import RequiredSymbole from "../form/required/RequiredSymbole";
 
 export default function ComboboxAdapter({
   label,

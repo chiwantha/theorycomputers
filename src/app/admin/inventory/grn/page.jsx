@@ -1,6 +1,6 @@
-import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
-import Button from "@/components/common/button/Button";
-import Table from "@/components/common/table/Table";
+import BreadCrumb from "@/components/breadcrump/BreadCrumb";
+import Button from "@/components/button/Button";
+import Table from "@/components/table/Table";
 import { load_inventory_grns } from "@/data/admin/inventory";
 
 const InventoryGoodReceiveNote = async () => {

@@ -1,5 +1,5 @@
-import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
-import JobGrid from "@/components/pos/grid/jobgrid/JobGrid";
+import BreadCrumb from "@/components/breadcrump/BreadCrumb";
+import JobGrid from "@/features/jobs/components/JobGrid";
 import { load_job_list } from "@/data/pos/job";
 
 export const dynamic = "force-dynamic";

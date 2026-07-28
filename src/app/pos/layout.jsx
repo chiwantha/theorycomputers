@@ -1,9 +1,9 @@
-import Sidebar from "@/components/pos/layout/sidebar/Sidebar";
+import Sidebar from "@/components/layout/possidebar/Sidebar";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { auth } from "@/lib/auth";
 
 import { redirect } from "next/navigation";
-import Navbar from "@/components/pos/layout/navbar/Navbar";
+import Navbar from "@/components/layout/posnavbar/Navbar";
 
 const ShopUserLayout = async ({ children }) => {
   const session = await auth();

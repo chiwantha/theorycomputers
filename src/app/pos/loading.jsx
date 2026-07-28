@@ -1,4 +1,4 @@
-import Loading from "@/components/admin/layout/loading/Loading";
+import Loading from "@/components/loading/Loading";
 
 const userLoading = () => {
   return (

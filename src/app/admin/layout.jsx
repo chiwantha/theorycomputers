@@ -1,5 +1,5 @@
-import Sidebar from "@/components/admin/layout/sidebar/Sidebar";
-import Navbar from "@/components/admin/layout/navbar/Navbar";
+import Sidebar from "@/components/layout/adminsidebar/Sidebar";
+import Navbar from "@/components/layout/adminnavbar/Navbar";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";

@@ -1,5 +1,5 @@
-import CategoryMasterForm from "@/components/admin/forms/master/categories/CategoryMasterForm";
-import Table from "@/components/common/table/Table";
+import CategoryMasterForm from "@/features/inventory/categories/components/CategoryMasterForm";
+import Table from "@/components/table/Table";
 import { load_master_categories } from "@/data/admin/master";
 
 export const dynamic = "force-dynamic";

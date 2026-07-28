@@ -3,7 +3,7 @@
 import React from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import Button from "@/components/common/button/Button";
+import Button from "@/components/button/Button";
 
 const RptAdminSales = () => {
   const generateSalesReport = () => {

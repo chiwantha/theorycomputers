@@ -1,4 +1,4 @@
-import Table from "@/components/common/table/Table";
+import Table from "@/components/table/Table";
 import { load_rpt_invoice_list } from "@/data/pos/reports";
 import React from "react";
 

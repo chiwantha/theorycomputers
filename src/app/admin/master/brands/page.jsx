@@ -1,5 +1,5 @@
-import BrandMasterForm from "@/components/admin/forms/master/brands/BrandMasterForm";
-import Table from "@/components/common/table/Table";
+import BrandMasterForm from "@/features/inventory/brands/components/BrandMasterForm";
+import Table from "@/components/table/Table";
 import { load_master_brands } from "@/data/admin/master";
 
 export const dynamic = "force-dynamic";

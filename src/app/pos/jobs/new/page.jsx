@@ -1,5 +1,4 @@
-import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
-import JobForm from "@/components/pos/forms/jobs/JobForm";
+import JobForm from "@/features/jobs/components/JobForm";
 import {
   get_brands,
   get_categories,
@@ -15,7 +14,6 @@ const page = async () => {
   const itemsList = await get_items();
   return (
     <div className="flex flex-col space-y-4">
-      {/* <BreadCrumb /> */}
       <JobForm
         form_props={{ customersList, categoriesList, brandsList, itemsList }}
       />

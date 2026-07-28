@@ -1,5 +1,4 @@
-import StockAdjustmentForm from "@/components/admin/forms/inventory/adjustments/StockAdjustmentForm";
-import BreadCrumb from "@/components/common/breadcrump/BreadCrumb";
+import StockAdjustmentForm from "@/features/inventory/adjustment/components/StockAdjustmentForm";
 import { get_items } from "@/lib/data";
 import React from "react";
 

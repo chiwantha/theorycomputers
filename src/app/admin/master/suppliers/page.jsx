@@ -1,5 +1,5 @@
-import SupplierMasterForm from "@/components/admin/forms/master/suppliers/SupplierMasterForm";
-import Table from "@/components/common/table/Table";
+import SupplierMasterForm from "@/features/supplier/components/SupplierMasterForm";
+import Table from "@/components/table/Table";
 import { load_master_suppliers } from "@/data/admin/master";
 
 export const dynamic = "force-dynamic";

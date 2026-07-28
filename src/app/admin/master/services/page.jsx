@@ -1,5 +1,5 @@
-import ServiceMasterForm from "@/components/admin/forms/master/services/ServiceMasterForm";
-import Table from "@/components/common/table/Table";
+import ServiceMasterForm from "@/features/inventory/items/components/ServiceMasterForm";
+import Table from "@/components/table/Table";
 import { load_master_services } from "@/data/admin/master";
 import { get_brands, get_categories, get_warranties } from "@/lib/data";
 

@@ -1,8 +1,8 @@
-import BarChartTemp from "@/components/common/charts/BarChartTemp";
-import LineChartTemp from "@/components/common/charts/LineChartTemp";
-import PieChartTemp from "@/components/common/charts/PieChartTemp";
-import Table from "@/components/common/table/Table";
-import DashCardGrid from "@/components/pos/grid/dashcardgrid/DashCardGrid";
+import BarChartTemp from "@/components/charts/BarChartTemp";
+import LineChartTemp from "@/components/charts/LineChartTemp";
+import PieChartTemp from "@/components/charts/PieChartTemp";
+import Table from "@/components/table/Table";
+import DashCardGrid from "@/features/dashboard/components/DashCardGrid";
 import {
   load_payment_methods,
   load_pos_chart_revenue,

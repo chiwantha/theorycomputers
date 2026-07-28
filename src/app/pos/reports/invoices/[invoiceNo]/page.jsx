@@ -1,4 +1,4 @@
-import InvoicePreview from "@/components/pos/sections/terminal/InvoicePreview";
+import InvoicePreview from "@/features/invoices/components/InvoicePreview";
 import { load_per_invoice } from "@/data/pos/terminal";
 
 const InvoicePreviewPage = async ({ params }) => {
