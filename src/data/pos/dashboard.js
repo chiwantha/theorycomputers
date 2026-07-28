@@ -20,9 +20,7 @@ export const load_pos_dash_cards = async () => {
 
         (SELECT COUNT(id)
         FROM job_header
-        WHERE created_at >= CURDATE()
-          AND created_at < CURDATE() + INTERVAL 1 DAY
-          AND state = 0) AS pending_jobs,
+        WHERE state=0) AS pending_jobs,
 
         (SELECT COUNT(stock.id)
         FROM stock
