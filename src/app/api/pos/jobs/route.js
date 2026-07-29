@@ -1,7 +1,8 @@
 import { customerTemplates, jobTemplates } from "@/constant/SmsTemplate";
+import { createJob } from "@/features/jobs/service";
+import { validateJobItems } from "@/features/jobs/validation";
 import pool, { query } from "@/lib/db";
 import { sendSms } from "@/lib/func";
-import { validateJobItems } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
@@ -39,7 +40,7 @@ ORDER BY job_header.state ASC, job_header.created_at DESC;`;
   }
 };
 
-export const POST = async (request) => {
+export const POSTT = async (request) => {
   const connection = await pool.getConnection();
   try {
     const data = await request.formData();
@@ -54,10 +55,12 @@ export const POST = async (request) => {
 
     const jobNo = data.get(`jobNo`);
     const warranty = data.get(`warranty`);
+
     const customerState = data.get(`customerState`);
     const customerId = data.get(`customerId`);
     const customerName = data.get(`customerName`);
     const customerPhone = data.get(`customerPhone`);
+
     const grossTotal = data.get(`grossTotal`);
     const discount = data.get(`discount`);
     const netTotal = data.get(`netTotal`);
@@ -263,5 +266,20 @@ export const POST = async (request) => {
     );
   } finally {
     connection.release();
+  }
+};
+
+export const POST = async (request) => {
+  try {
+    const data = await request.formData();
+
+    await createJob(data);
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err.message },
+      { status: err.status || 500 },
+    );
   }
 };

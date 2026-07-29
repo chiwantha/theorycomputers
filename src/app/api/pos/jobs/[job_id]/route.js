@@ -1,5 +1,6 @@
+import { validateJobItems } from "@/features/jobs/validation";
 import pool, { query } from "@/lib/db";
-import { validateFields, validateJobItems } from "@/lib/validation";
+import { validateFields } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export const GET = async (request, { params }) => {
