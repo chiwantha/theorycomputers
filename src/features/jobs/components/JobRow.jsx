@@ -87,7 +87,11 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                         onChange={(value, selected) => {
                           updateRow(row.tempId, "itemId", value);
                           updateRow(row.tempId, "itemName", selected?.name);
-                          updateRow(row.tempId, "unitPrice", selected?.selling);
+                          updateRow(
+                            row.tempId,
+                            "unitPrice",
+                            selected?.selling || 0,
+                          );
                           updateRow(row.tempId, "itemType", selected?.type);
                           updateRow(row.tempId, "quantity", 0);
 

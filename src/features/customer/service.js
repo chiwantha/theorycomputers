@@ -1,12 +1,11 @@
-import { customerTemplates } from "@/constant/SmsTemplate";
-import { sendSms } from "@/lib/func";
 import { validatePhoneNumber } from "./validation";
+import { customerTemplates } from "./constant";
+import { AppError } from "@/lib/error-handling";
+import { sendSms } from "../sms/service";
 
 export const createCustomer = async (conn, data) => {
   try {
-    if (!validatePhoneNumber(data.phone)) {
-      throw new Error(`Invalid Phone Number !`);
-    }
+    validatePhoneNumber(data?.phone);
 
     const sql = `
       INSERT INTO customers 
@@ -24,7 +23,7 @@ export const createCustomer = async (conn, data) => {
     ]);
 
     if (!result.insertId) {
-      throw new Error("Create Customer Failed!");
+      throw new AppError("Create Customer Failed!");
     }
 
     const smsResult = await sendSms(
@@ -40,12 +39,13 @@ export const createCustomer = async (conn, data) => {
 
     return result.insertId;
   } catch (err) {
-    console.log("Customer Create Error:", err.message);
-
-    const error = new Error(`Customer creation failed: ${err.message}`);
-
-    error.status = 400;
-
-    throw error;
+    if (err instanceof AppError) {
+      throw err;
+    }
+    console.error(err);
+    throw new AppError(
+      "Unable to load jobs right now. Please try again later.",
+      500,
+    );
   }
 };

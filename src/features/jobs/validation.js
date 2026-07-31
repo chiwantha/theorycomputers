@@ -1,37 +1,48 @@
-export function validateJobItems(job_items) {
+import { AppError } from "@/lib/error-handling";
+
+export const validateJobItems = (job_items) => {
   if (!Array.isArray(job_items) || job_items.length === 0) {
-    return { error: "No Job items found!" };
+    throw new AppError(`No Job items found!`, 404);
   }
 
   for (const product of job_items) {
     if (!product.itemId) {
-      return { error: "Invalid item id!" };
+      throw new AppError(`Invalid item id!`, 400);
     }
 
     if (!product.unitPrice) {
-      return { error: `Invalid unit price for item ${product.itemName}` };
+      throw new AppError(
+        `Invalid unit price for item ${product.itemName}`,
+        400,
+      );
     }
 
     if (!product.quantity || product.quantity <= 0) {
-      return { error: `Invalid quantity for item ${product.itemName}` };
+      throw new AppError(`Invalid quantity for item ${product.itemName}`, 400);
     }
 
     if (product.serial === 1) {
       if (!Array.isArray(product.serials) || product.serials.length === 0) {
-        return { error: `Serials missing for item ${product.itemName}` };
+        throw new AppError(`Serials missing for item ${product.itemName}`, 400);
       }
 
       if (product.serials.length !== product.quantity) {
-        return { error: `Serial count mismatch for item ${product.itemName}` };
+        throw new AppError(
+          `Serial count mismatch for item ${product.itemName}`,
+          400,
+        );
       }
 
       for (const serial of product.serials) {
         if (!serial || serial.trim() === "") {
-          return { error: `Empty serial found for item ${product.itemName}` };
+          throw new AppError(
+            `Empty serial found for item ${product.itemName}`,
+            400,
+          );
         }
       }
     }
   }
 
-  return { success: true };
-}
+  return;
+};

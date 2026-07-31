@@ -1,5 +1,5 @@
+import { smsBalance } from "@/features/sms/service";
 import { query } from "@/lib/db";
-import { smsBalance } from "@/lib/func";
 
 export const load_notifications = async () => {
   try {

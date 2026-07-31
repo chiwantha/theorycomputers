@@ -55,7 +55,7 @@ const ShopUserDashMenu = async () => {
           <BarChartTemp
             // stacked
             data={revenue_chart}
-            xKey="month"
+            xKey="date"
             bars={[
               { key: "net_total", label: "Revenue", color: "#2563eb" },
               { key: "discount", label: "Discounts", color: "#FFAC1C" },

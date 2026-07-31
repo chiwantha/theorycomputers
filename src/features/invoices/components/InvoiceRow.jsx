@@ -137,12 +137,12 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
                             updateRow(
                               row.tempId,
                               "cost",
-                              Number(selected?.cost).toFixed(2),
+                              Number(selected?.cost || 0).toFixed(2),
                             );
                             updateRow(
                               row.tempId,
                               "selling",
-                              Number(selected?.selling).toFixed(2),
+                              Number(selected?.selling || 0).toFixed(2),
                             );
 
                             updateRow(

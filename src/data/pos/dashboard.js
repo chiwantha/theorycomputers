@@ -1,5 +1,5 @@
+import { smsBalance } from "@/features/sms/service";
 import { query } from "@/lib/db";
-import { smsBalance } from "@/lib/func";
 
 export const load_pos_dash_cards = async () => {
   try {
@@ -128,7 +128,8 @@ export const load_pos_chart_revenue = async () => {
   try {
     const sql = `SELECT 
     SUM(ih.net_total) AS net_total,
-    SUM(ih.discount) AS discount
+    SUM(ih.discount) AS discount,
+    DATE_FORMAT(ih.date, '%Y-%m-%d') AS date
     FROM inv_header ih
     WHERE ih.state=1 AND DATE(ih.date) = DATE(CURDATE()) AND ih.doc_type='INVOICE';`;
 
@@ -137,7 +138,6 @@ export const load_pos_chart_revenue = async () => {
     if (!data || data.length == 0) {
       return [];
     }
-
     return data;
   } catch (err) {
     console.log(`Error Loading Reveue Chart !`, err);

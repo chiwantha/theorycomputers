@@ -1,8 +1,47 @@
 import pool from "@/lib/db";
 import { validateJobItems } from "./validation";
-import { sendSms } from "@/lib/func";
-import { jobTemplates } from "@/constant/SmsTemplate";
 import { createCustomer } from "../customer/service";
+import { sendSms } from "../sms/service";
+import { jobTemplates } from "./constant";
+import { AppError } from "@/lib/error-handling";
+
+export const loadJobs = async () => {
+  try {
+    const sql = `SELECT
+      job_header.id AS jobId,
+      job_header.job_no AS jobNo,
+      customers.id AS CustomerId,
+      CONCAT(customers.first_name, ' ', customers.last_name) AS customerName,
+      customers.phone AS customerPhone,
+      job_header.invoice_id,
+      job_header.created_at,
+      job_header.state AS jobState
+  FROM job_header
+  INNER JOIN customers
+      ON job_header.customer_id = customers.id
+  WHERE
+      DATE(job_header.created_at) = CURDATE()
+      OR job_header.state IN (0,1, 2)
+  ORDER BY job_header.state ASC, job_header.created_at DESC;`;
+
+    const jobs = await query(sql);
+
+    if (!jobs || jobs.length == 0) {
+      throw new AppError(`No Jobs Found !`, 404);
+    }
+
+    return jobs;
+  } catch (err) {
+    if (err instanceof AppError) {
+      throw err;
+    }
+    console.error(err);
+    throw new AppError(
+      "Unable to load jobs right now. Please try again later.",
+      500,
+    );
+  }
+};
 
 export const createJob = async (body) => {
   const connection = await pool.getConnection();
@@ -11,10 +50,7 @@ export const createJob = async (body) => {
     const jobItems = JSON.parse(data.get("jobItems"));
 
     if (jobItems.length > 0) {
-      const validation = validateJobItems(jobItems);
-      if (validation.error) {
-        throw new Error(validation.error);
-      }
+      validateJobItems(jobItems);
     }
 
     const jobNo = data.get(`jobNo`);
@@ -67,7 +103,7 @@ export const createJob = async (body) => {
       netTotal,
     ]);
     if (!resJobHeader.insertId) {
-      throw new Error("Job Header Failed !");
+      throw new AppError("Job Header Failed !", 500);
     }
     const header_id = resJobHeader.insertId;
 
@@ -87,7 +123,7 @@ export const createJob = async (body) => {
         ],
       );
       if (!resjobAdvancePayment.insertId) {
-        throw new Error("Down-Payment Transaction Failed !");
+        throw new AppError("Down-Payment Transaction Failed !", 500);
       }
     }
 
@@ -111,7 +147,7 @@ export const createJob = async (body) => {
       problem,
     ]);
     if (!resJobDetails.insertId) {
-      throw new Error("Job Details Failed !");
+      throw new AppError("Job Details Failed !", 500);
     }
 
     // console.log(`test 3 passed ✅ !`);
@@ -130,7 +166,7 @@ export const createJob = async (body) => {
           item.lineTotal,
         ]);
         if (!resJobItem.insertId) {
-          throw new Error(`Job Item Failed !`);
+          throw new AppError(`Job Item Failed !`, 500);
         }
 
         // console.log(`test 4 passed ✅ !`);
@@ -144,7 +180,7 @@ export const createJob = async (body) => {
             item.quantity,
           ]);
           if (resUpdateStock.affectedRows === 0) {
-            throw new Error(`Update Stock Failed !`);
+            throw new AppError(`Update Stock Failed !`, 500);
           }
         }
 
@@ -161,7 +197,7 @@ export const createJob = async (body) => {
               [0, `JOB`, header_id, serial],
             );
             if (resUpdateSerialStock.affectedRows === 0) {
-              throw new Error(`Update Serial Stock Failed !`);
+              throw new AppError(`Update Serial Stock Failed !`, 500);
             }
           }
         }
@@ -176,7 +212,7 @@ export const createJob = async (body) => {
             [item.itemId, `OUT`, item.quantity, `JOB`, header_id],
           );
           if (!resStockMovements.insertId) {
-            throw new Error(`Stock Movements Logging Failed !`);
+            throw new AppError(`Stock Movements Logging Failed !`, 500);
           }
         }
 
@@ -202,8 +238,14 @@ export const createJob = async (body) => {
     return { success: true, status: 200 };
   } catch (err) {
     await connection.rollback();
-    console.log("Transaction Failed ! :", err.message);
-    throw err;
+    if (err instanceof AppError) {
+      throw err;
+    }
+    console.error(err);
+    throw new AppError(
+      "Unable to create jobs right now. Please try again later.",
+      500,
+    );
   } finally {
     connection.release();
   }
