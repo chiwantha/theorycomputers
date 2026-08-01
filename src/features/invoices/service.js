@@ -4,6 +4,7 @@ import { validateInvItems } from "./validation";
 import { createCustomer } from "../customer/service";
 import { invoiceTempaltes } from "./constant";
 import { sendSms } from "../sms/service";
+import pool from "@/lib/db";
 
 export const createInvoice = async (body) => {
   const connection = await pool.getConnection();
@@ -111,7 +112,7 @@ export const createInvoice = async (body) => {
     }
 
     // INSERT INV HEADER
-    const invHeaderSql = `INSERT INTO inv_header (inv_no, doc_type, customer_id, date, inv_type, job_id, quote_id, gross_total, discount, net_total, settlement, credit_amount, due_date, quote_expiry_date, note, user_id) 
+    const invHeaderSql = `INSERT INTO inv_header (inv_no, doc_type, customer_id, date, inv_type, job_id, quote_id, gross_total, discount, net_total, settlement, credit_amount, due_date, quote_expiry_date, note, user_id)
         VALUES (?,?,?,NOW(),?,?,?,?,?,?,?,?,?,?,?,?)`;
     const [resInvHeader] = await connection.execute(invHeaderSql, [
       invNo,
@@ -257,7 +258,7 @@ export const createInvoice = async (body) => {
       console.log(result.message);
     }
     await connection.commit();
-    return { success: true, status: 200 };
+    return { success: true, invoice_no: invNo, status: 200 };
   } catch (err) {
     await connection.rollback();
     if (err instanceof AppError) {

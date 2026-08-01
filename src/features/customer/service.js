@@ -2,49 +2,35 @@ import { validatePhoneNumber } from "./validation";
 import { customerTemplates } from "./constant";
 import { AppError } from "@/lib/error-handling";
 import { sendSms } from "../sms/service";
+import { insertCustomer } from "./repository";
 
-export const createCustomer = async (conn, data) => {
+export const createCustomer = async (data) => {
   try {
     validatePhoneNumber(data?.phone);
 
-    const sql = `
-      INSERT INTO customers 
-      (first_name, last_name, phone, email, address, city) 
-      VALUES (?,?,?)
-    `;
-
-    const [result] = await conn.execute(sql, [
-      data?.firstName,
-      data?.lastName || null,
-      data?.phone,
-      data?.email || null,
-      data?.address || null,
-      data?.city || null,
-    ]);
-
-    if (!result.insertId) {
-      throw new AppError("Create Customer Failed!");
-    }
+    const { customerId } = await insertCustomer(data);
 
     const smsResult = await sendSms(
       data?.phone,
       customerTemplates.CREATE({
-        customerName: `${data?.firstName} ${data?.lastName}`,
+        customerName: `${data?.firstName} ${data?.lastName || ""}`.trim(),
       }),
     );
 
     if (!smsResult.success) {
-      console.log(result.message);
+      console.error("SMS Error:", smsResult.message);
     }
 
-    return result.insertId;
+    return customerId;
   } catch (err) {
+    console.error(err);
+    // Business/Application errors
     if (err instanceof AppError) {
       throw err;
     }
-    console.error(err);
+
     throw new AppError(
-      "Unable to load jobs right now. Please try again later.",
+      "Unable to create customer. Please try again later.",
       500,
     );
   }

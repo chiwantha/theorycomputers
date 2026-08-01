@@ -5,8 +5,11 @@ export const POST = async (request) => {
   try {
     // DATA
     const data = await request.formData();
-    await createInvoice(data);
-    return NextResponse.json({ success: true }, { status: 200 });
+    const res = await createInvoice(data);
+    return NextResponse.json(
+      { success: true, invNo: res?.invoice_no },
+      { status: 200 },
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
