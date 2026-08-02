@@ -252,6 +252,7 @@ export const useINVOICEStore = create((set, get) => ({
   },
 
   setRows: (rowsData) => {
+    console.log(`Rows :`, rowsData);
     const rows = rowsData.map((row) => ({
       tempId: crypto.randomUUID(),
 
