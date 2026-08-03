@@ -61,6 +61,7 @@ export const useJOBStore = create((set, get) => ({
       itemType: item.itemType,
       billing: item.billing || `NORMAL`,
 
+      unitCost: item.unitCost || 0,
       unitPrice: item.unitPrice || 0,
       quantity: item.quantity || 0,
       reserved: item.quantity || 0,
@@ -177,6 +178,7 @@ export const useJOBStore = create((set, get) => ({
       serials: row.serials || [],
       showSerials: false,
 
+      unitCost: Number(row.unitCost),
       unitPrice: Number(row.unit_price),
       quantity: Number(row.quantity),
       reserved: Number(row.quantity),

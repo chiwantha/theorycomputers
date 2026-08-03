@@ -1,9 +1,19 @@
 import pool from "@/lib/db";
 import { validateJobItems } from "./validation";
-import { createCustomer } from "../customer/service";
 import { sendSms } from "../sms/service";
 import { jobTemplates } from "./constant";
 import { AppError } from "@/lib/error-handling";
+import { insertCustomer } from "../customer/repository";
+import {
+  insertJobDetails,
+  insertJobHeader,
+  insertJobItem,
+  loadJobHeader,
+} from "./repository";
+import { insertPayment } from "../payments/repository";
+import { insertMovement, updateStock } from "../inventory/stock/repository";
+import { STOCK_OPERATION } from "../inventory/stock/constant";
+import { updateSerial } from "../inventory/serial/repository";
 
 export const loadJobs = async () => {
   try {
@@ -27,19 +37,28 @@ export const loadJobs = async () => {
     const jobs = await query(sql);
 
     if (!jobs || jobs.length == 0) {
-      throw new AppError(`No Jobs Found !`, 404);
+      throw new Error(`No Jobs Found !`);
     }
 
     return jobs;
   } catch (err) {
-    if (err instanceof AppError) {
-      throw err;
-    }
     console.error(err);
-    throw new AppError(
-      "Unable to load jobs right now. Please try again later.",
-      500,
-    );
+    throw err;
+  }
+};
+
+export const loadJob = async (body) => {
+  try {
+    console.log(`Working `);
+    const { jobId } = body;
+
+    // Load Job Header
+    const { jobHeader } = await loadJobHeader({
+      jobId,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 };
 
@@ -47,18 +66,14 @@ export const createJob = async (body) => {
   const connection = await pool.getConnection();
   try {
     const data = body;
-    const jobItems = JSON.parse(data.get("jobItems"));
 
-    if (jobItems.length > 0) {
-      validateJobItems(jobItems);
-    }
-
-    const jobNo = data.get(`jobNo`);
-    const warranty = data.get(`warranty`);
     const customerState = data.get(`customerState`);
     const customerId = data.get(`customerId`);
     const customerName = data.get(`customerName`);
     const customerPhone = data.get(`customerPhone`);
+
+    const jobNo = data.get(`jobNo`);
+    const warranty = data.get(`warranty`);
     const grossTotal = data.get(`grossTotal`);
     const discount = data.get(`discount`);
     const netTotal = data.get(`netTotal`);
@@ -76,151 +91,139 @@ export const createJob = async (body) => {
     const accessories = data.get(`accessories`);
     const problem = data.get(`problem`);
 
+    const jobItems = JSON.parse(data.get("jobItems"));
+
+    if (jobItems.length > 0) {
+      validateJobItems(jobItems);
+    }
+
     await connection.beginTransaction();
 
-    // INSERT CUSTOMER
-    let customer_id_use;
+    // HANDLE CUSTOMER
+    let customerIdUse;
     if (customerState == `1`) {
-      customer_id_use = await createCustomer(connection, {
-        firstName: customerName.split(" ")[0],
-        lastName: customerName.split(" ")[1],
-        phone: customerPhone,
-      });
+      const { customerId } = await insertCustomer(
+        {
+          firstName: customerName.split(" ")[0],
+          lastName: customerName.split(" ")[1],
+          phone: customerPhone,
+        },
+        connection,
+      );
+      customerIdUse = customerId;
     } else {
-      customer_id_use = customerId;
+      customerIdUse = customerId;
     }
-
-    // console.log(`test 1 passed ✅ !`);
 
     // INSERT HEADER
-    const jobHeaderSql = `INSERT INTO job_header (job_no, customer_id, warranty, gross, discount, net) VALUES (?,?,?,?,?,?)`;
-    const [resJobHeader] = await connection.execute(jobHeaderSql, [
-      jobNo,
-      customer_id_use,
-      warranty == "true" ? 1 : 0,
-      grossTotal,
-      discount,
-      netTotal,
-    ]);
-    if (!resJobHeader.insertId) {
-      throw new AppError("Job Header Failed !", 500);
-    }
-    const header_id = resJobHeader.insertId;
+    const { headerId } = await insertJobHeader(
+      {
+        jobNo,
+        customerId: customerIdUse,
+        warranty,
+        grossTotal,
+        discount,
+        netTotal,
+      },
+      connection,
+    );
 
     // INSERT ADVANCE PAYMENT
     if (Number(advance) !== 0 && advance) {
-      const jobAdvancePaymentSql = `INSERT INTO trn_payments (reference, reference_id, payment_type, payment_method, amount, note)
-      VALUES (?,?,?,?,?,?)`;
-      const [resjobAdvancePayment] = await connection.execute(
-        jobAdvancePaymentSql,
-        [
-          `JOB`,
-          header_id,
-          `DOWN`,
-          `CASH`,
-          advance,
-          `Advance Payment For ${jobNo}`,
-        ],
+      await insertPayment(
+        {
+          reference: "JOB",
+          referenceId: headerId,
+          paymentType: "DOWN",
+          paymentMethod: "CASH",
+          amount: advance,
+          note: `Advance Payment For ${jobNo}`,
+        },
+        connection,
       );
-      if (!resjobAdvancePayment.insertId) {
-        throw new AppError("Down-Payment Transaction Failed !", 500);
-      }
     }
-
-    // console.log(`test 2 passed ✅ !`);
 
     // INSERT DETAILS
-    const jobDetailsSql = `INSERT INTO job_details (header_id, inv_header_id, inv_details_id, item_id, category_id, brand_id, model, serial, username, password, accessories, problem )
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
-    const [resJobDetails] = await connection.execute(jobDetailsSql, [
-      header_id,
-      invHeaderId || null,
-      invDetailsId || null,
-      itemId || null,
-      category || null,
-      brand || null,
-      model || null,
-      serialNo || null,
-      username || null,
-      password || null,
-      accessories || null,
-      problem,
-    ]);
-    if (!resJobDetails.insertId) {
-      throw new AppError("Job Details Failed !", 500);
-    }
-
-    // console.log(`test 3 passed ✅ !`);
+    await insertJobDetails(
+      {
+        headerId,
+        invHeaderId: invHeaderId || null,
+        invDetailsId: invDetailsId || null,
+        itemId: itemId || null,
+        categoryId: category || null,
+        brandId: brand || null,
+        model: model || null,
+        serialNo: serialNo || null,
+        username: username || null,
+        password: password || null,
+        accessories: accessories || null,
+        problem: problem,
+      },
+      connection,
+    );
 
     // HANDLE JOB ITEMS
     if (jobItems.length > 0) {
       for (const item of jobItems) {
         // INSERT JOB ITEMS
-        const jobItemSql = `INSERT INTO job_items (header_id, item_id, billing, unit_price, quantity, line_total) VALUES (?,?,?,?,?,?)`;
-        const [resJobItem] = await connection.execute(jobItemSql, [
-          header_id,
-          item.itemId,
-          item.billing,
-          item.unitPrice,
-          item.quantity,
-          item.lineTotal,
-        ]);
-        if (!resJobItem.insertId) {
-          throw new AppError(`Job Item Failed !`, 500);
-        }
-
-        // console.log(`test 4 passed ✅ !`);
+        await insertJobItem(
+          {
+            headerId,
+            itemId: item.itemId,
+            billing: item.billing,
+            unitCost: item.unitCost,
+            unitPrice: item.unitPrice,
+            quantity: item.quantity,
+            lineTotal: item.lineTotal,
+          },
+          connection,
+        );
 
         // UPDATE STOCK
         if (item.itemType == "P") {
-          const updateStockSql = `UPDATE stock SET quantity = quantity - ? WHERE item_id = ? AND quantity >= ?`;
-          const [resUpdateStock] = await connection.execute(updateStockSql, [
-            item.quantity,
-            item.itemId,
-            item.quantity,
-          ]);
-          if (resUpdateStock.affectedRows === 0) {
-            throw new AppError(`Update Stock Failed !`, 500);
-          }
+          await updateStock(
+            {
+              itemId: item.itemId,
+              quantity: item.quantity,
+              type: STOCK_OPERATION.OUT,
+            },
+            connection,
+          );
         }
-
-        // console.log(`test 5 passed ✅ !`);
 
         // HANDLE SERIAL
         if (item.serial) {
           const serials = item.serials;
           for (const serial of serials) {
-            // UPDATE SERIAL STOCK
-            const updateSerialStock = `UPDATE stock_items_serials SET stock = ? , reference = ? , reference_id = ? WHERE serial = ?`;
-            const [resUpdateSerialStock] = await connection.execute(
-              updateSerialStock,
-              [0, `JOB`, header_id, serial],
+            await updateSerial(
+              {
+                type: 0,
+                reference: "JOB",
+                referenceId: headerId,
+                serialNo: serial,
+              },
+              connection,
             );
-            if (resUpdateSerialStock.affectedRows === 0) {
-              throw new AppError(`Update Serial Stock Failed !`, 500);
-            }
           }
         }
-
-        // console.log(`test 6 passed ✅ !`);
 
         // LOG STOCK MOVEMENTS
         if (item.itemType == "P") {
-          const logStockMovements = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id) VALUES (?,?,?,?,?)`;
-          const [resStockMovements] = await connection.execute(
-            logStockMovements,
-            [item.itemId, `OUT`, item.quantity, `JOB`, header_id],
+          await insertMovement(
+            {
+              itemId: item.itemId,
+              type: STOCK_OPERATION.OUT,
+              quantity: item.quantity,
+              reference: "JOB",
+              referenceId: headerId,
+            },
+            connection,
           );
-          if (!resStockMovements.insertId) {
-            throw new AppError(`Stock Movements Logging Failed !`, 500);
-          }
         }
-
-        // console.log(`test 7 passed ✅ !`);
       }
     }
 
-    // throw new Error(`Test Passed ✅ !`);
+    await connection.commit();
 
     const result = await sendSms(
       customerPhone,
@@ -234,18 +237,14 @@ export const createJob = async (body) => {
       console.log(result.message);
     }
 
-    await connection.commit();
-    return { success: true, status: 200 };
+    return {
+      success: true,
+      jobId: headerId,
+    };
   } catch (err) {
     await connection.rollback();
-    if (err instanceof AppError) {
-      throw err;
-    }
     console.error(err);
-    throw new AppError(
-      "Unable to create jobs right now. Please try again later.",
-      500,
-    );
+    throw err;
   } finally {
     connection.release();
   }

@@ -1,18 +1,14 @@
-import { jobTemplates } from "@/constant/SmsTemplate";
 import pool, { query } from "@/lib/db";
-import { sendSms } from "@/lib/func";
 import { NextResponse } from "next/server";
 import { reverseStock } from "../route";
+import { jobTemplates } from "@/features/jobs/constant";
+import { sendSms } from "@/features/sms/service";
 
 export const PUT = async (request, { params }) => {
   const connection = await pool.getConnection();
   try {
     const { job_id } = await params;
-    // console.log(job_id);
     const data = await request.json();
-
-    // console.log(data);
-
     if (
       (!data ||
         data?.state === undefined ||

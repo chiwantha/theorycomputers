@@ -1,5 +1,21 @@
 import pool from "@/lib/db";
 
+export const loadJobHeader = async (data, db = pool) => {
+  const { jobId } = data;
+  const sql = `SELECT * FROM job_header WHERE id = ?`;
+  const [result] = await db.execute(sql, [jobId]);
+
+  if (result.length == 0 || !result) {
+    throw new Error(`No Jobs Found !`);
+  }
+
+  console.log(result);
+
+  return {
+    jonHeader: result[0],
+  };
+};
+
 export const insertJobHeader = async (data, db = pool) => {
   const { jobNo, customerId, warranty, grossTotal, discount, netTotal } = data;
 

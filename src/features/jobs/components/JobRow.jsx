@@ -89,6 +89,11 @@ const JobRow = ({ item_list, defaultRows = false }) => {
                           updateRow(row.tempId, "itemName", selected?.name);
                           updateRow(
                             row.tempId,
+                            "unitCost",
+                            Number(selected?.cost || 0).toFixed(2),
+                          );
+                          updateRow(
+                            row.tempId,
                             "unitPrice",
                             selected?.selling || 0,
                           );

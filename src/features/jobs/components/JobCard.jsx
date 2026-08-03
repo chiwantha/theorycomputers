@@ -132,7 +132,8 @@ const JobCard = ({
           {/* FOOTER */}
           <div className="flex items-center justify-between mt-auto">
             <span className="font-semibold tracking-tighter text-gray-400">
-              {getTimeSince(created_at)}
+              {getTimeSince(created_at)}{" "}
+              {/* created at = "2026-07-31T17:12:39.000Z" */}
             </span>
 
             <Button

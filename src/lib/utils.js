@@ -39,7 +39,7 @@ export function getTimeSince(createdAt) {
     return `${hours}H ${minutes}Min`;
   }
 
-  return `${minutes}Min`;
+  return `${diffMs}Min`;
 }
 
 export function generateDocNo(document) {
