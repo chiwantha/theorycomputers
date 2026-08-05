@@ -1,6 +1,35 @@
 import pool from "@/lib/db";
 
-export const loadJobHeader = async (data, db = pool) => {
+export const getJobList = async (data, db = pool) => {
+  const sql = `SELECT
+      job_header.id AS jobId,
+      job_header.job_no AS jobNo,
+      customers.id AS CustomerId,
+      CONCAT(customers.first_name, ' ', customers.last_name) AS customerName,
+      customers.phone AS customerPhone,
+      job_header.invoice_id,
+      job_header.created_at,
+      job_header.state AS jobState
+  FROM job_header
+  INNER JOIN customers
+      ON job_header.customer_id = customers.id
+  WHERE
+      DATE(job_header.created_at) = CURDATE()
+      OR job_header.state IN (0,1, 2)
+  ORDER BY job_header.state ASC, job_header.created_at DESC;`;
+
+  const [result] = await db.execute(sql);
+
+  if (!result || result.length == 0) {
+    throw new Error(`No Jobs Found !`);
+  }
+
+  return {
+    jobList: result,
+  };
+};
+
+export const getJobHeader = async (data, db = pool) => {
   const { jobId } = data;
   const sql = `SELECT * FROM job_header WHERE id = ?`;
   const [result] = await db.execute(sql, [jobId]);
@@ -9,16 +38,16 @@ export const loadJobHeader = async (data, db = pool) => {
     throw new Error(`No Jobs Found !`);
   }
 
-  console.log(result[0]);
-
   return {
     jobHeader: result[0],
   };
 };
 
-export const loadJobDetails = async (data, db = pool) => {
+export const getJobDetails = async (data, db = pool) => {
   const { jobId } = data;
-  const sql = `mst_items.name AS item_name,
+  const sql = `SELECT 
+          job_details.*,
+          mst_items.name AS item_name,
           mst_category.name AS category_name,
           mst_brand.name AS brand_name
       FROM job_details
@@ -41,14 +70,12 @@ export const loadJobDetails = async (data, db = pool) => {
     throw new Error(`No Job Details Found !`);
   }
 
-  console.log(result[0]);
-
   return {
     jobDetails: result[0],
   };
 };
 
-export const loadJobItems = async (data, db = pool) => {
+export const getJobItems = async (data, db = pool) => {
   const { jobId } = data;
   const sql = `SELECT job_items.*, mst_items.name AS item_name, mst_items.is_serial AS serial,  mst_items.type AS item_type , mst_items.cost AS unit_cost, 
     mst_items.warranty_id AS warranty_id , mst_warranty.name AS warranty_name ,  mst_warranty.duration AS warranty_duration
@@ -71,7 +98,7 @@ export const loadJobItems = async (data, db = pool) => {
   }
 
   const SerialsSql = `SELECT * FROM stock_items_serials WHERE reference=? AND reference_id=?`;
-  const SerialsRes = await db.execute(SerialsSql, [`JOB`, jobId]);
+  const [SerialsRes] = await db.execute(SerialsSql, [`JOB`, jobId]);
 
   const serialMap = new Map();
 
@@ -82,7 +109,7 @@ export const loadJobItems = async (data, db = pool) => {
     serialMap.get(s.item_id).push(s.serial);
   }
 
-  const resultItems = itemsRes.map((item) => ({
+  const resultItems = result.map((item) => ({
     ...item,
     serials: item.serial === 1 ? serialMap.get(item.item_id) || [] : [],
   }));

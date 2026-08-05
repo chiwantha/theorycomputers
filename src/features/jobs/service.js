@@ -2,45 +2,26 @@ import pool from "@/lib/db";
 import { validateJobItems } from "./validation";
 import { sendSms } from "../sms/service";
 import { jobTemplates } from "./constant";
-import { AppError } from "@/lib/error-handling";
-import { insertCustomer } from "../customer/repository";
+import { getCustomer, insertCustomer } from "../customer/repository";
 import {
+  getJobDetails,
+  getJobHeader,
+  getJobItems,
+  getJobList,
   insertJobDetails,
   insertJobHeader,
   insertJobItem,
-  loadJobHeader,
 } from "./repository";
-import { insertPayment } from "../payments/repository";
+import { getPayments, insertPayment } from "../payments/repository";
 import { insertMovement, updateStock } from "../inventory/stock/repository";
 import { STOCK_OPERATION } from "../inventory/stock/constant";
 import { updateSerial } from "../inventory/serial/repository";
 
-export const loadJobs = async () => {
+export const loadJobList = async () => {
   try {
-    const sql = `SELECT
-      job_header.id AS jobId,
-      job_header.job_no AS jobNo,
-      customers.id AS CustomerId,
-      CONCAT(customers.first_name, ' ', customers.last_name) AS customerName,
-      customers.phone AS customerPhone,
-      job_header.invoice_id,
-      job_header.created_at,
-      job_header.state AS jobState
-  FROM job_header
-  INNER JOIN customers
-      ON job_header.customer_id = customers.id
-  WHERE
-      DATE(job_header.created_at) = CURDATE()
-      OR job_header.state IN (0,1, 2)
-  ORDER BY job_header.state ASC, job_header.created_at DESC;`;
+    const { jobList } = await getJobList();
 
-    const jobs = await query(sql);
-
-    if (!jobs || jobs.length == 0) {
-      throw new Error(`No Jobs Found !`);
-    }
-
-    return jobs;
+    return jobList;
   } catch (err) {
     console.error(err);
     throw err;
@@ -49,13 +30,33 @@ export const loadJobs = async () => {
 
 export const loadJob = async (body) => {
   try {
-    console.log(`Working `);
     const { jobId } = body;
 
     // Load Job Header
-    const { jobHeader } = await loadJobHeader({
+    const { jobHeader } = await getJobHeader({
       jobId,
     });
+    const { customer } = await getCustomer({
+      customerId: jobHeader.customer_id,
+    });
+    const { jobDetails } = await getJobDetails({
+      jobId,
+    });
+    const { jobItems } = await getJobItems({
+      jobId,
+    });
+    const { payments } = await getPayments({
+      reference: `JOB`,
+      referenceId: jobId,
+    });
+
+    return {
+      jobHeader,
+      customer,
+      jobDetails,
+      jobItems,
+      payments,
+    };
   } catch (err) {
     console.error(err);
     throw err;

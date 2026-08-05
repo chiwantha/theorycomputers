@@ -12,9 +12,8 @@ const page = async ({ params }) => {
     jobId: job_id,
   });
 
-  const Job = data?.jobData;
-  // console.log(Job);
-  if (!data?.success) {
+  console.log(data);
+  if (!data) {
     return (
       <div className="flex flex-col space-y-4">
         {/* <BreadCrumb /> */}
@@ -31,16 +30,16 @@ const page = async ({ params }) => {
     <div className="flex flex-col space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 gap-y-4 md:gap-y-0">
         <div className="col-span-2  flex flex-col space-y-4 order-2 md:order-1">
-          <JobCustomerVIew customerData={Job?.customerRes[0] || false} />
+          <JobCustomerVIew customerData={data?.customer || false} />
           <JobDetailsVIew
-            detailsData={Job?.detailsRes[0] || false}
-            headerData={Job?.headerRes[0] || false}
+            detailsData={data?.jobDetails || false}
+            headerData={data?.jobHeader || false}
           />
         </div>
-        <JobCp paymentsRes={Job?.paymentsRes[0] || false} />
+        <JobCp paymentsRes={(data?.payments)[0] || false} />
       </div>
       <div className="bg-white shadow-md rounded-xl p-4">
-        <JobRow item_list={itemsList} defaultRows={Job?.jobItems} />
+        <JobRow item_list={itemsList} defaultRows={data?.jobItems} />
       </div>
       <JobAction />
     </div>

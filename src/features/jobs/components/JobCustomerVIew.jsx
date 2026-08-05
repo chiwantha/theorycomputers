@@ -24,8 +24,11 @@ const JobCustomerVIew = ({ customerData }) => {
   useEffect(() => {
     // SET CUSTOMER
     setCustomerField(`customerId`, customerData.id);
-    setCustomerField(`customerName`, customerData.customerName);
-    setCustomerField(`customerPhone`, customerData.customerPhone);
+    setCustomerField(
+      `customerName`,
+      `${customerData.first_name} ${customerData.last_name}`,
+    );
+    setCustomerField(`customerPhone`, customerData.phone);
   }, [customerData]);
 
   return (

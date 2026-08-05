@@ -1,5 +1,19 @@
 import pool from "@/lib/db";
 
+export const getCustomer = async (data, db = pool) => {
+  const { customerId } = data;
+  const sql = `SELECT * FROM customers WHERE id = ?`;
+  const [result] = await db.execute(sql, [customerId]);
+
+  if (!result || result.length == 0) {
+    throw new Error(`Customer Not Found !`);
+  }
+
+  return {
+    customer: result[0],
+  };
+};
+
 export const insertCustomer = async (data, db = pool) => {
   const { firstName, lastName, phone, email, address, city } = data;
 
