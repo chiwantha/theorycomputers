@@ -9,10 +9,86 @@ export const loadJobHeader = async (data, db = pool) => {
     throw new Error(`No Jobs Found !`);
   }
 
-  console.log(result);
+  console.log(result[0]);
 
   return {
-    jonHeader: result[0],
+    jobHeader: result[0],
+  };
+};
+
+export const loadJobDetails = async (data, db = pool) => {
+  const { jobId } = data;
+  const sql = `mst_items.name AS item_name,
+          mst_category.name AS category_name,
+          mst_brand.name AS brand_name
+      FROM job_details
+      LEFT JOIN mst_items 
+          ON job_details.item_id = mst_items.id
+      LEFT JOIN mst_category 
+          ON mst_category.id = COALESCE(
+          job_details.category_id,
+          mst_items.category_id
+      )
+      LEFT JOIN mst_brand 
+          ON mst_brand.id = COALESCE(
+          job_details.brand_id,
+          mst_items.brand_id
+      )
+      WHERE header_id = ?`;
+  const [result] = await db.execute(sql, [jobId]);
+
+  if (!result || result.length == 0) {
+    throw new Error(`No Job Details Found !`);
+  }
+
+  console.log(result[0]);
+
+  return {
+    jobDetails: result[0],
+  };
+};
+
+export const loadJobItems = async (data, db = pool) => {
+  const { jobId } = data;
+  const sql = `SELECT job_items.*, mst_items.name AS item_name, mst_items.is_serial AS serial,  mst_items.type AS item_type , mst_items.cost AS unit_cost, 
+    mst_items.warranty_id AS warranty_id , mst_warranty.name AS warranty_name ,  mst_warranty.duration AS warranty_duration
+    FROM job_items
+    INNER JOIN mst_items ON mst_items.id = job_items.item_id
+    LEFT JOIN mst_warranty ON mst_items.warranty_id = mst_warranty.id
+    JOIN job_header ON job_items.header_Id = job_header.id
+    WHERE job_items.header_id = ? AND (
+    CASE 
+        WHEN job_header.state BETWEEN 0 AND 3 THEN job_items.state = 1
+        WHEN job_header.state >= 4 THEN job_items.state = 0
+    END
+)`;
+  const [result] = await db.execute(sql, [jobId]);
+
+  if (!result || result.length == 0) {
+    return {
+      jobItems: [],
+    };
+  }
+
+  const SerialsSql = `SELECT * FROM stock_items_serials WHERE reference=? AND reference_id=?`;
+  const SerialsRes = await db.execute(SerialsSql, [`JOB`, jobId]);
+
+  const serialMap = new Map();
+
+  for (const s of SerialsRes) {
+    if (!serialMap.has(s.item_id)) {
+      serialMap.set(s.item_id, []);
+    }
+    serialMap.get(s.item_id).push(s.serial);
+  }
+
+  const resultItems = itemsRes.map((item) => ({
+    ...item,
+    serials: item.serial === 1 ? serialMap.get(item.item_id) || [] : [],
+  }));
+
+  return {
+    jobItems: resultItems,
   };
 };
 
