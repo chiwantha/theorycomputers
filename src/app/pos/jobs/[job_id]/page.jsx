@@ -12,7 +12,7 @@ const page = async ({ params }) => {
     jobId: job_id,
   });
 
-  console.log(data);
+  // console.log(data);
   if (!data) {
     return (
       <div className="flex flex-col space-y-4">

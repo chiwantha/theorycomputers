@@ -42,12 +42,12 @@ export const updateStock = async (data, db = pool) => {
 };
 
 export const insertMovement = async (data, db = pool) => {
-  const { itemId, type, quantity, reference, referenceId } = data;
+  const { itemId, type, quantity, reference, referenceId, note = null } = data;
 
   const sql = `
     INSERT INTO stock_movements
-    (item_id, type, quantity, reference, reference_id)
-    VALUES (?, ?, ?, ?, ?)
+    (item_id, type, quantity, reference, reference_id, note)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   const [result] = await db.execute(sql, [
@@ -56,6 +56,7 @@ export const insertMovement = async (data, db = pool) => {
     quantity,
     reference,
     referenceId,
+    note,
   ]);
 
   if (!result.insertId) {

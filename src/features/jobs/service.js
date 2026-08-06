@@ -4,6 +4,7 @@ import { sendSms } from "../sms/service";
 import { jobTemplates } from "./constant";
 import { getCustomer, insertCustomer } from "../customer/repository";
 import {
+  deleteJobItems,
   getJobDetails,
   getJobHeader,
   getJobItems,
@@ -11,11 +12,14 @@ import {
   insertJobDetails,
   insertJobHeader,
   insertJobItem,
+  updateJobHeaderState,
 } from "./repository";
 import { getPayments, insertPayment } from "../payments/repository";
 import { insertMovement, updateStock } from "../inventory/stock/repository";
 import { STOCK_OPERATION } from "../inventory/stock/constant";
-import { updateSerial } from "../inventory/serial/repository";
+import { releaseSerials, updateSerial } from "../inventory/serial/repository";
+import { validateAnyFields } from "@/lib/validation";
+import { AppError } from "@/lib/error-handling";
 
 export const loadJobList = async () => {
   try {
@@ -241,6 +245,165 @@ export const createJob = async (body) => {
     return {
       success: true,
       jobId: headerId,
+    };
+  } catch (err) {
+    await connection.rollback();
+    console.error(err);
+    throw err;
+  } finally {
+    connection.release();
+  }
+};
+
+export const upateJobState = async (body) => {
+  const connection = await pool.getConnection();
+  try {
+    validateAnyFields(body, [
+      "jobId",
+      "jobNo",
+      "netTotal",
+      "state",
+      "action",
+      "customerPhone",
+      "customerName",
+    ]);
+
+    const {
+      jobId,
+      jobNo,
+      netTotal,
+      state,
+      action,
+      customerPhone,
+      customerName,
+      reason = `Customer requested cancellation`,
+    } = body;
+
+    let start = false;
+    let restart = false;
+    let finish = false;
+    let cancel = false;
+
+    if (action == "Finish") {
+      finish = true;
+    } else if (action == "Start") {
+      start = true;
+    } else if (action == "Restart") {
+      restart = true;
+    } else if (action == "Cancel") {
+      cancel = true;
+    } else {
+      throw new AppError(`Invalid Action !`, 400);
+    }
+
+    await connection.beginTransaction();
+
+    await updateJobHeaderState(
+      {
+        jobId,
+        state,
+        start,
+        restart,
+        finish,
+      },
+      connection,
+    );
+
+    if (cancel) {
+      // reverseStockHere
+      const { jobItems } = await getJobItems(
+        {
+          jobId: jobId,
+        },
+        connection,
+      );
+
+      console.log(jobItems);
+
+      throw new AppError(`Boom !`, 400);
+
+      if (jobItems.length > 0) {
+        for (const row of jobItems) {
+          if (row?.item_type == "P") {
+            await updateStock(
+              {
+                itemId: row?.item_id,
+                quantity: row?.quantity,
+                type: STOCK_OPERATION.IN,
+              },
+              connection,
+            );
+
+            await insertMovement(
+              {
+                itemId: row?.item_id,
+                type: STOCK_OPERATION.IN,
+                quantity: row?.quantity,
+                reference: "JOB",
+                referenceId: jobId,
+                note: `Reverse Stock`,
+              },
+              connection,
+            );
+          }
+        }
+        await deleteJobItems(
+          {
+            jobId: jobId,
+          },
+          connection,
+        );
+
+        await releaseSerials(
+          {
+            referenceId: jobId,
+          },
+          connection,
+        );
+      }
+    }
+
+    await connection.commit();
+
+    // SMS Send
+    if (start) {
+      await sendSms(
+        customerPhone,
+        jobTemplates.STARTED({
+          customerName,
+          jobNo,
+        }),
+      );
+    } else if (restart) {
+      await sendSms(
+        customerPhone,
+        jobTemplates.RESTARTED({
+          customerName,
+          jobNo,
+        }),
+      );
+    } else if (finish) {
+      await sendSms(
+        customerPhone,
+        jobTemplates.FINISHED({
+          customerName,
+          jobNo,
+          netTotal,
+        }),
+      );
+    } else if (cancel) {
+      await sendSms(
+        customerPhone,
+        jobTemplates.CANCELLED({
+          customerName,
+          jobNo,
+          reason,
+        }),
+      );
+    }
+
+    return {
+      success: true,
     };
   } catch (err) {
     await connection.rollback();

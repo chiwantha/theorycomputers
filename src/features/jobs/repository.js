@@ -204,10 +204,42 @@ export const insertJobItem = async (data, db = pool) => {
     lineTotal,
   ]);
   if (!result.insertId) {
-    throw new Error(`Failed to insert Job Item !`);
+    throw new Error(`Failed to insert Job Items !`);
   }
 
   return {
     jobItemId: result.insertId,
   };
+};
+
+export const updateJobHeaderState = async (data, db = pool) => {
+  const { jobId, state, start, restart, finish } = data;
+
+  let extender = ``;
+  if (start) {
+    extender = `,start = NOW()`;
+  } else if (restart) {
+    extender = `, start = NOW(), finish = NULL`;
+  } else if (finish) {
+    extender = `, finish = NOW()`;
+  }
+
+  const sql = `UPDATE job_header SET state=?, updated_at = NOW() ${extender} WHERE id=?`;
+
+  const [result] = await db.execute(sql, [state, jobId]);
+
+  if (!result || result.affectedRows === 0) {
+    throw new Error(`Update Job Status Faild !`);
+  }
+};
+
+export const deleteJobItems = async (data, db = pool) => {
+  const { jobId } = data;
+  const sql = `DELETE FROM job_items WHERE header_id = ?`;
+
+  const [result] = await db.execute(sql, [jobId]);
+
+  if (!result || result.affectedRows === 0) {
+    throw new Error(`Failed to Delete Job Items !`);
+  }
 };

@@ -1,3 +1,5 @@
+import { AppError } from "./error-handling";
+
 export const validateFields = (formData, requiredFields = []) => {
   const emptyFields = [];
 
@@ -19,6 +21,30 @@ export const validateFields = (formData, requiredFields = []) => {
     isValid: emptyFields.length === 0,
     emptyFields,
   };
+};
+
+export const validateAnyFields = (data, requiredFields = []) => {
+  const emptyFields = [];
+
+  for (const field of requiredFields) {
+    const value = data[field];
+
+    if (
+      value === undefined ||
+      value === null ||
+      value === "" ||
+      (typeof value === "string" && value.trim() === "")
+    ) {
+      emptyFields.push(field);
+    }
+  }
+
+  if (emptyFields.length > 0) {
+    throw new AppError(
+      `Missing required fields : ${emptyFields.join(", ")}`,
+      400,
+    );
+  }
 };
 
 export const format_date = (timestamp) => {

@@ -1,9 +1,9 @@
-import { createJob, loadJobs } from "@/features/jobs/service";
+import { createJob, loadJobList } from "@/features/jobs/service";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    const res = await loadJobs(data);
+    const res = await loadJobList(data);
 
     return NextResponse.json(res, { status: 200 });
   } catch (err) {
