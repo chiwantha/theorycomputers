@@ -30,9 +30,7 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
   const get_job_data = async (jobId) => {
     setPending(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/pos/jobs/${jobId}`,
-      );
+      const res = await fetch(`/api/pos/jobs/${jobId}`);
 
       if (!res.ok) {
         return [];
