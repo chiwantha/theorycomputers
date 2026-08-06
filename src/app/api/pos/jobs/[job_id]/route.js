@@ -1,4 +1,4 @@
-import { loadJob } from "@/features/jobs/service";
+import { loadJob, updateJob } from "@/features/jobs/service";
 import { validateJobItems } from "@/features/jobs/validation";
 import pool from "@/lib/db";
 import { validateFields } from "@/lib/validation";
@@ -53,9 +53,6 @@ export const PUT = async (request, { params }) => {
     } else if (section === "ITEMS") {
       if (jobItems.length > 0) {
         const validation = validateJobItems(jobItems);
-        if (validation.error) {
-          throw new Error(validation.error);
-        }
 
         // console.log(jobItems);
       }
@@ -163,5 +160,73 @@ export const PUT = async (request, { params }) => {
     );
   } finally {
     connection.release();
+  }
+};
+
+export const PUTT = async (request, { params }) => {
+  try {
+    const { job_id } = await params;
+    const data = await request.formData();
+    const body = Object.fromEntries(data.entries());
+
+    await updateJob({ jobId: job_id, ...body });
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { error: err.message },
+      { status: err.status || 500 },
+    );
+  }
+};
+
+export const reverseStock = async (connection, job_id) => {
+  const existItemsSql = `SELECT job_items.*, mst_items.type AS item_type FROM job_items
+      INNER JOIN mst_items ON mst_items.id = job_items.item_id WHERE job_items.header_id = ?`;
+  const [resCurrentRecords] = await connection.execute(existItemsSql, [job_id]);
+
+  if (resCurrentRecords.length !== 0) {
+    // reverse stock items
+    for (const row of resCurrentRecords) {
+      // console.log(`Row No : ${row?.id} ,`, row);
+      if (row?.item_type === `P`) {
+        const updateStockSql = `UPDATE stock SET quantity=quantity+? WHERE item_Id=?`;
+        const [resUpdateStockSql] = await connection.execute(updateStockSql, [
+          row?.quantity,
+          row?.item_id,
+        ]);
+        if (resUpdateStockSql.affectedRows === 0) {
+          throw new Error(`Stock Reverse Failed !`);
+        }
+
+        const insertStockMovementsSql = `INSERT INTO stock_movements (item_id, type, quantity, reference, reference_id, note) VALUES (?,?,?,?,?,?)`;
+        const [resInsertStockMovements] = await connection.execute(
+          insertStockMovementsSql,
+          [row?.item_id, `IN`, row?.quantity, `JOB`, job_id, `Reverse Stock`],
+        );
+        if (!resInsertStockMovements.insertId) {
+          throw new Error(`Stock Movement Logging Failed !`);
+        }
+      }
+    }
+
+    // clear job_items
+    const removeJobItemsSql = `DELETE FROM job_items WHERE header_id=?`;
+    const [resRemoveJobItems] = await connection.execute(removeJobItemsSql, [
+      job_id,
+    ]);
+    if (resRemoveJobItems.affectedRows === 0) {
+      throw new Error(`Clear Job Items Failed !`);
+    }
+
+    // clear stock serials
+    const clearStockSerials = `UPDATE stock_items_serials SET stock=?,reference=?, reference_id=? WHERE reference_id=?`;
+    const [resClearStockSerials] = await connection.execute(clearStockSerials, [
+      1,
+      null,
+      null,
+      job_id,
+    ]);
   }
 };

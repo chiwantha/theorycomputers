@@ -255,6 +255,22 @@ export const createJob = async (body) => {
   }
 };
 
+export const updateJob = async (body) => {
+  const connection = await pool.getConnection();
+  try {
+    console.log(body);
+    return {
+      success: true,
+    };
+  } catch (err) {
+    await connection.rollback();
+    console.error(err);
+    throw err;
+  } finally {
+    connection.release();
+  }
+};
+
 export const upateJobState = async (body) => {
   const connection = await pool.getConnection();
   try {
@@ -313,14 +329,10 @@ export const upateJobState = async (body) => {
       // reverseStockHere
       const { jobItems } = await getJobItems(
         {
-          jobId: jobId,
+          jobId,
         },
         connection,
       );
-
-      console.log(jobItems);
-
-      throw new AppError(`Boom !`, 400);
 
       if (jobItems.length > 0) {
         for (const row of jobItems) {

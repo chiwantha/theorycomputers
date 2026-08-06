@@ -5,7 +5,6 @@ export const PUT = async (request, { params }) => {
   try {
     const { job_id } = await params;
     const data = await request.json();
-    console.log(`w`);
     await upateJobState({ ...data, jobId: job_id });
 
     return NextResponse.json({ success: true }, { status: 200 });

@@ -83,12 +83,7 @@ export const getJobItems = async (data, db = pool) => {
     INNER JOIN mst_items ON mst_items.id = job_items.item_id
     LEFT JOIN mst_warranty ON mst_items.warranty_id = mst_warranty.id
     JOIN job_header ON job_items.header_Id = job_header.id
-    WHERE job_items.header_id = ? AND (
-    CASE 
-        WHEN job_header.state BETWEEN 0 AND 3 THEN job_items.state = 1
-        WHEN job_header.state >= 4 THEN job_items.state = 0
-    END
-)`;
+    WHERE job_items.header_id = ?`;
   const [result] = await db.execute(sql, [jobId]);
 
   if (!result || result.length == 0) {
