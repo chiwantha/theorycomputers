@@ -1,7 +1,24 @@
+import { loadJob } from "@/features/jobs/service";
 import { validateJobItems } from "@/features/jobs/validation";
 import pool from "@/lib/db";
 import { validateFields } from "@/lib/validation";
 import { NextResponse } from "next/server";
+
+export const GET = async (request, { params }) => {
+  try {
+    const { job_id } = await params;
+    const res = await loadJob({
+      jobId: job_id,
+    });
+
+    return NextResponse.json(res, { status: 200 });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err.message },
+      { status: err.status || 500 },
+    );
+  }
+};
 
 export const PUT = async (request, { params }) => {
   const connection = await pool.getConnection();

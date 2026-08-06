@@ -3,7 +3,7 @@ import ComboboxAdapter from "@/components/ui/combobox-adapter";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { useINVOICEStore } from "@/store/invoiceStore";
 import { RefreshCcw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
   const [pending, setPending] = useState(false);
@@ -50,11 +50,11 @@ const SelectTrnDoc = ({ island = true, jobList, quoteList }) => {
   const handleLoad = async () => {
     if (invType === `JOB`) {
       const data = await get_job_data(jobId);
-      // alert(JSON.stringify(data?.headerRes));
+      // alert(JSON.stringify(data));
       setRows(data?.jobItems);
       setPaid(
-        data?.paymentsRes[0]?.payment_type === `DOWN`
-          ? data?.paymentsRes[0]?.amount
+        data?.payments[0]?.payment_type === `DOWN`
+          ? data?.payments[0]?.amount
           : 0,
       );
     }

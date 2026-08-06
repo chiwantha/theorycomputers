@@ -1,4 +1,3 @@
-import BreadCrumb from "@/components/breadcrump/BreadCrumb";
 import JobGrid from "@/features/jobs/components/JobGrid";
 import { loadJobList } from "@/features/jobs/service";
 
