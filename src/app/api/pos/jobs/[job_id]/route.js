@@ -20,7 +20,7 @@ export const GET = async (request, { params }) => {
   }
 };
 
-export const PUT = async (request, { params }) => {
+export const PUTT = async (request, { params }) => {
   const connection = await pool.getConnection();
   try {
     const { job_id } = await params;
@@ -163,7 +163,7 @@ export const PUT = async (request, { params }) => {
   }
 };
 
-export const PUTT = async (request, { params }) => {
+export const PUT = async (request, { params }) => {
   try {
     const { job_id } = await params;
     const data = await request.formData();

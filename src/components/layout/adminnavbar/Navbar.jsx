@@ -1,11 +1,9 @@
 "use client";
 import BreadCrumb from "@/components/breadcrump/BreadCrumb";
 import Button from "@/components/button/Button";
-import NotificationBar from "@/components/cards/notifications/NotificationBar";
 import UserPop from "@/components/userpop/UserPop";
 import { useSidebar } from "@/context/SidebarContext";
 import { Menu } from "lucide-react";
-import Image from "next/image";
 
 const Navbar = () => {
   const { toggleSidebar } = useSidebar();
@@ -25,7 +23,6 @@ const Navbar = () => {
         <BreadCrumb />
       </div>
       <div className="flex gap-2 items-center justify-between sm:justify-end w-full">
-        <NotificationBar />
         <div className="flex gap-2 items-center">
           <UserPop />
           <Button

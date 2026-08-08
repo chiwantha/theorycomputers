@@ -326,53 +326,7 @@ export const upateJobState = async (body) => {
     );
 
     if (cancel) {
-      // reverseStockHere
-      const { jobItems } = await getJobItems(
-        {
-          jobId,
-        },
-        connection,
-      );
-
-      if (jobItems.length > 0) {
-        for (const row of jobItems) {
-          if (row?.item_type == "P") {
-            await updateStock(
-              {
-                itemId: row?.item_id,
-                quantity: row?.quantity,
-                type: STOCK_OPERATION.IN,
-              },
-              connection,
-            );
-
-            await insertMovement(
-              {
-                itemId: row?.item_id,
-                type: STOCK_OPERATION.IN,
-                quantity: row?.quantity,
-                reference: "JOB",
-                referenceId: jobId,
-                note: `Reverse Stock`,
-              },
-              connection,
-            );
-          }
-        }
-        await deleteJobItems(
-          {
-            jobId: jobId,
-          },
-          connection,
-        );
-
-        await releaseSerials(
-          {
-            referenceId: jobId,
-          },
-          connection,
-        );
-      }
+      await removeJobItemsAndReverseStock(jobId, connection);
     }
 
     await connection.commit();
@@ -424,4 +378,43 @@ export const upateJobState = async (body) => {
   } finally {
     connection.release();
   }
+};
+
+const removeJobItemsAndReverseStock = async (jobId, connection) => {
+  validateAnyFields({ jobId }, ["jobId"]);
+
+  const { jobItems } = await getJobItems({ jobId }, connection);
+
+  if (jobItems.length === 0) {
+    return;
+  }
+
+  for (const row of jobItems) {
+    if (row?.item_type === "P") {
+      await updateStock(
+        {
+          itemId: row.item_id,
+          quantity: row.quantity,
+          type: STOCK_OPERATION.IN,
+        },
+        connection,
+      );
+
+      await insertMovement(
+        {
+          itemId: row.item_id,
+          type: STOCK_OPERATION.IN,
+          quantity: row.quantity,
+          reference: "JOB",
+          referenceId: jobId,
+          note: "Reverse Stock",
+        },
+        connection,
+      );
+    }
+  }
+
+  await deleteJobItems({ jobId }, connection);
+
+  await releaseSerials({ referenceId: jobId }, connection);
 };
