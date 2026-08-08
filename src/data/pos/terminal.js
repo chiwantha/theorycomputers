@@ -20,7 +20,7 @@ export const load_per_invoice = async (invNo) => {
     const header_id = invHeaderRes[0]?.id;
     const job_id = invHeaderRes[0]?.job_id || null;
 
-    const invItemsSql = `SELECT item_id, item_name, unit_selling, quantity, line_total, warranty_id, warranty_name FROM inv_details WHERE header_id = ?`;
+    const invItemsSql = `SELECT item_id, item_name, unit_selling, quantity, line_total, warranty_id, warranty_name, note FROM inv_details WHERE header_id = ?`;
     const invDetailsRes = await query(invItemsSql, [header_id]);
     if (!invDetailsRes || invDetailsRes.length === 0) {
       return {

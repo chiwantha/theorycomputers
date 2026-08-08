@@ -195,11 +195,19 @@ const InvoicePreview = ({ invoiceData, backURL }) => {
                     <td className="px-3 py-1">
                       <div className="flex flex-col">
                         <span className="text-sm">{row.item_name}</span>
-                        {row.warranty_id && (
-                          <span className="text-[12px] text-blue-500">
-                            {row.warranty_name}
-                          </span>
-                        )}
+                        <div className="flex gap-4">
+                          {row.warranty_id && (
+                            <span className="text-[12px] text-blue-500">
+                              {row.warranty_name}
+                            </span>
+                          )}
+                          {row.warranty_id && row.note && <span> - </span>}
+                          {row.note && (
+                            <span className="text-[12px] text-gray-500 italic">
+                              {row.note}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-3 py-1 text-center text-sm">

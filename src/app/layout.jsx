@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
       >
         <LoginProvider>{children}</LoginProvider>
         <ToastContainer />
-        <WidthDisplay />
+        {/* <WidthDisplay /> */}
       </body>
     </html>
   );

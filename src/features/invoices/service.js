@@ -1,10 +1,10 @@
 import { AppError } from "@/lib/error-handling";
 import { generateDocNo } from "@/lib/utils";
 import { validateInvItems } from "./validation";
-import { createCustomer } from "../customer/service";
 import { invoiceTempaltes } from "./constant";
 import { sendSms } from "../sms/service";
 import pool from "@/lib/db";
+import { insertCustomer } from "../customer/repository";
 
 export const createInvoice = async (body) => {
   const connection = await pool.getConnection();
@@ -99,16 +99,20 @@ export const createInvoice = async (body) => {
 
     await connection.beginTransaction();
 
-    // INSERT CUSTOMER
-    let customer_id_use;
+    // HANDLE CUSTOMER
+    let customerIdUse;
     if (customerState == `1`) {
-      customer_id_use = await createCustomer(connection, {
-        firstName: customerName.split(" ")[0],
-        lastName: customerName.split(" ")[1],
-        phone: customerPhone,
-      });
+      const { customerId } = await insertCustomer(
+        {
+          firstName: customerName.split(" ")[0],
+          lastName: customerName.split(" ")[1],
+          phone: customerPhone,
+        },
+        connection,
+      );
+      customerIdUse = customerId;
     } else {
-      customer_id_use = customerId;
+      customerIdUse = customerId;
     }
 
     // INSERT INV HEADER
@@ -117,7 +121,7 @@ export const createInvoice = async (body) => {
     const [resInvHeader] = await connection.execute(invHeaderSql, [
       invNo,
       docType,
-      customer_id_use,
+      customerIdUse,
       invType,
       jobId,
       quoteId,
