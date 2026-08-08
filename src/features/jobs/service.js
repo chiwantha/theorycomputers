@@ -12,7 +12,9 @@ import {
   insertJobDetails,
   insertJobHeader,
   insertJobItem,
+  updateJobDetails,
   updateJobHeaderState,
+  updateJobTotals,
 } from "./repository";
 import { getPayments, insertPayment } from "../payments/repository";
 import { insertMovement, updateStock } from "../inventory/stock/repository";
@@ -258,7 +260,115 @@ export const createJob = async (body) => {
 export const updateJob = async (body) => {
   const connection = await pool.getConnection();
   try {
-    console.log(body);
+    const {
+      jobId,
+      section,
+      username,
+      password,
+      accessories,
+      problem,
+      grossTotal,
+      discount,
+      netTotal,
+    } = body;
+
+    validateAnyFields(body, [`jobId`, `section`]);
+
+    await connection.beginTransaction();
+
+    if (section == "HEADER") {
+      validateAnyFields(body, [`problem`]);
+      await updateJobDetails(
+        {
+          jobId,
+          username,
+          password,
+          accessories,
+          problem,
+        },
+        connection,
+      );
+    } else if (section === "ITEMS") {
+      await removeJobItemsAndReverseStock(jobId, connection);
+
+      const jobItems = JSON.parse(body?.jobItems);
+
+      if (jobItems.length > 0) {
+        validateJobItems(jobItems);
+
+        for (const item of jobItems) {
+          // INSERT JOB ITEMS
+          await insertJobItem(
+            {
+              headerId: jobId,
+              itemId: item.itemId,
+              billing: item.billing,
+              unitCost: item.unitCost,
+              unitPrice: item.unitPrice,
+              quantity: item.quantity,
+              lineTotal: item.lineTotal,
+            },
+            connection,
+          );
+
+          // UPDATE STOCK
+          if (item.itemType === "P") {
+            await updateStock(
+              {
+                itemId: item.itemId,
+                quantity: item.quantity,
+                type: STOCK_OPERATION.OUT,
+              },
+              connection,
+            );
+          }
+
+          // HANDLE SERIAL
+          if (item.serial) {
+            for (const serial of item.serials) {
+              await updateSerial(
+                {
+                  type: 0,
+                  reference: "JOB",
+                  referenceId: jobId,
+                  serialNo: serial,
+                },
+                connection,
+              );
+            }
+          }
+
+          // LOG STOCK MOVEMENTS
+          if (item.itemType === "P") {
+            await insertMovement(
+              {
+                itemId: item.itemId,
+                type: STOCK_OPERATION.OUT,
+                quantity: item.quantity,
+                reference: "JOB",
+                referenceId: jobId,
+              },
+              connection,
+            );
+          }
+        }
+      }
+
+      validateAnyFields(body, ["grossTotal", "discount", "netTotal"]);
+
+      await updateJobTotals(
+        {
+          jobId,
+          grossTotal,
+          discount,
+          netTotal,
+        },
+        connection,
+      );
+    }
+
+    await connection.commit();
+
     return {
       success: true,
     };
@@ -385,36 +495,36 @@ const removeJobItemsAndReverseStock = async (jobId, connection) => {
 
   const { jobItems } = await getJobItems({ jobId }, connection);
 
-  if (jobItems.length === 0) {
-    return;
-  }
+  if (jobItems.length > 0) {
+    validateJobItems(jobItems);
 
-  for (const row of jobItems) {
-    if (row?.item_type === "P") {
-      await updateStock(
-        {
-          itemId: row.item_id,
-          quantity: row.quantity,
-          type: STOCK_OPERATION.IN,
-        },
-        connection,
-      );
+    for (const row of jobItems) {
+      if (row?.item_type === "P") {
+        await updateStock(
+          {
+            itemId: row.item_id,
+            quantity: row.quantity,
+            type: STOCK_OPERATION.IN,
+          },
+          connection,
+        );
 
-      await insertMovement(
-        {
-          itemId: row.item_id,
-          type: STOCK_OPERATION.IN,
-          quantity: row.quantity,
-          reference: "JOB",
-          referenceId: jobId,
-          note: "Reverse Stock",
-        },
-        connection,
-      );
+        await insertMovement(
+          {
+            itemId: row.item_id,
+            type: STOCK_OPERATION.IN,
+            quantity: row.quantity,
+            reference: "JOB",
+            referenceId: jobId,
+            note: "Reverse Stock",
+          },
+          connection,
+        );
+      }
     }
+
+    await deleteJobItems({ jobId }, connection);
+
+    await releaseSerials({ referenceId: jobId }, connection);
   }
-
-  await deleteJobItems({ jobId }, connection);
-
-  await releaseSerials({ referenceId: jobId }, connection);
 };

@@ -208,17 +208,35 @@ export const insertJobItem = async (data, db = pool) => {
 };
 
 export const updateJobDetails = async (data, db = pool) => {
-  const { username, password, accessories, problem } = data;
+  const { jobId, username, password, accessories, problem } = data;
   const sql = `UPDATE job_details SET username=?, password=?, accessories=?, problem=?, updated_at=NOW() WHERE header_id=?`;
   const [result] = await db.execute(sql, [
     username,
     password,
     accessories,
     problem,
+    jobId,
   ]);
 
   if (!result || result.affectedRows === 0) {
     throw new Error(`Failed to Update Job Header !`);
+  }
+};
+
+export const updateJobTotals = async (data, db = pool) => {
+  const { jobId, grossTotal, discount, netTotal } = data;
+
+  const sql = `UPDATE job_header SET gross=?, discount=?, net=? WHERE id=?`;
+
+  const [result] = await db.execute(sql, [
+    grossTotal,
+    discount,
+    netTotal,
+    jobId,
+  ]);
+
+  if (!result || result.affectedRows === 0) {
+    throw new Error(`Failed to Update Job Totals !`);
   }
 };
 
