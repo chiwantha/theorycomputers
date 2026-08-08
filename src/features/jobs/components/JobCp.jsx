@@ -191,7 +191,7 @@ const JobCp = ({ paymentsRes }) => {
 
   return (
     <div
-      className={` ${section == `HEADER` ? divDisable : ``} flex flex-col order-1 md:order-2 space-y-4`}
+      className={` ${section == `HEADER` ? divDisable : ``} flex flex-col  space-y-4`}
     >
       {cancelModal.modal}
       <div className="rounded-xl    space-y-4 flex flex-col  h-full">

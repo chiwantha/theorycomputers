@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { generateDocNo } from "@/lib/utils";
 import JobRow from "./JobRow";
 import SelectCustomer from "@/features/customer/components/SelectCustomer";
+import AniDiv from "@/components/animatedDiv/AniDiv";
 
 const DeviceTypes = [
   {
@@ -236,9 +237,13 @@ const JobForm = ({ form_props, rows = true }) => {
   return (
     <div className="flex flex-col space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <SelectCustomer customersList={customersList} />
-        <div
-          className={` grid-cols-5 lg:gap-4 gap-2 rounded-xl shadow-md bg-white p-4 hidden xl:grid `}
+        <AniDiv delayIndex={1}>
+          <SelectCustomer customersList={customersList} />
+        </AniDiv>
+
+        <AniDiv
+          delayIndex={2}
+          className={`grid-cols-5 lg:gap-4 gap-2 rounded-xl shadow-md bg-white p-4 hidden xl:grid`}
         >
           {DeviceTypes.map((type, index) => (
             <button
@@ -256,185 +261,196 @@ const JobForm = ({ form_props, rows = true }) => {
               </span>
             </button>
           ))}
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow-md">
-          <div className="grid grid-cols-2 bg-gray-200 hover:bg-gray-300 rounded-lg h-full">
-            <button
-              className={`px-4 py-1.5 rounded-lg  transition-colors duration-300 ${!warranty ? `bg-blue-500  text-white` : `text-gray-600`}`}
-              onClick={() => {
-                resetJOB();
-                setHeaderField(`jobNo`, generateDocNo(`JOB`));
-                setHeaderField(`warranty`, false);
-              }}
-            >
-              Normal
-            </button>
-            <button
-              className={`px-4 py-1.5 rounded-xl transition-colors duration-300 ${warranty ? `bg-blue-500  text-white` : `text-gray-600`}`}
-              onClick={() => {
-                resetJOB();
-                setHeaderField(`jobNo`, generateDocNo(`JOB`));
-                setHeaderField(`warranty`, true);
-              }}
-            >
-              Warranty
-            </button>
+        </AniDiv>
+
+        <AniDiv delayIndex={3}>
+          <div className="bg-white rounded-xl p-4 shadow-md h-full">
+            <div className="grid grid-cols-2 bg-gray-200 hover:bg-gray-300 rounded-lg h-full">
+              <button
+                className={`px-4 py-1.5 rounded-lg  transition-colors duration-300 ${!warranty ? `bg-blue-500  text-white` : `text-gray-600`}`}
+                onClick={() => {
+                  resetJOB();
+                  setHeaderField(`jobNo`, generateDocNo(`JOB`));
+                  setHeaderField(`warranty`, false);
+                }}
+              >
+                Normal
+              </button>
+              <button
+                className={`px-4 py-1.5 rounded-xl transition-colors duration-300 ${warranty ? `bg-blue-500  text-white` : `text-gray-600`}`}
+                onClick={() => {
+                  resetJOB();
+                  setHeaderField(`jobNo`, generateDocNo(`JOB`));
+                  setHeaderField(`warranty`, true);
+                }}
+              >
+                Warranty
+              </button>
+            </div>
           </div>
-        </div>
+        </AniDiv>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl shadow-md bg-white">
-        {warranty ? (
-          <>
-            <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4">
+      <AniDiv delayIndex={4}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl shadow-md bg-white">
+          {warranty ? (
+            <>
+              <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4">
+                <NextInput
+                  name={`jobNo`}
+                  placeholder={`JOB0002`}
+                  label={`Job No`}
+                  required={true}
+                  value={jobNo}
+                  inputClassName={`bg-red-50`}
+                  disabled={true}
+                />
+                <NextDropdown
+                  label={`Avaialable Claims`}
+                  name={`warrantyItem`}
+                  items={invItems}
+                  disabled={!customerId && true}
+                  defaultValue={itemId}
+                  onChange={(val) => {
+                    const selected = invItems.find(
+                      (item) => item.value === val,
+                    );
+
+                    setHeaderField(`serial`, selected?.serial || false);
+                    setHeaderField(`serialNo`, selected?.serial_no || ``);
+                    setHeaderField(`itemId`, val);
+                    setHeaderField(`invHeaderId`, selected.headerId);
+                    setHeaderField(`invDetailsId`, selected.detailId);
+                  }}
+                />
+
+                <NextInput
+                  name={`serialNo`}
+                  placeholder={serial ? `VBLX1504VA1058` : `Not a Serial Item`}
+                  label={`Serial No`}
+                  inputClassName={!serial && `bg-red-50`}
+                  disabled={serial}
+                  value={serialNo}
+                  max={100}
+                  readonly={true}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4">
+                <NextInput
+                  name={`jobNo`}
+                  placeholder={`JOB0002`}
+                  label={`Job No`}
+                  required={true}
+                  value={jobNo}
+                  inputClassName={`bg-red-50`}
+                  disabled={true}
+                />
+                <NextDropdown
+                  name={`category`}
+                  items={categoriesList}
+                  label={`Category`}
+                  required={true}
+                  defaultValue={category}
+                  onChange={(val) => setHeaderField(`category`, val)}
+                />
+                <NextDropdown
+                  name={`brand`}
+                  items={brandsList}
+                  label={`Brand`}
+                  required={true}
+                  defaultValue={brand}
+                  onChange={(val) => setHeaderField(`brand`, val)}
+                />
+              </div>
+
               <NextInput
-                name={`jobNo`}
-                placeholder={`JOB0002`}
-                label={`Job No`}
-                required={true}
-                value={jobNo}
-                inputClassName={`bg-red-50`}
-                disabled={true}
+                name={`model`}
+                placeholder={`VIVOBOOK 1504VA`}
+                label={`Model`}
+                value={model}
+                max={100}
+                onChange={(e) => setHeaderField(`model`, e.target.value)}
               />
-              <NextDropdown
-                label={`Avaialable Claims`}
-                name={`warrantyItem`}
-                items={invItems}
-                disabled={!customerId && true}
-                defaultValue={itemId}
-                onChange={(val) => {
-                  const selected = invItems.find((item) => item.value === val);
-
-                  setHeaderField(`serial`, selected?.serial || false);
-                  setHeaderField(`serialNo`, selected?.serial_no || ``);
-                  setHeaderField(`itemId`, val);
-                  setHeaderField(`invHeaderId`, selected.headerId);
-                  setHeaderField(`invDetailsId`, selected.detailId);
-                }}
-              />
-
               <NextInput
                 name={`serialNo`}
-                placeholder={serial ? `VBLX1504VA1058` : `Not a Serial Item`}
+                placeholder={`DE45328889823PQS`}
                 label={`Serial No`}
-                inputClassName={!serial && `bg-red-50`}
-                disabled={serial}
-                value={serialNo}
                 max={100}
-                readonly={true}
+                value={serialNo}
+                onChange={(e) => setHeaderField(`serialNo`, e.target.value)}
               />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4">
-              <NextInput
-                name={`jobNo`}
-                placeholder={`JOB0002`}
-                label={`Job No`}
-                required={true}
-                value={jobNo}
-                inputClassName={`bg-red-50`}
-                disabled={true}
-              />
-              <NextDropdown
-                name={`category`}
-                items={categoriesList}
-                label={`Category`}
-                required={true}
-                defaultValue={category}
-                onChange={(val) => setHeaderField(`category`, val)}
-              />
-              <NextDropdown
-                name={`brand`}
-                items={brandsList}
-                label={`Brand`}
-                required={true}
-                defaultValue={brand}
-                onChange={(val) => setHeaderField(`brand`, val)}
-              />
-            </div>
-
+            </>
+          )}
+          <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4">
             <NextInput
-              name={`model`}
-              placeholder={`VIVOBOOK 1504VA`}
-              label={`Model`}
-              value={model}
-              max={100}
-              onChange={(e) => setHeaderField(`model`, e.target.value)}
+              name={`username`}
+              placeholder={`Administrator`}
+              label={`Device Username`}
+              value={username}
+              max={50}
+              onChange={(e) => setHeaderField(`username`, e.target.value)}
             />
             <NextInput
-              name={`serialNo`}
-              placeholder={`DE45328889823PQS`}
-              label={`Serial No`}
-              max={100}
-              value={serialNo}
-              onChange={(e) => setHeaderField(`serialNo`, e.target.value)}
+              name={`password`}
+              placeholder={`Admin123`}
+              label={`Device Password`}
+              max={50}
+              value={password}
+              onChange={(e) => setHeaderField(`password`, e.target.value)}
             />
-          </>
-        )}
-        <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4">
+            <NextInput
+              name={`advancedPayment`}
+              placeholder={`5000`}
+              label={`Advance Payment`}
+              type="number"
+              value={advance}
+              onChange={(e) => setHeaderField(`advance`, e.target.value)}
+            />
+          </div>
           <NextInput
-            name={`username`}
-            placeholder={`Administrator`}
-            label={`Device Username`}
-            value={username}
-            max={50}
-            onChange={(e) => setHeaderField(`username`, e.target.value)}
+            name={`accessories`}
+            textarea
+            textareaRows={4}
+            label={`Received Accessories`}
+            placeholder={`Charger, Mouse, Keyboard`}
+            value={accessories}
+            max={250}
+            onChange={(e) => setHeaderField(`accessories`, e.target.value)}
           />
           <NextInput
-            name={`password`}
-            placeholder={`Admin123`}
-            label={`Device Password`}
-            max={50}
-            value={password}
-            onChange={(e) => setHeaderField(`password`, e.target.value)}
-          />
-          <NextInput
-            name={`advancedPayment`}
-            placeholder={`5000`}
-            label={`Advance Payment`}
-            type="number"
-            value={advance}
-            onChange={(e) => setHeaderField(`advance`, e.target.value)}
+            name={`problem`}
+            textarea
+            textareaRows={4}
+            label={`Problem Description`}
+            placeholder={`No Power !`}
+            required={true}
+            value={problem}
+            onChange={(e) => setHeaderField(`problem`, e.target.value)}
           />
         </div>
-        <NextInput
-          name={`accessories`}
-          textarea
-          textareaRows={4}
-          label={`Received Accessories`}
-          placeholder={`Charger, Mouse, Keyboard`}
-          value={accessories}
-          max={250}
-          onChange={(e) => setHeaderField(`accessories`, e.target.value)}
-        />
-        <NextInput
-          name={`problem`}
-          textarea
-          textareaRows={4}
-          label={`Problem Description`}
-          placeholder={`No Power !`}
-          required={true}
-          value={problem}
-          onChange={(e) => setHeaderField(`problem`, e.target.value)}
-        />
-      </div>
+      </AniDiv>
 
       {rows && (
-        <div className="p-4 shadow-md bg-white rounded-xl">
-          <JobRow item_list={itemsList} />
-        </div>
+        <AniDiv delayIndex={5}>
+          <div className="p-4 shadow-md bg-white rounded-xl">
+            <JobRow item_list={itemsList} />
+          </div>
+        </AniDiv>
       )}
 
-      <Button
-        name={pending ? `Processing !` : `Save Job`}
-        bg={`bg-green-400 hover:bg-green-500 text-white col-span-full`}
-        click={() => {
-          handleCrud();
-        }}
-        disabled={pending}
-      />
+      <AniDiv delayIndex={6}>
+        <Button
+          name={pending ? `Processing !` : `Save Job`}
+          bg={`bg-green-400 hover:bg-green-500 text-white col-span-full`}
+          click={() => {
+            handleCrud();
+          }}
+          disabled={pending}
+        />
+      </AniDiv>
     </div>
   );
 };
