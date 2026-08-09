@@ -4,7 +4,8 @@ export const useCUSTOMERStore = create((set, get) => ({
   // details
   customerState: 0,
   customerId: null,
-  customerName: ``,
+  customerFirstName: ``,
+  customerLastName: ``,
   customerPhone: ``,
 
   // header actions
@@ -18,7 +19,8 @@ export const useCUSTOMERStore = create((set, get) => ({
     set({
       customerState: 0,
       customerId: null,
-      customerName: ``,
+      customerFirstName: ``,
+      customerLastName: ``,
       customerPhone: ``,
     });
   },

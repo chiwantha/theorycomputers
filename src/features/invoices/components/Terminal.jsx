@@ -110,7 +110,7 @@ const Terminal = ({
               style={{
                 animationDelay: `${3 * 100}ms`,
               }}
-              className="xl:col-span-2 animate-fade-up opacity-0"
+              className="xl:col-span-2 animate-fade-up opacity-0 z-50"
             >
               <SelectCustomer customersList={customersList} />
             </div>
@@ -120,7 +120,7 @@ const Terminal = ({
               style={{
                 animationDelay: `${5 * 100}ms`,
               }}
-              className="col-span-full animate-fade-up opacity-0"
+              className="col-span-full animate-fade-up opacity-0 z-40"
             >
               <div className="bg-white p-4 rounded-xl shadow-md overflow-hidden">
                 <InvoiceRow

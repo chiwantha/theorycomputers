@@ -26,7 +26,7 @@ const InvoiceRow = ({ item_list, warranty_list, defaultRows = false }) => {
   }, [defaultRows]);
 
   return (
-    <div>
+    <div className="z-40">
       <div className="overflow-x-auto">
         <fieldset
           disabled={!billEdit}
