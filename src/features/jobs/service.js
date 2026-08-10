@@ -76,8 +76,13 @@ export const createJob = async (body) => {
 
     const customerState = data.get(`customerState`);
     const customerId = data.get(`customerId`);
-    const customerName = data.get(`customerName`);
-    const customerPhone = data.get(`customerPhone`);
+    const firstName = data.get(`firstName`);
+    const lastName = data.get(`lastName`);
+    const phone = data.get(`phone`);
+    const city = data.get(`city`);
+    const province = data.get(`province`);
+    const address = data.get(`address`);
+    const email = data.get(`email`);
 
     const jobNo = data.get(`jobNo`);
     const warranty = data.get(`warranty`);
@@ -111,9 +116,13 @@ export const createJob = async (body) => {
     if (customerState == `1`) {
       const { customerId } = await insertCustomer(
         {
-          firstName: customerName.split(" ")[0],
-          lastName: customerName.split(" ")[1],
-          phone: customerPhone,
+          firstName,
+          lastName,
+          phone,
+          email,
+          city,
+          province,
+          address,
         },
         connection,
       );
@@ -233,10 +242,10 @@ export const createJob = async (body) => {
     await connection.commit();
 
     const result = await sendSms(
-      customerPhone,
+      phone,
       jobTemplates.CREATE({
         jobNo: jobNo,
-        customerName: customerName,
+        customerName: `${firstName} ${lastName}`,
       }),
     );
 

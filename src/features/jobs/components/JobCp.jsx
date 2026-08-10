@@ -30,9 +30,11 @@ const JobCp = ({ paymentsRes }) => {
   const deadline = useJOBStore((state) => state.deadline);
   const job_start = useJOBStore((state) => state.job_start);
   const job_finished = useJOBStore((state) => state.job_finished);
-  const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
-  const customerName = useCUSTOMERStore((state) => state.customerName);
   const setHeaderField = useJOBStore((state) => state.setHeaderField);
+
+  const phone = useCUSTOMERStore((state) => state.phone);
+  const firstName = useCUSTOMERStore((state) => state.firstName);
+  const lastName = useCUSTOMERStore((state) => state.lastName);
 
   useEffect(() => {
     // alert(JSON.stringify(paymentsRes));

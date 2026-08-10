@@ -15,12 +15,12 @@ export const getCustomer = async (data, db = pool) => {
 };
 
 export const insertCustomer = async (data, db = pool) => {
-  const { firstName, lastName, phone, email, address, city } = data;
+  const { firstName, lastName, phone, email, address, city, province } = data;
 
   const sql = `
     INSERT INTO customers
-    (first_name, last_name, phone, email, address, city)
-    VALUES (?, ?, ?, ?, ?, ?)
+    (first_name, last_name, phone, email, address, city, province)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
   const [result] = await db.execute(sql, [
@@ -30,6 +30,7 @@ export const insertCustomer = async (data, db = pool) => {
     email || null,
     address || null,
     city || null,
+    province || null,
   ]);
 
   if (!result.insertId) {

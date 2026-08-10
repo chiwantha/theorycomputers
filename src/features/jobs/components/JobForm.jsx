@@ -107,8 +107,9 @@ const JobForm = ({ form_props, rows = true }) => {
         }
       } else {
         validation = customerData.customerState
-          ? customerData.customerName !== "" &&
-            customerData.customerPhone !== ""
+          ? customerData.firstName !== "" &&
+            customerData.lastName !== "" &&
+            customerData.phone !== ""
           : customerData.customerId !== null;
         if (!validation) {
           toast.error(`Missing Customer Details !`);
@@ -185,8 +186,13 @@ const JobForm = ({ form_props, rows = true }) => {
 
       data.append(`customerState`, customerData.customerState);
       data.append(`customerId`, customerData.customerId);
-      data.append(`customerName`, customerData.customerName);
-      data.append(`customerPhone`, customerData.customerPhone);
+      data.append(`firstName`, customerData.firstName);
+      data.append(`lastName`, customerData.lastName);
+      data.append(`phone`, customerData.phone);
+      data.append(`email`, customerData.email);
+      data.append(`address`, customerData.address);
+      data.append(`city`, customerData.city);
+      data.append(`province`, customerData.province);
 
       data.append(`invHeaderId`, jobData.invHeaderId);
       data.append(`invDetailsId`, jobData.invDetailsId);
