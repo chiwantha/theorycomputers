@@ -236,7 +236,7 @@ const JobForm = ({ form_props, rows = true }) => {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 z-50">
         <AniDiv delayIndex={1}>
           <SelectCustomer customersList={customersList} />
         </AniDiv>

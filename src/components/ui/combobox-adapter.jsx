@@ -18,6 +18,7 @@ export default function ComboboxAdapter({
   onChange,
   className,
   required,
+  disabled = false,
 }) {
   const selectedItem =
     items.find((item) => item.value === defaultValue) || null;
@@ -33,6 +34,7 @@ export default function ComboboxAdapter({
       <Combobox
         name={name}
         items={items}
+        disabled={disabled}
         value={selectedItem}
         itemToStringValue={(item) => item?.label || ""}
         onValueChange={(item) => {

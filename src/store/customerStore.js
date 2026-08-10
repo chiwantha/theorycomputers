@@ -4,9 +4,13 @@ export const useCUSTOMERStore = create((set, get) => ({
   // details
   customerState: 0,
   customerId: null,
-  customerFirstName: ``,
-  customerLastName: ``,
-  customerPhone: ``,
+  firstName: ``,
+  lastName: ``,
+  phone: ``,
+  email: ``,
+  province: null,
+  city: null,
+  address: ``,
 
   // header actions
   setCustomerField: (field, value) => {
@@ -19,9 +23,13 @@ export const useCUSTOMERStore = create((set, get) => ({
     set({
       customerState: 0,
       customerId: null,
-      customerFirstName: ``,
-      customerLastName: ``,
-      customerPhone: ``,
+      firstName: ``,
+      lastName: ``,
+      phone: ``,
+      email: ``,
+      province: null,
+      city: null,
+      address: ``,
     });
   },
 }));

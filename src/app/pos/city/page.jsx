@@ -9,7 +9,14 @@ import {
 const Page = () => {
   const provinces = provinceList();
 
-  const western = getJsonofCityAndDistrict("Western", "Gampaha");
+  const southernData = getJsonofCityAndDistrict("Southern");
+
+  const cities = Object.values(JSON.parse(southernData[0]))
+    .flat()
+    .map((city) => ({
+      value: city,
+      label: city,
+    }));
 
   return (
     <div className="p-10">
@@ -27,7 +34,7 @@ const Page = () => {
         <h2 className="font-semibold mb-2">Western → Gampaha</h2>
 
         <pre className="bg-gray-100 p-4 rounded-lg overflow-auto">
-          {JSON.stringify(western, null, 2)}
+          {JSON.stringify(cities)}
         </pre>
       </div>
     </div>

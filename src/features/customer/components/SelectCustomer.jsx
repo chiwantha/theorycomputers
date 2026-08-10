@@ -5,22 +5,48 @@ import ComboboxAdapter from "@/components/ui/combobox-adapter";
 import { useCUSTOMERStore } from "@/store/customerStore";
 import { ChevronsDown, RefreshCcw, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  provinceList,
+  getJsonofCityAndDistrict,
+} from "get-srilanka-districts-cities";
+
+const provincesList = provinceList()[0].map((province) => ({
+  value: province,
+  label: province,
+}));
 
 const SelectCustomer = ({ customersList, island = true }) => {
+  const [cityList, setcityList] = useState([]);
   const [isOpen, setisOpen] = useState(false);
-  const setHeaderField = useCUSTOMERStore((state) => state.setCustomerField);
+  const setCustomerField = useCUSTOMERStore((state) => state.setCustomerField);
   const customerState = useCUSTOMERStore((state) => state.customerState);
   const customerId = useCUSTOMERStore((state) => state.customerId);
-  const customerFirstName = useCUSTOMERStore(
-    (state) => state.customerFirstName,
-  );
-  const customerLastName = useCUSTOMERStore((state) => state.customerLastName);
-  const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
+  const firstName = useCUSTOMERStore((state) => state.firstName);
+  const lastName = useCUSTOMERStore((state) => state.lastName);
+  const phone = useCUSTOMERStore((state) => state.phone);
+  const email = useCUSTOMERStore((state) => state.email);
+  const province = useCUSTOMERStore((state) => state.province);
+  const city = useCUSTOMERStore((state) => state.city);
+  const address = useCUSTOMERStore((state) => state.address);
   const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
 
   useEffect(() => {
+    setisOpen(false);
     resetCustomer();
   }, []);
+
+  const getCitiesByProvince = (province) => {
+    if (!province) return [];
+
+    const data = getJsonofCityAndDistrict(province);
+
+    return [...new Set(Object.values(JSON.parse(data[0])).flat())]
+      .sort((a, b) => a.localeCompare(b))
+      .map((city) => ({
+        value: city,
+        label: city,
+      }));
+  };
 
   return (
     <div className="relative">
@@ -32,8 +58,9 @@ const SelectCustomer = ({ customersList, island = true }) => {
             <button
               className={`px-4 py-1.5 rounded-xl transition-colors duration-300 ${customerState == 0 ? `bg-blue-500  text-white` : `text-gray-600`}`}
               onClick={() => {
+                setisOpen(false);
                 resetCustomer();
-                setHeaderField(`customerState`, 0);
+                setCustomerField(`customerState`, 0);
               }}
             >
               Exsisting
@@ -41,8 +68,9 @@ const SelectCustomer = ({ customersList, island = true }) => {
             <button
               className={`px-4 py-1.5 rounded-xl  transition-colors duration-300 ${customerState == 1 ? `bg-blue-500  text-white` : `text-gray-600`}`}
               onClick={() => {
+                setisOpen(false);
                 resetCustomer();
-                setHeaderField(`customerState`, 1);
+                setCustomerField(`customerState`, 1);
               }}
             >
               New
@@ -59,6 +87,7 @@ const SelectCustomer = ({ customersList, island = true }) => {
             )}
             <button
               onClick={() => {
+                setisOpen(false);
                 resetCustomer();
               }}
               className="px-2 text-white py-2 rounded-xl group bg-red-400 hover:bg-red-600 transition-colors duration-300"
@@ -79,44 +108,38 @@ const SelectCustomer = ({ customersList, island = true }) => {
               defaultValue={customerId}
               placeholder="Select Customer ..."
               onChange={(value, customer) => {
-                setHeaderField("customerId", value);
-                setHeaderField(
-                  "customerName",
-                  customer?.label.split(" - ")[0] || "",
-                );
-                setHeaderField("customerPhone", customer?.phone || "");
+                setCustomerField("customerId", value);
+                setCustomerField("firstName", customer?.firstName);
+                setCustomerField("lastName", customer?.lastName);
+                setCustomerField("phone", customer?.phone || "");
               }}
             />
           </div>
         ) : (
           <div className=" grid grid-cols-3 gap-x-2">
             <NextInput
-              name={`customerFirstName`}
+              name={`firstName`}
               placeholder={`First Name`}
-              value={customerFirstName}
+              value={firstName}
               className={`w-full`}
               max={50}
-              onChange={(e) =>
-                setHeaderField(`customerFirstName`, e.target.value)
-              }
+              onChange={(e) => setCustomerField(`firstName`, e.target.value)}
             />
             <NextInput
-              name={`customerLastName`}
+              name={`lastName`}
               placeholder={`Last Name`}
-              value={customerLastName}
+              value={lastName}
               className={`w-full`}
               max={50}
-              onChange={(e) =>
-                setHeaderField(`customerLastName`, e.target.value)
-              }
+              onChange={(e) => setCustomerField(`lastName`, e.target.value)}
             />
             <NextInput
-              name={`customerPhone`}
+              name={`phone`}
               placeholder={`Phone`}
-              value={customerPhone}
+              value={phone}
               className={`w-full`}
               max={10}
-              onChange={(e) => setHeaderField(`customerPhone`, e.target.value)}
+              onChange={(e) => setCustomerField(`phone`, e.target.value)}
             />
           </div>
         )}
@@ -141,56 +164,80 @@ const SelectCustomer = ({ customersList, island = true }) => {
             className="group-hover:rotate-90 transition-transform duration-300"
           />
         </button>
+
         <div className=" grid grid-cols-2 gap-2">
           <NextInput
-            name={`first_name`}
+            name={`firstName`}
             required={true}
-            label={`First Name`}
+            label={`First-Name`}
             placeholder={`Ravindu`}
-            value={customerFirstName}
+            value={firstName}
             className={`w-full`}
             max={50}
-            onChange={(e) =>
-              setHeaderField(`customerFirstName`, e.target.value)
-            }
+            onChange={(e) => setCustomerField(`firstName`, e.target.value)}
           />
           <NextInput
-            name={`last_name`}
+            name={`lastName`}
             required={true}
-            label={`Last Name`}
+            label={`Last-Name`}
             placeholder={`Ajan`}
-            value={customerLastName}
+            value={lastName}
             className={`w-full`}
             max={50}
-            onChange={(e) => setHeaderField(`customerLastName`, e.target.value)}
+            onChange={(e) => setCustomerField(`lastName`, e.target.value)}
           />
           <NextInput
-            name={`customerPhone`}
+            name={`phone`}
             required={true}
             label={`Phone`}
             placeholder={`0788806670`}
-            value={customerPhone}
+            value={phone}
             className={`w-full `}
             max={10}
-            onChange={(e) => setHeaderField(`customerPhone`, e.target.value)}
+            onChange={(e) => setCustomerField(`phone`, e.target.value)}
           />
           <NextInput
-            name={`customerLastName`}
-            label={`City`}
-            placeholder={`Dekatana`}
-            value={customerLastName}
+            name={`email`}
+            label={`Email`}
+            placeholder={`ajan@gmail.com`}
+            value={email}
+            type="email"
             className={`w-full`}
             max={50}
-            onChange={(e) => setHeaderField(`customerLastName`, e.target.value)}
+            onChange={(e) => setCustomerField(`email`, e.target.value)}
+          />
+          <ComboboxAdapter
+            name={`province`}
+            label={`Province`}
+            items={provincesList}
+            defaultValue={province}
+            placeholder="Select Customer ..."
+            onChange={(value, province) => {
+              setCustomerField("province", value);
+              setCustomerField("city", "");
+
+              setcityList(getCitiesByProvince(value));
+            }}
+          />
+          <ComboboxAdapter
+            name={`city`}
+            label={`City`}
+            disabled={!province}
+            items={cityList}
+            defaultValue={city}
+            placeholder="Select City ..."
+            onChange={(value, city) => {
+              setCustomerField("city", value);
+            }}
           />
           <NextInput
-            name={`customerLastName`}
+            name={`address`}
             label={`Address`}
             placeholder={`361/23 Parangoda, Dekatana`}
-            value={customerLastName}
+            value={address}
             className={`w-full col-span-2`}
             max={50}
-            onChange={(e) => setHeaderField(`customerLastName`, e.target.value)}
+            onChange={(e) => setCustomerField(`address`, e.target.value)}
           />
         </div>
       </div>
