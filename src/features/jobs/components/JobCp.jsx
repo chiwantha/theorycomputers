@@ -161,8 +161,8 @@ const JobCp = ({ paymentsRes }) => {
         body: JSON.stringify({
           state: value,
           action: func,
-          customerPhone: customerPhone,
-          customerName: customerName,
+          phone: phone,
+          name: `${firstName} ${lastName}`,
           jobNo: jobNo,
           netTotal: netTotal,
           reason: reason,
@@ -184,6 +184,7 @@ const JobCp = ({ paymentsRes }) => {
       router.refresh();
       toast.success(`${func} Done !`);
     } catch (err) {
+      console.log(err);
       toast.error(`${func} Failed !`);
       return false;
     } finally {

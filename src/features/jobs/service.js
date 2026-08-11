@@ -399,8 +399,8 @@ export const upateJobState = async (body) => {
       "netTotal",
       "state",
       "action",
-      "customerPhone",
-      "customerName",
+      "phone",
+      "name",
     ]);
 
     const {
@@ -409,8 +409,8 @@ export const upateJobState = async (body) => {
       netTotal,
       state,
       action,
-      customerPhone,
-      customerName,
+      phone,
+      name,
       reason = `Customer requested cancellation`,
     } = body;
 
@@ -453,34 +453,34 @@ export const upateJobState = async (body) => {
     // SMS Send
     if (start) {
       await sendSms(
-        customerPhone,
+        phone,
         jobTemplates.STARTED({
-          customerName,
+          name,
           jobNo,
         }),
       );
     } else if (restart) {
       await sendSms(
-        customerPhone,
+        phone,
         jobTemplates.RESTARTED({
-          customerName,
+          name,
           jobNo,
         }),
       );
     } else if (finish) {
       await sendSms(
-        customerPhone,
+        phone,
         jobTemplates.FINISHED({
-          customerName,
+          name,
           jobNo,
           netTotal,
         }),
       );
     } else if (cancel) {
       await sendSms(
-        customerPhone,
+        phone,
         jobTemplates.CANCELLED({
-          customerName,
+          name,
           jobNo,
           reason,
         }),
