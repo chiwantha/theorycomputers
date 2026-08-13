@@ -121,7 +121,13 @@ ORDER BY stock DESC;
 };
 export const get_customers = async () => {
   try {
-    const sql = `SELECT id AS value, CONCAT(first_name, ' ', last_name, ' - ', phone) AS label, phone FROM customers WHERE state = 1`;
+    const sql = `SELECT 
+    id AS value,
+    CONCAT(first_name, ' ', last_name, ' - ', phone) AS label,
+    phone,
+    first_name,
+    last_name
+    FROM customers WHERE state = 1`;
 
     const data = await query(sql);
 

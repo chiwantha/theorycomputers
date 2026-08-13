@@ -11,8 +11,9 @@ const JobCustomerVIew = ({ customerData }) => {
   const jobNo = useJOBStore((state) => state.jobNo);
 
   // const customerId = useCUSTOMERStore((state) => state.customerId);
-  const customerName = useCUSTOMERStore((state) => state.customerName);
-  const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
+  const firstName = useCUSTOMERStore((state) => state.firstName);
+  const lastName = useCUSTOMERStore((state) => state.lastName);
+  const phone = useCUSTOMERStore((state) => state.phone);
   const setCustomerField = useCUSTOMERStore((state) => state.setCustomerField);
   const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
 
@@ -22,20 +23,22 @@ const JobCustomerVIew = ({ customerData }) => {
   }, []);
 
   useEffect(() => {
+    // alert(JSON.stringify(customerData));
     // SET CUSTOMER
     setCustomerField(`customerId`, customerData.id);
-    setCustomerField(
-      `customerName`,
-      `${customerData.first_name} ${customerData.last_name}`,
-    );
-    setCustomerField(`customerPhone`, customerData.phone);
+    setCustomerField(`firstName`, customerData.first_name);
+    setCustomerField(`lastName`, customerData.last_name);
+    setCustomerField(`phone`, customerData.phone);
   }, [customerData]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
       <div className="rounded-xl p-4 bg-white shadow-md items-center gap-4 grid grid-cols-2">
-        <ValueDisplay title={`Name`} value={customerName} />
-        <ValueDisplay title={`Phone`} value={customerPhone} />
+        <ValueDisplay
+          title={`Name`}
+          value={`${firstName} ${lastName || `#`}`}
+        />
+        <ValueDisplay title={`Phone`} value={phone} />
       </div>
       <div className="grid-cols-2 grid gap-4 items-center bg-blue-500 rounded-xl p-4">
         <ValueDisplay

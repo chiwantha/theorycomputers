@@ -36,13 +36,6 @@ const JobCp = ({ paymentsRes }) => {
   const firstName = useCUSTOMERStore((state) => state.firstName);
   const lastName = useCUSTOMERStore((state) => state.lastName);
 
-  useEffect(() => {
-    // alert(JSON.stringify(paymentsRes));
-    if (paymentsRes?.payment_type === `DOWN`) {
-      setHeaderField(`advancedPayment`, Number(paymentsRes?.amount).toFixed(2));
-    }
-  }, [paymentsRes]);
-
   const stateConfig = {
     0: {
       primary: {
@@ -117,6 +110,13 @@ const JobCp = ({ paymentsRes }) => {
       },
     },
   };
+
+  useEffect(() => {
+    // alert(JSON.stringify(paymentsRes));
+    if (paymentsRes?.payment_type === `DOWN`) {
+      setHeaderField(`advancedPayment`, Number(paymentsRes?.amount).toFixed(2));
+    }
+  }, [paymentsRes]);
 
   const currentState = stateConfig[state];
 

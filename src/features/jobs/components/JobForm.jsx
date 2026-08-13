@@ -180,42 +180,35 @@ const JobForm = ({ form_props, rows = true }) => {
         }
       }
 
-      const data = new FormData();
-      data.append(`jobNo`, jobData.jobNo);
-      data.append(`warranty`, jobData.warranty);
+      // const data = new FormData();
+      // data.append(`jobNo`, jobData.jobNo);
+      // data.append(`warranty`, jobData.warranty);
 
-      data.append(`customerState`, customerData.customerState);
-      data.append(`customerId`, customerData.customerId);
-      data.append(`firstName`, customerData.firstName);
-      data.append(`lastName`, customerData.lastName);
-      data.append(`phone`, customerData.phone);
-      data.append(`email`, customerData.email);
-      data.append(`address`, customerData.address);
-      data.append(`city`, customerData.city);
-      data.append(`province`, customerData.province);
+      // data.append(`invHeaderId`, jobData.invHeaderId);
+      // data.append(`invDetailsId`, jobData.invDetailsId);
+      // data.append(`itemId`, jobData.itemId);
+      // data.append(`category`, jobData.category);
+      // data.append(`brand`, jobData.brand);
+      // data.append(`model`, jobData.model);
+      // data.append(`serial`, jobData.serial);
+      // data.append(`serialNo`, jobData.serialNo);
+      // data.append(`username`, jobData.username);
+      // data.append(`password`, jobData.password);
+      // data.append(`advance`, jobData.advance);
+      // data.append(`accessories`, jobData.accessories);
+      // data.append(`problem`, jobData.problem);
 
-      data.append(`invHeaderId`, jobData.invHeaderId);
-      data.append(`invDetailsId`, jobData.invDetailsId);
-      data.append(`itemId`, jobData.itemId);
-      data.append(`category`, jobData.category);
-      data.append(`brand`, jobData.brand);
-      data.append(`model`, jobData.model);
-      data.append(`serial`, jobData.serial);
-      data.append(`serialNo`, jobData.serialNo);
-      data.append(`username`, jobData.username);
-      data.append(`password`, jobData.password);
-      data.append(`advance`, jobData.advance);
-      data.append(`accessories`, jobData.accessories);
-      data.append(`problem`, jobData.problem);
+      // data.append(`grossTotal`, jobData.grossTotal);
+      // data.append(`netTotal`, jobData.netTotal);
 
-      data.append(`grossTotal`, jobData.grossTotal);
-      data.append(`netTotal`, jobData.netTotal);
-
-      data.append(`jobItems`, JSON.stringify(jobData.rows));
+      // data.append(`jobItems`, JSON.stringify(jobData.rows));
 
       const res = await fetch(`/api/pos/jobs`, {
         method: `POST`,
-        body: data,
+        body: JSON.stringify({
+          customer: customerData,
+          job: jobData,
+        }),
       });
 
       if (!res.ok) {

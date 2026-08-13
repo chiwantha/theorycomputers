@@ -73,6 +73,9 @@ export const createJob = async (body) => {
   const connection = await pool.getConnection();
   try {
     const data = body;
+    console.log(body);
+
+    throw new AppError("Testing JSON", 401);
 
     const customerState = data.get(`customerState`);
     const customerId = data.get(`customerId`);
@@ -505,7 +508,8 @@ const removeJobItemsAndReverseStock = async (jobId, connection) => {
   const { jobItems } = await getJobItems({ jobId }, connection);
 
   if (jobItems.length > 0) {
-    validateJobItems(jobItems);
+    // console.log(jobItems);
+    // validateJobItems(jobItems);
 
     for (const row of jobItems) {
       if (row?.item_type === "P") {

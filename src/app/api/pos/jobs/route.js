@@ -16,7 +16,7 @@ export const GET = async () => {
 
 export const POST = async (request) => {
   try {
-    const data = await request.formData();
+    const data = await request.json();
 
     await createJob(data);
 

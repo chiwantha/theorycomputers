@@ -109,9 +109,9 @@ const SelectCustomer = ({ customersList, island = true }) => {
               placeholder="Select Customer ..."
               onChange={(value, customer) => {
                 setCustomerField("customerId", value);
-                setCustomerField("firstName", customer?.firstName);
-                setCustomerField("lastName", customer?.lastName);
-                setCustomerField("phone", customer?.phone || "");
+                setCustomerField("firstName", customer?.first_name);
+                setCustomerField("lastName", customer?.last_name);
+                setCustomerField("phone", customer?.phone || ``);
               }}
             />
           </div>
