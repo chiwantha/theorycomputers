@@ -17,9 +17,7 @@ export const GET = async () => {
 export const POST = async (request) => {
   try {
     const data = await request.json();
-
     await createJob(data);
-
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
     console.log(err);

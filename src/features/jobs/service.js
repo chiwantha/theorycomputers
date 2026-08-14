@@ -70,43 +70,10 @@ export const loadJob = async (body) => {
 };
 
 export const createJob = async (body) => {
+  //here
   const connection = await pool.getConnection();
   try {
-    const data = body;
-    console.log(body);
-
-    throw new AppError("Testing JSON", 401);
-
-    const customerState = data.get(`customerState`);
-    const customerId = data.get(`customerId`);
-    const firstName = data.get(`firstName`);
-    const lastName = data.get(`lastName`);
-    const phone = data.get(`phone`);
-    const city = data.get(`city`);
-    const province = data.get(`province`);
-    const address = data.get(`address`);
-    const email = data.get(`email`);
-
-    const jobNo = data.get(`jobNo`);
-    const warranty = data.get(`warranty`);
-    const grossTotal = data.get(`grossTotal`);
-    const discount = data.get(`discount`);
-    const netTotal = data.get(`netTotal`);
-
-    const invHeaderId = data.get(`invHeaderId`);
-    const invDetailsId = data.get(`invDetailsId`);
-    const itemId = data.get(`itemId`);
-    const category = data.get(`category`);
-    const brand = data.get(`brand`);
-    const model = data.get(`model`);
-    const serialNo = data.get(`serialNo`);
-    const username = data.get(`username`);
-    const password = data.get(`password`);
-    const advance = data.get(`advance`);
-    const accessories = data.get(`accessories`);
-    const problem = data.get(`problem`);
-
-    const jobItems = JSON.parse(data.get("jobItems"));
+    const { customer, header, payment, details, items: jobItems = [] } = body;
 
     if (jobItems.length > 0) {
       validateJobItems(jobItems);
@@ -116,47 +83,47 @@ export const createJob = async (body) => {
 
     // HANDLE CUSTOMER
     let customerIdUse;
-    if (customerState == `1`) {
+    if (customer.customerState == `1`) {
       const { customerId } = await insertCustomer(
         {
-          firstName,
-          lastName,
-          phone,
-          email,
-          city,
-          province,
-          address,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          phone: customer.phone,
+          email: customer.email,
+          city: customer.city,
+          province: customer.province,
+          address: customer.address,
         },
         connection,
       );
       customerIdUse = customerId;
     } else {
-      customerIdUse = customerId;
+      customerIdUse = customer.customerId;
     }
 
     // INSERT HEADER
     const { headerId } = await insertJobHeader(
       {
-        jobNo,
+        jobNo: header.jobNo,
         customerId: customerIdUse,
-        warranty,
-        grossTotal,
-        discount,
-        netTotal,
+        warranty: header.warranty,
+        grossTotal: header.grossTotal,
+        discount: header.discount,
+        netTotal: header.netTotal,
       },
       connection,
     );
 
     // INSERT ADVANCE PAYMENT
-    if (Number(advance) !== 0 && advance) {
+    if (Number(payment.advance) !== 0 && payment.advance) {
       await insertPayment(
         {
           reference: "JOB",
           referenceId: headerId,
           paymentType: "DOWN",
           paymentMethod: "CASH",
-          amount: advance,
-          note: `Advance Payment For ${jobNo}`,
+          amount: payment.advance,
+          note: `Advance Payment For ${header.jobNo}`,
         },
         connection,
       );
@@ -166,17 +133,17 @@ export const createJob = async (body) => {
     await insertJobDetails(
       {
         headerId,
-        invHeaderId: invHeaderId || null,
-        invDetailsId: invDetailsId || null,
-        itemId: itemId || null,
-        categoryId: category || null,
-        brandId: brand || null,
-        model: model || null,
-        serialNo: serialNo || null,
-        username: username || null,
-        password: password || null,
-        accessories: accessories || null,
-        problem: problem,
+        invHeaderId: details.invHeaderId || null,
+        invDetailsId: details.invDetailsId || null,
+        itemId: details.itemId || null,
+        categoryId: details.categoryId || null,
+        brandId: details.brandId || null,
+        model: details.model || null,
+        serialNo: details.serialNo || null,
+        username: details.username || null,
+        password: details.password || null,
+        accessories: details.accessories || null,
+        problem: details.problem,
       },
       connection,
     );
@@ -245,13 +212,12 @@ export const createJob = async (body) => {
     await connection.commit();
 
     const result = await sendSms(
-      phone,
+      customer.phone,
       jobTemplates.CREATE({
-        jobNo: jobNo,
-        customerName: `${firstName} ${lastName}`,
+        jobNo: header.jobNo,
+        customerName: `${customer.firstName} ${customer.lastName}`,
       }),
     );
-
     if (!result.success) {
       console.log(result.message);
     }
