@@ -20,10 +20,9 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
   try {
     const { job_id } = await params;
-    const data = await request.formData();
-    const body = Object.fromEntries(data.entries());
+    const data = await request.json();
 
-    await updateJob({ jobId: job_id, ...body });
+    await updateJob({ data });
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {

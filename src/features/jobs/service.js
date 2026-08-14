@@ -237,6 +237,8 @@ export const createJob = async (body) => {
 
 export const updateJob = async (body) => {
   const connection = await pool.getConnection();
+  console.log("Job Service Body : ", body);
+  throw new Error("Test Okay Completed !");
   try {
     const {
       jobId,
@@ -410,7 +412,7 @@ export const updateJobState = async (body) => {
       await sendSms(
         customer.phone,
         jobTemplates.STARTED({
-          name: customer.fullName,
+          customerName: customer.fullName,
           jobNo: header.jobNo,
         }),
       );
@@ -418,7 +420,7 @@ export const updateJobState = async (body) => {
       await sendSms(
         customer.phone,
         jobTemplates.RESTARTED({
-          name: customer.fullName,
+          customerName: customer.fullName,
           jobNo: header.jobNo,
         }),
       );
@@ -426,7 +428,7 @@ export const updateJobState = async (body) => {
       await sendSms(
         customer.phone,
         jobTemplates.FINISHED({
-          name: customer.fullName,
+          customerName: customer.fullName,
           jobNo: header.jobNo,
           netTotal: header.netTotal,
         }),
@@ -435,7 +437,7 @@ export const updateJobState = async (body) => {
       await sendSms(
         customer.phone,
         jobTemplates.CANCELLED({
-          name: customer.fullName,
+          customerName: customer.fullName,
           jobNo: header.jobNo,
           reason: state.reason,
         }),

@@ -20,8 +20,6 @@ const JobAction = () => {
       let validation;
       const jobData = useJOBStore.getState();
 
-      console.log(jobData);
-
       if (!job_id) {
         toast.warning(`Job It Not Found !`);
         return;
@@ -70,23 +68,26 @@ const JobAction = () => {
         toast.error(`Something Wrong With Job Action !`);
       }
 
-      const data = new FormData();
-
-      data.append(`section`, jobData.section);
-      data.append(`username`, jobData.username);
-      data.append(`password`, jobData.password);
-      data.append(`accessories`, jobData.accessories);
-      data.append(`problem`, jobData.problem);
-
-      data.append(`grossTotal`, jobData.grossTotal);
-      data.append(`discount`, jobData.discount);
-      data.append(`netTotal`, jobData.netTotal);
-
-      data.append(`jobItems`, JSON.stringify(jobData.rows));
-
       const res = await fetch(`/api/pos/jobs/${job_id}`, {
         method: `PUT`,
-        body: data,
+        body: JSON.stringify({
+          target: {
+            section: jobData.section,
+          },
+          header: {
+            jobId: job_id,
+            grossTotal: jobData.grossTotal,
+            discount: jobData.discount,
+            netTotal: jobData.netTotal,
+          },
+          details: {
+            username: jobData.username,
+            password: jobData.password,
+            accessories: jobData.accessories,
+            problem: jobData.problem,
+          },
+          items: jobData.rows,
+        }),
       });
 
       if (!res.ok) {
