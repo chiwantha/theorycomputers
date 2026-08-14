@@ -159,13 +159,21 @@ const JobCp = ({ paymentsRes }) => {
       const res = await fetch(`/api/pos/jobs/${jobId}/updateState`, {
         method: `PUT`,
         body: JSON.stringify({
-          state: value,
-          action: func,
-          phone: phone,
-          name: `${firstName} ${lastName}`,
-          jobNo: jobNo,
-          netTotal: netTotal,
-          reason: reason,
+          customer: {
+            firstName,
+            lastName,
+            fullName: `${firstName} ${lastName}`,
+            phone,
+          },
+          header: {
+            jobNo,
+            netTotal,
+          },
+          state: {
+            state: value,
+            action: func,
+            reason,
+          },
         }),
       });
 

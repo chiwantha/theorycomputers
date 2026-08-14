@@ -359,42 +359,28 @@ export const updateJob = async (body) => {
   }
 };
 
-export const upateJobState = async (body) => {
+export const updateJobState = async (body) => {
   const connection = await pool.getConnection();
   try {
-    validateAnyFields(body, [
-      "jobId",
-      "jobNo",
-      "netTotal",
-      "state",
-      "action",
-      "phone",
-      "name",
-    ]);
+    const { customer, header, state, jobId } = body;
 
-    const {
-      jobId,
-      jobNo,
-      netTotal,
-      state,
-      action,
-      phone,
-      name,
-      reason = `Customer requested cancellation`,
-    } = body;
+    validateAnyFields({ jobId }, ["jobId"]);
+    validateAnyFields(customer, ["firstName", "lastName", "fullName", "phone"]);
+    validateAnyFields(header, ["jobNo"]);
+    validateAnyFields(state, ["state", "action"]);
 
     let start = false;
     let restart = false;
     let finish = false;
     let cancel = false;
 
-    if (action == "Finish") {
+    if (state.action == "Finish") {
       finish = true;
-    } else if (action == "Start") {
+    } else if (state.action == "Start") {
       start = true;
-    } else if (action == "Restart") {
+    } else if (state.action == "Restart") {
       restart = true;
-    } else if (action == "Cancel") {
+    } else if (state.action == "Cancel") {
       cancel = true;
     } else {
       throw new AppError(`Invalid Action !`, 400);
@@ -405,7 +391,7 @@ export const upateJobState = async (body) => {
     await updateJobHeaderState(
       {
         jobId,
-        state,
+        state: state.state,
         start,
         restart,
         finish,
@@ -422,36 +408,36 @@ export const upateJobState = async (body) => {
     // SMS Send
     if (start) {
       await sendSms(
-        phone,
+        customer.phone,
         jobTemplates.STARTED({
-          name,
-          jobNo,
+          name: customer.fullName,
+          jobNo: header.jobNo,
         }),
       );
     } else if (restart) {
       await sendSms(
-        phone,
+        customer.phone,
         jobTemplates.RESTARTED({
-          name,
-          jobNo,
+          name: customer.fullName,
+          jobNo: header.jobNo,
         }),
       );
     } else if (finish) {
       await sendSms(
-        phone,
+        customer.phone,
         jobTemplates.FINISHED({
-          name,
-          jobNo,
-          netTotal,
+          name: customer.fullName,
+          jobNo: header.jobNo,
+          netTotal: header.netTotal,
         }),
       );
     } else if (cancel) {
       await sendSms(
-        phone,
+        customer.phone,
         jobTemplates.CANCELLED({
-          name,
-          jobNo,
-          reason,
+          name: customer.fullName,
+          jobNo: header.jobNo,
+          reason: state.reason,
         }),
       );
     }
