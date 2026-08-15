@@ -30,7 +30,7 @@ const page = async ({ params }) => {
   return (
     <div className="flex flex-col space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 gap-y-4 md:gap-y-0">
-        <div className="col-span-2  flex flex-col space-y-4 order-2 md:order-1">
+        <div className="col-span-2 flex flex-col space-y-4 ">
           <div
             style={{
               animationDelay: `${1 * 100}ms`,
@@ -55,7 +55,7 @@ const page = async ({ params }) => {
           style={{
             animationDelay: `${3 * 100}ms`,
           }}
-          className="order-1 md:order-2 animate-fade-up opacity-0"
+          className=" animate-fade-up opacity-0"
         >
           <JobCp paymentsRes={(data?.payments)[0] || false} />
         </div>

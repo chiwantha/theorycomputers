@@ -21,8 +21,12 @@ export const PUT = async (request, { params }) => {
   try {
     const { job_id } = await params;
     const data = await request.json();
+    const { header, ...rest } = data;
 
-    await updateJob({ data });
+    await updateJob({
+      header: { ...header, jobId: job_id },
+      ...rest,
+    });
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {

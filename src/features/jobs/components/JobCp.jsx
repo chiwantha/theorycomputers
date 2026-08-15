@@ -2,7 +2,6 @@
 
 import Button from "@/components/button/Button";
 import CancelConfirmModal from "@/components/form/confirmmodal/useCancelConfirm";
-import Separator from "@/components/separator/Separator";
 import ValueDisplay from "@/components/valuedisplay/ValueDisplay";
 import { divDisable } from "@/constant/Forms";
 import { formatDateTime, getTimeSince } from "@/lib/utils";
@@ -202,10 +201,10 @@ const JobCp = ({ paymentsRes }) => {
 
   return (
     <div
-      className={` ${section == `HEADER` ? divDisable : ``} flex flex-col  space-y-4`}
+      className={` ${section == `HEADER` ? divDisable : ``} flex flex-col  space-y-4 h-full`}
     >
       {cancelModal.modal}
-      <div className="rounded-xl    space-y-4 flex flex-col  h-full">
+      <div className="rounded-xl  space-y-4 flex flex-col  h-full">
         {/* job totals */}
         <div className="flex flex-col p-4 rounded-xl text-gray-600 shadow-md bg-white">
           <div className="grid grid-cols-2 gap-2  items-center">
@@ -214,19 +213,16 @@ const JobCp = ({ paymentsRes }) => {
               {grossTotal.toFixed(2)}
             </span>
           </div>
-          <div
-            className="grid grid-cols-2 gap-2 my-3 text-white
-          bg-green-400 rounded-lg p-2 items-center"
-          >
-            <span className="pl-4 ">Advance</span>
+          <div className="grid grid-cols-2 gap-2  items-center bg-green-500 text-white rounded-lg my-3 p-2">
+            <span className="pl-4 ">Net Total</span>
             <span className=" py-1  font-semibold px-4 ">
-              {advancedPayment}
+              {netTotal.toFixed(2)}
             </span>
           </div>
           <div className="grid grid-cols-2 gap-2  items-center">
-            <span className="pl-4 ">Net Total</span>
+            <span className="pl-4 ">Paid Total</span>
             <span className=" py-1  font-semibold px-4 ">
-              {(netTotal.toFixed(2) - advancedPayment).toFixed(2)}
+              {Number(advancedPayment).toFixed(2)}
             </span>
           </div>
         </div>

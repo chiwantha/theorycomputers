@@ -237,41 +237,29 @@ export const createJob = async (body) => {
 
 export const updateJob = async (body) => {
   const connection = await pool.getConnection();
-  console.log("Job Service Body : ", body);
-  throw new Error("Test Okay Completed !");
+  // console.log(body);
   try {
-    const {
-      jobId,
-      section,
-      username,
-      password,
-      accessories,
-      problem,
-      grossTotal,
-      discount,
-      netTotal,
-    } = body;
+    const { target, header, details, items: jobItems = [] } = body;
 
-    validateAnyFields(body, [`jobId`, `section`]);
+    validateAnyFields(header, [`jobId`]);
+    validateAnyFields(target, [`section`]);
 
     await connection.beginTransaction();
 
-    if (section == "HEADER") {
-      validateAnyFields(body, [`problem`]);
+    if (target.section == "HEADER") {
+      validateAnyFields(details, [`problem`]);
       await updateJobDetails(
         {
-          jobId,
-          username,
-          password,
-          accessories,
-          problem,
+          jobId: header.jobId,
+          username: details.username,
+          password: details.password,
+          accessories: details.accessories,
+          problem: details.problem,
         },
         connection,
       );
-    } else if (section === "ITEMS") {
-      await removeJobItemsAndReverseStock(jobId, connection);
-
-      const jobItems = JSON.parse(body?.jobItems);
+    } else if (target.section === "ITEMS") {
+      await removeJobItemsAndReverseStock(header.jobId, connection);
 
       if (jobItems.length > 0) {
         validateJobItems(jobItems);
@@ -280,7 +268,7 @@ export const updateJob = async (body) => {
           // INSERT JOB ITEMS
           await insertJobItem(
             {
-              headerId: jobId,
+              headerId: header.jobId,
               itemId: item.itemId,
               billing: item.billing,
               unitCost: item.unitCost,
@@ -310,7 +298,7 @@ export const updateJob = async (body) => {
                 {
                   type: 0,
                   reference: "JOB",
-                  referenceId: jobId,
+                  referenceId: header.jobId,
                   serialNo: serial,
                 },
                 connection,
@@ -326,7 +314,7 @@ export const updateJob = async (body) => {
                 type: STOCK_OPERATION.OUT,
                 quantity: item.quantity,
                 reference: "JOB",
-                referenceId: jobId,
+                referenceId: header.jobId,
               },
               connection,
             );
@@ -334,14 +322,14 @@ export const updateJob = async (body) => {
         }
       }
 
-      validateAnyFields(body, ["grossTotal", "discount", "netTotal"]);
+      validateAnyFields(header, ["grossTotal", "discount", "netTotal"]);
 
       await updateJobTotals(
         {
-          jobId,
-          grossTotal,
-          discount,
-          netTotal,
+          jobId: header.jobId,
+          grossTotal: header.grossTotal,
+          discount: header.discount,
+          netTotal: header.netTotal,
         },
         connection,
       );

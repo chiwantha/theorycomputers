@@ -75,7 +75,7 @@ const JobAction = () => {
             section: jobData.section,
           },
           header: {
-            jobId: job_id,
+            jobIda: job_id,
             grossTotal: jobData.grossTotal,
             discount: jobData.discount,
             netTotal: jobData.netTotal,
