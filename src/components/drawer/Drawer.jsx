@@ -21,10 +21,11 @@ const Drawer = ({
   setOpen,
   callback,
   rounded,
+  onCloseCallback,
 }) => {
   return (
     <div className="">
-      <DrawerSlide open={open} onOpenChange={setOpen}>
+      <DrawerSlide open={open} onOpenChange={setOpen} onClose={onCloseCallback}>
         <DrawerTrigger>
           <Button
             name={button || "New"}

@@ -12,6 +12,7 @@ function DrawerSlide({
   open: controlledOpen,
   defaultOpen = false,
   onOpenChange,
+  onClose,
 }) {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
 
@@ -21,9 +22,13 @@ function DrawerSlide({
 
   const setOpen = (value) => {
     if (isControlled) {
-      onOpenChange && onOpenChange(value);
+      onOpenChange?.(value);
     } else {
       setInternalOpen(value);
+    }
+
+    if (!value) {
+      onClose?.();
     }
   };
 

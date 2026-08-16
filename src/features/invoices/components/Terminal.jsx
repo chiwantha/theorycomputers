@@ -6,8 +6,9 @@ import SelectCustomer from "../../customer/components/SelectCustomer";
 import SelectTrnDoc from "./SelectTrnDoc";
 import InvoiceRow from "./InvoiceRow";
 import { useINVOICEStore } from "@/store/invoiceStore";
-import PaymentSection from "./Payment";
 import { useCUSTOMERStore } from "@/store/customerStore";
+// import PaymentSection from "./Payment";
+import PaymentSection2 from "./Payment2";
 
 const Terminal = ({
   customersList,
@@ -139,7 +140,7 @@ const Terminal = ({
           }}
           className="2xl:col-span-1 animate-fade-up opacity-0"
         >
-          <PaymentSection />
+          <PaymentSection2 />
         </div>
       </div>
     </div>
