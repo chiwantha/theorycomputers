@@ -22,19 +22,28 @@ const Drawer = ({
   callback,
   rounded,
   onCloseCallback,
+  onOpenCallback,
+  trigger = true,
 }) => {
   return (
-    <div className="">
-      <DrawerSlide open={open} onOpenChange={setOpen} onClose={onCloseCallback}>
-        <DrawerTrigger>
-          <Button
-            name={button || "New"}
-            click={callback}
-            rounded={rounded || false}
-            pd={`px-4 py-1.5`}
-            bg={`bg-green-500 hover:bg-green-600 text-white`}
-          />
-        </DrawerTrigger>
+    <div className="w-full">
+      <DrawerSlide
+        open={open}
+        onOpenChange={setOpen}
+        onClose={onCloseCallback}
+        onOpen={onOpenCallback}
+      >
+        {trigger && (
+          <DrawerTrigger>
+            <Button
+              name={button || "New"}
+              click={callback}
+              rounded={rounded || false}
+              pd={`px-4 py-1.5`}
+              bg={`bg-green-500 hover:bg-green-600 text-white`}
+            />
+          </DrawerTrigger>
+        )}
 
         <DrawerContent className="bg-white p-4 md:p-6 border-none md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]">
           <DrawerHeader className={`px-0 ${!title && "hidden"}`}>

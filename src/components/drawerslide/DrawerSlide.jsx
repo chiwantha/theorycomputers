@@ -12,13 +12,15 @@ function DrawerSlide({
   open: controlledOpen,
   defaultOpen = false,
   onOpenChange,
+  onOpen,
   onClose,
 }) {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
 
   const isControlled = controlledOpen !== undefined;
-
   const open = isControlled ? controlledOpen : internalOpen;
+
+  const previousOpen = React.useRef(open);
 
   const setOpen = (value) => {
     if (isControlled) {
@@ -26,11 +28,20 @@ function DrawerSlide({
     } else {
       setInternalOpen(value);
     }
-
-    if (!value) {
-      onClose?.();
-    }
   };
+
+  useEffect(() => {
+    // Don't trigger anything on initial render
+    if (previousOpen.current !== open) {
+      if (open) {
+        onOpen?.();
+      } else {
+        onClose?.();
+      }
+
+      previousOpen.current = open;
+    }
+  }, [open, onOpen, onClose]);
 
   return (
     <DrawerContext.Provider value={{ open, setOpen }}>

@@ -23,6 +23,7 @@ const PaymentSection2 = () => {
   const router = useRouter();
   const { data: userData } = useSession();
   const [pending, setPending] = useState(false);
+  const [isOpenPayment, setisOpenPayment] = useState(false);
 
   const docType = useINVOICEStore((state) => state.docType);
   const invType = useINVOICEStore((state) => state.invType);
@@ -107,221 +108,6 @@ const PaymentSection2 = () => {
     }
   }, [netTotal, paymentMethod, docType]);
 
-  const handleCrud = async () => {
-    setPending(true);
-
-    try {
-      let validation;
-      const customerData = useCUSTOMERStore.getState();
-      const invoiceData = useINVOICEStore.getState();
-      console.log(customerData);
-
-      // Customer Validation
-      if (customerData?.customerState === 0) {
-        validation = validateFields(customerData, [`customerId`]);
-        if (!validation.isValid) {
-          toast.error(`Select Customer !`);
-          return;
-        }
-      } else {
-        validation = customerData?.customerState
-          ? customerData.customerName !== "" &&
-            customerData.customerPhone !== ""
-          : customerData.customerId !== null;
-        if (!validation) {
-          toast.error(`Missing New Customer Details !`);
-          return;
-        }
-      }
-
-      // Invoice Items Validation
-      if (invoiceData?.rows.length > 0) {
-        for (const row of invoiceData?.rows) {
-          if (!row.itemId) {
-            toast.error(`Select Valid Item!`);
-            return;
-          }
-
-          if (!row.selling) {
-            toast.error(`Missing Selling Price on ${row?.itemName} !`);
-            return;
-          }
-
-          if (!row.cost && row.item_type === `P`) {
-            toast.error(`Missing Unit Cost on ${row?.itemName} !`);
-            return;
-          }
-
-          if (!row.quantity) {
-            toast.error(`Missing Quantity on ${row?.itemName} !`);
-            return;
-          }
-
-          if (row.serial && docType === `INVOICE`) {
-            const validSerials = row.serials.filter(
-              (serial) => serial?.trim() !== "",
-            );
-
-            if (validSerials.length !== row.quantity) {
-              toast.error(
-                `Mismatch in serial and quantity on ${row?.itemName} !`,
-              );
-              return;
-            }
-          }
-        }
-      } else {
-        toast.error(`Missing Invoice Details !`);
-        return;
-      }
-
-      // Invoice Header Validation
-      if (invType === "JOB" && !jobId) {
-        toast.error(`Job Id Missing !`);
-        return;
-      }
-      if (invType === "QUOTE" && !quoteId) {
-        toast.error(`Quotation Id Missing !`);
-        return;
-      }
-      validation = validateFields(
-        {
-          docType,
-          paymentMethod,
-        },
-        [`docType`, `paymentMethod`],
-      );
-      if (!validation.isValid) {
-        toast.error(`Missing : ${validation.emptyFields.join(", ")} !`);
-        return;
-      }
-
-      // Invoice Payment Data Validation
-      if (docType === `INVOICE`) {
-        if (paymentMethod === `CASH`) {
-          validation = validateFields(
-            {
-              cashAmount,
-            },
-            [`cashAmount`],
-          );
-        } else if (paymentMethod === `CARD`) {
-          validation = validateFields(
-            {
-              cardAmount,
-              cardType,
-              cardDigits,
-            },
-            [`cardAmount`, `cardType`, `cardDigits`],
-          );
-        } else if (paymentMethod === `MIX`) {
-          if (
-            Number(cardAmount) + Number(cashAmount) + Number(bankAmount) <
-            netTotal
-          ) {
-            toast.error(`Insuficent Funds !`);
-            return;
-          }
-        } else if (paymentMethod === `CREDIT`) {
-          validation = validateFields({ downPayment, creditAmount, dueDate }, [
-            `downPayment`,
-            `creditAmount`,
-            `dueDate`,
-          ]);
-        }
-        if (!validation.isValid) {
-          toast.error(`Missing : ${validation.emptyFields.join(", ")}`);
-          return;
-        }
-      }
-
-      if (docType === `QUOTATION`) {
-        if (!quoteExpiryDate || quoteExpiryDate == ``) {
-          toast.error(`Quotation Expiary Missing !`);
-          return;
-        }
-      }
-
-      const data = new FormData();
-      data.append(`docType`, invoiceData.docType);
-      data.append(`invType`, invoiceData.invType);
-      data.append(`quoteId`, invoiceData.quoteId);
-      data.append(`jobId`, invoiceData.jobId);
-      data.append(`customerState`, customerData.customerState);
-      data.append(`customerId`, customerData.customerId);
-      data.append(`customerName`, customerData.customerName);
-      data.append(`customerPhone`, customerData.customerPhone);
-      data.append(`grossTotal`, invoiceData.grossTotal);
-      data.append(`discount`, invoiceData.discount);
-      data.append(`paid`, invoiceData.paid);
-      data.append(`netTotal`, invoiceData.netTotal);
-      data.append(`paymentMethod`, invoiceData.paymentMethod);
-      data.append(`cashAmount`, invoiceData.cashAmount);
-      data.append(`cardAmount`, invoiceData.cardAmount);
-      data.append(`bankAmount`, invoiceData.bankAmount);
-      data.append(`creditAmount`, invoiceData.creditAmount);
-      data.append(`downPayment`, invoiceData.downPayment);
-      data.append(`dueDate`, invoiceData.dueDate);
-      data.append(`quoteExpiryDate`, invoiceData.quoteExpiryDate);
-      data.append(`cardType`, invoiceData.cardType);
-      data.append(`cardDigits`, invoiceData.cardDigits);
-      data.append(`bankReference`, null);
-      data.append(`note`, invoiceData.note);
-      data.append(`userId`, userData?.user?.id);
-
-      data.append(`invItems`, JSON.stringify(invoiceData?.rows));
-
-      const res = await fetch(`/api/pos/terminal`, {
-        method: `POST`,
-        body: data,
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-
-        toast.error(
-          `${docType === `INVOICE` ? `Invoice` : `Quotation`} Failed !`,
-        );
-
-        if (data.error) {
-          toast.warning(data.error);
-        }
-
-        return;
-      }
-
-      const response = await res.json();
-      // resetINVOICE();
-      // resetCustomer();
-      toast.success(`Saved !`);
-      router.push(`/pos/terminal/${response?.invNo}`);
-    } catch (err) {
-      console.log("Operation Failed:", err);
-      toast.error("Something went wrong !");
-    } finally {
-      setPending(false);
-    }
-  };
-
-  const handlePay = () => {
-    if (billEdit) {
-      if (rows.length <= 0) {
-        toast.warning(`Please Add Items !`);
-        return;
-      }
-
-      if (customerState == 0 && !customerId) {
-        toast.warning(`Please Select Customer !`);
-        return;
-      } else if (customerState == 1 && (!customerName || !customerPhone)) {
-        toast.warning(`Enter Customer Details !`);
-        return;
-      }
-    }
-
-    setHeaderField(`billEdit`, !billEdit);
-  };
-
   return (
     <div className="flex flex-col gap-4">
       {/* invoice totals */}
@@ -374,11 +160,34 @@ const PaymentSection2 = () => {
         </div>
       </fieldset>
 
+      <Button
+        name={
+          pending
+            ? `Processing...`
+            : docType === `INVOICE`
+              ? billEdit
+                ? `PAY`
+                : `EDIT BACK`
+              : `SAVE`
+        }
+        wfull={true}
+        pd={`py-3 px-4 font-bold text-xl`}
+        bg={
+          billEdit
+            ? `bg-green-500 text-white hover:bg-green-600`
+            : `bg-blue-500 text-white hover:bg-blue-600`
+        }
+        click={() => setisOpenPayment(true)}
+      />
+
       <Drawer
         button={`Pay`}
         title={`My Payment`}
-        callback={() => alert(`Opened !`)}
+        trigger={false}
+        open={isOpenPayment}
+        setOpen={setisOpenPayment}
         onCloseCallback={() => alert(`Closing !`)}
+        onOpenCallback={() => alert(`Opening !`)}
       />
     </div>
   );
