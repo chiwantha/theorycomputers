@@ -14,6 +14,7 @@ import {
 const Drawer = ({
   title,
   description,
+  responsiveWidths,
   button,
   close,
   form,
@@ -26,7 +27,7 @@ const Drawer = ({
   trigger = true,
 }) => {
   return (
-    <div className="w-full">
+    <div className="">
       <DrawerSlide
         open={open}
         onOpenChange={setOpen}
@@ -45,7 +46,9 @@ const Drawer = ({
           </DrawerTrigger>
         )}
 
-        <DrawerContent className="bg-white p-4 md:p-6 border-none md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]">
+        <DrawerContent
+          className={`bg-white p-4 md:p-6 border-none ${responsiveWidths || `md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]`}`}
+        >
           <DrawerHeader className={`px-0 ${!title && "hidden"}`}>
             <DrawerTitle>This Is My Drawer</DrawerTitle>
             <DrawerDescription>Lets Practice to use Drawer</DrawerDescription>

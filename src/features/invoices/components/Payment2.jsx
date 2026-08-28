@@ -6,95 +6,34 @@ import { FaRupeeSign } from "react-icons/fa6";
 import { FaCreditCard } from "react-icons/fa";
 import { AiFillBank } from "react-icons/ai";
 import { GiReceiveMoney } from "react-icons/gi";
-import NextInput from "@/components/form/nextinput/NextInput";
 import { useEffect, useState } from "react";
-import { RiVisaLine } from "react-icons/ri";
-import { FaCcMastercard } from "react-icons/fa6";
-import { RefreshCcw } from "lucide-react";
+
 import { useCUSTOMERStore } from "@/store/customerStore";
-import { validateFields } from "@/lib/validation";
-import { toast } from "react-toastify";
+
 import { useSession } from "next-auth/react";
-import { generateDocNo } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import Drawer from "@/components/drawer/Drawer";
+import PaymentForm from "./PaymentForm";
 
 const PaymentSection2 = () => {
   const router = useRouter();
   const { data: userData } = useSession();
   const [pending, setPending] = useState(false);
-  const [isOpenPayment, setisOpenPayment] = useState(false);
 
   const docType = useINVOICEStore((state) => state.docType);
-  const invType = useINVOICEStore((state) => state.invType);
-  const jobId = useINVOICEStore((state) => state.jobId);
-  const quoteId = useINVOICEStore((state) => state.quoteId);
 
   const grossTotal = useINVOICEStore((state) => state.grossTotal);
   const paid = useINVOICEStore((state) => state.paid);
   const discount = useINVOICEStore((state) => state.discount);
   const netTotal = useINVOICEStore((state) => state.netTotal);
 
-  const rows = useINVOICEStore((state) => state.rows);
   const paymentMethod = useINVOICEStore((state) => state.paymentMethod);
-  const cashAmount = useINVOICEStore((state) => state.cashAmount);
-  const cardAmount = useINVOICEStore((state) => state.cardAmount);
-  const bankAmount = useINVOICEStore((state) => state.bankAmount);
   const downPayment = useINVOICEStore((state) => state.downPayment);
-  const creditAmount = useINVOICEStore((state) => state.creditAmount);
-
-  const dueDate = useINVOICEStore((state) => state.dueDate);
-  const cardDigits = useINVOICEStore((state) => state.cardDigits);
-  const cardType = useINVOICEStore((state) => state.cardType);
-  const cashReceived = useINVOICEStore((state) => state.cashReceived);
-  const quoteExpiryDate = useINVOICEStore((state) => state.quoteExpiryDate);
 
   const setDiscount = useINVOICEStore((state) => state.setDiscount);
   const billEdit = useINVOICEStore((state) => state.billEdit);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
-  const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
   const resetINVPayment = useINVOICEStore((state) => state.resetINVPayment);
-
-  const customerState = useCUSTOMERStore((state) => state.customerState);
-  const customerId = useCUSTOMERStore((state) => state.customerId);
-  const customerName = useCUSTOMERStore((state) => state.customerName);
-  const customerPhone = useCUSTOMERStore((state) => state.customerPhone);
-  const resetCustomer = useCUSTOMERStore((state) => state.resetCustomer);
-
-  const paymentMethods = [
-    {
-      name: `CASH`,
-      icon: <FaRupeeSign />,
-      func: () => {
-        setHeaderField(`paymentMethod`, `CASH`);
-        resetINVPayment();
-      },
-    },
-    {
-      name: `CARD`,
-      icon: <FaCreditCard />,
-      func: () => {
-        setHeaderField(`paymentMethod`, `CARD`);
-        resetINVPayment();
-      },
-    },
-    {
-      name: `MIX`,
-      icon: <AiFillBank />,
-      func: () => {
-        setHeaderField(`paymentMethod`, `MIX`);
-        resetINVPayment();
-      },
-    },
-    {
-      name: `CREDIT`,
-      icon: <GiReceiveMoney />,
-      func: () => {
-        setHeaderField(`paymentMethod`, `CREDIT`);
-        resetINVPayment();
-      },
-    },
-  ];
 
   useEffect(() => {
     if (docType === `INVOICE`) {
@@ -177,17 +116,18 @@ const PaymentSection2 = () => {
             ? `bg-green-500 text-white hover:bg-green-600`
             : `bg-blue-500 text-white hover:bg-blue-600`
         }
-        click={() => setisOpenPayment(true)}
+        click={() => setHeaderField("billEdit", false)}
       />
 
       <Drawer
         button={`Pay`}
-        title={`My Payment`}
         trigger={false}
-        open={isOpenPayment}
-        setOpen={setisOpenPayment}
-        onCloseCallback={() => alert(`Closing !`)}
-        onOpenCallback={() => alert(`Opening !`)}
+        form={<PaymentForm />}
+        open={!billEdit}
+        setOpen={(e) => setHeaderField("billEdit", !e)}
+        // onCloseCallback={() => alert(`Closing !`)}
+        // onOpenCallback={() => alert(`Opening !`)}
+        responsiveWidths={`md:min-w-[62%] min-w-screen lg:min-w-[45%] xl:min-w-[40%]`}
       />
     </div>
   );
