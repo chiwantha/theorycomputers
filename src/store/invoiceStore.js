@@ -12,6 +12,7 @@ export const useINVOICEStore = create((set, get) => ({
   invId: ``,
   invNo: ``,
   docType: `INVOICE`, // Invoice or Quotation
+
   date: ``,
 
   // document data
@@ -28,6 +29,7 @@ export const useINVOICEStore = create((set, get) => ({
   netTotal: 0,
 
   // payments
+  settlement: `FULL`,
   paymentMethod: `CASH`,
   cashAmount: ``,
   cardAmount: ``,
@@ -110,6 +112,7 @@ export const useINVOICEStore = create((set, get) => ({
       netTotal: 0,
 
       // payments
+      settlement: `FULL`,
       paymentMethod: `CASH`,
       cashAmount: ``,
       cardAmount: ``,

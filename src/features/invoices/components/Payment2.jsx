@@ -41,8 +41,6 @@ const PaymentSection2 = () => {
         setHeaderField(`cashAmount`, netTotal);
       } else if (paymentMethod === `CARD`) {
         setHeaderField(`cardAmount`, netTotal);
-      } else if (paymentMethod === `CREDIT`) {
-        setHeaderField(`creditAmount`, downPayment);
       }
     }
   }, [netTotal, paymentMethod, docType]);

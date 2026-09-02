@@ -47,7 +47,7 @@ const Drawer = ({
         )}
 
         <DrawerContent
-          className={`bg-white p-4 md:p-6 border-none ${responsiveWidths || `md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]`}`}
+          className={`bg-white p-4 border-none ${responsiveWidths || `md:min-w-[62%] min-w-screen lg:min-w-[55%] xl:min-w-[45%]`}`}
         >
           <DrawerHeader className={`px-0 ${!title && "hidden"}`}>
             <DrawerTitle>This Is My Drawer</DrawerTitle>

@@ -1,0 +1,845 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>POS Terminal</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font: 14px Arial;
+        background: #eef1f5;
+        color: #17202a;
+      }
+      .top {
+        height: 62px;
+        background: #111827;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+      }
+      .top b {
+        font-size: 18px;
+      }
+      .top small {
+        color: #cbd5e1;
+      }
+      .app {
+        display: grid;
+        grid-template-columns: 300px 1fr 330px;
+        height: calc(100vh - 62px);
+      }
+      aside,
+      .checkout {
+        background: #fff;
+        border-right: 1px solid #ddd;
+        overflow: auto;
+      }
+      .checkout {
+        border-left: 1px solid #ddd;
+        border-right: 0;
+        padding: 16px;
+      }
+      .tabs {
+        display: flex;
+        padding: 10px;
+        gap: 5px;
+        border-bottom: 1px solid #ddd;
+      }
+      .tab {
+        flex: 1;
+        border: 0;
+        padding: 10px;
+        border-radius: 7px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .tab.active {
+        background: #2563eb;
+        color: #fff;
+      }
+      .doc {
+        margin: 8px 10px;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .doc.sel {
+        border: 2px solid #2563eb;
+        background: #eff6ff;
+      }
+      .doc b,
+      .doc small {
+        display: block;
+      }
+      .doc small {
+        color: #667085;
+        margin-top: 4px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 3px 7px;
+        border-radius: 20px;
+        font-size: 10px;
+        margin-top: 6px;
+        background: #f2f4f7;
+      }
+      .paid {
+        background: #ecfdf3;
+        color: #067647;
+      }
+      .partial {
+        background: #fff7ed;
+        color: #b54708;
+      }
+      .unpaid {
+        background: #fef3f2;
+        color: #b42318;
+      }
+      .main {
+        padding: 16px;
+        overflow: auto;
+      }
+      .card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 14px;
+      }
+      .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .head h2 {
+        margin: 0;
+      }
+      .muted {
+        color: #667085;
+        font-size: 12px;
+      }
+      .customer {
+        background: #f8fafc;
+        padding: 10px;
+        border-radius: 7px;
+        margin-top: 12px;
+      }
+      .cart {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      .cart th,
+      .cart td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+      }
+      .cart th {
+        font-size: 11px;
+        color: #667085;
+      }
+      .right {
+        text-align: right !important;
+      }
+      .totals {
+        width: 320px;
+        margin-left: auto;
+        margin-top: 12px;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        padding: 7px 0;
+      }
+      .total {
+        font-size: 20px;
+        font-weight: bold;
+        border-top: 1px solid #ddd;
+        padding-top: 12px;
+      }
+      .pay {
+        width: 100%;
+        padding: 15px;
+        border: 0;
+        background: #16a34a;
+        color: white;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .save {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        background: white;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .history div {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 12px;
+      }
+      .kpi {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+      }
+      .kpi div {
+        background: #f8fafc;
+        border: 1px solid #eee;
+        padding: 9px;
+        border-radius: 7px;
+      }
+      .kpi b {
+        display: block;
+        font-size: 16px;
+        margin-top: 3px;
+      }
+      .overlay,
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: #0008;
+        z-index: 10;
+      }
+      .drawer {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 470px;
+        max-width: 100%;
+        background: #fff;
+        padding: 20px;
+        overflow: auto;
+      }
+      .close {
+        float: right;
+        border: 0;
+        background: #eee;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+      }
+      .methods {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .method {
+        border: 1px solid #ccc;
+        background: white;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .method.active {
+        border: 2px solid #2563eb;
+        background: #eff6ff;
+      }
+      .method b,
+      .method small {
+        display: block;
+      }
+      .method small {
+        color: #667085;
+        margin-top: 3px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        margin: 13px 0 5px;
+      }
+      input {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #ccc;
+        border-radius: 7px;
+      }
+      .two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .notice {
+        padding: 10px;
+        border-radius: 8px;
+        background: #eff8ff;
+        border: 1px solid #b2ddff;
+        font-size: 12px;
+      }
+      .warn {
+        background: #fffaeb;
+        border-color: #fedf89;
+      }
+      .drawer-total {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+        margin-top: 10px;
+      }
+      .drawer-total div {
+        padding: 11px;
+        background: #f8fafc;
+        border: 1px solid #eee;
+        border-radius: 7px;
+      }
+      .drawer-total b {
+        display: block;
+        font-size: 18px;
+        margin-top: 3px;
+      }
+      .modal {
+        z-index: 20;
+        padding: 20px;
+        overflow: auto;
+      }
+      .db {
+        background: white;
+        max-width: 1450px;
+        margin: auto;
+        border-radius: 10px;
+        padding: 18px;
+      }
+      .scroll {
+        overflow: auto;
+        border: 1px solid #ddd;
+        border-radius: 7px;
+      }
+      .db table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 11px;
+      }
+      .db th,
+      .db td {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+        white-space: nowrap;
+        text-align: left;
+      }
+      .db th {
+        background: #f8fafc;
+      }
+      .formula {
+        margin-top: 12px;
+        padding: 12px;
+        background: #eff8ff;
+        border: 1px solid #b2ddff;
+        border-radius: 8px;
+      }
+      @media (max-width: 1000px) {
+        .app {
+          grid-template-columns: 250px 1fr;
+        }
+        .checkout {
+          display: none;
+        }
+      }
+      @media (max-width: 700px) {
+        .app {
+          display: block;
+        }
+        .main {
+          height: calc(100vh - 280px);
+        }
+        aside {
+          height: 218px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <b>POS TERMINAL</b
+      ><small>Main Branch • Register #01 • Cashier: Kasun</small>
+    </div>
+    <div class="app">
+      <aside>
+        <div class="tabs">
+          <button class="tab active" onclick="setType('INVOICE', this)">
+            Invoice</button
+          ><button class="tab" onclick="setType('ORDER', this)">Order</button
+          ><button class="tab" onclick="setType('QUOTE', this)">Quote</button>
+        </div>
+        <div id="docs"></div>
+      </aside>
+      <main class="main">
+        <div class="card">
+          <div class="head">
+            <h2 id="title">Invoice</h2>
+            <span class="muted" id="no"></span>
+          </div>
+          <div class="customer">
+            <b id="customer"></b><br /><span class="muted"
+              >Customer account • Sample data</span
+            >
+          </div>
+        </div>
+        <div class="card">
+          <div class="head">
+            <h2>Cart / Items</h2>
+            <span class="muted">Terminal sale</span>
+          </div>
+          <table class="cart">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>SKU</th>
+                <th>Qty</th>
+                <th class="right">Price</th>
+                <th class="right">Total</th>
+              </tr>
+            </thead>
+            <tbody id="items"></tbody>
+          </table>
+          <div class="totals">
+            <div class="row"><span>Gross Total</span><b id="gross"></b></div>
+            <div class="row"><span>Discount</span><b id="discount"></b></div>
+            <div class="row total"><span>NET TOTAL</span><b id="net"></b></div>
+          </div>
+        </div>
+        <div class="card">
+          <button id="pay" class="pay" onclick="openPay()">PAY</button
+          ><button
+            id="quote"
+            class="save"
+            onclick="alert('Quotation saved. No payment is created.')"
+            style="display: none"
+          >
+            SAVE QUOTATION
+          </button>
+        </div>
+      </main>
+      <section class="checkout">
+        <div class="card">
+          <h3 style="margin-top: 0">Settlement</h3>
+          <div class="kpi">
+            <div>Settlement<b id="settlement"></b></div>
+            <div>Status<b id="status"></b></div>
+            <div>Paid<b id="paid"></b></div>
+            <div>Outstanding<b id="due"></b></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top: 0">Payments</h3>
+          <div id="history" class="history"></div>
+        </div>
+        <button class="save" onclick="db()">PREVIEW DATABASE</button>
+      </section>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="drawer">
+        <button class="close" onclick="closePay()">×</button>
+        <h2>Payment</h2>
+        <div class="muted" id="dno"></div>
+        <div class="notice" style="margin-top: 12px">
+          <b>Invoice Total:</b> <span id="dnet"></span><br /><b
+            >Current Outstanding:</b
+          >
+          <span id="ddue"></span>
+        </div>
+        <h3>Payment Method</h3>
+        <div class="methods">
+          <button class="method active" onclick="pick('CASH', this)">
+            💵 <b>Cash</b><small>Cash received</small></button
+          ><button class="method" onclick="pick('CARD', this)">
+            💳 <b>Card</b><small>Card terminal</small></button
+          ><button class="method" onclick="pick('BANK_TRANSFER', this)">
+            🏦 <b>Bank Transfer</b><small>Bank deposit</small></button
+          ><button class="method" onclick="pick('ONLINE', this)">
+            🌐 <b>Online</b><small>Gateway payment</small>
+          </button>
+        </div>
+        <div
+          id="cod"
+          class="notice warn"
+          style="display: none; margin-top: 10px"
+        >
+          <b>COD ORDER</b><br />COD is not the payment method. The outstanding
+          amount is collected at delivery, and the customer can pay Cash, Card,
+          Bank Transfer or Online.
+        </div>
+        <label>Amount Received</label
+        ><input id="amount" type="number" min="0" step=".01" />
+        <div class="two">
+          <div>
+            <label>Reference No.</label
+            ><input id="ref" placeholder="Optional for cash" />
+          </div>
+          <div><label>Payment Date</label><input id="date" type="date" /></div>
+        </div>
+        <div class="drawer-total">
+          <div>Paid<b id="dp"></b></div>
+          <div>Outstanding<b id="du"></b></div>
+        </div>
+        <h3>Payment History</h3>
+        <div id="dh" class="history"></div>
+        <button class="pay" style="margin-top: 14px" onclick="savePayment()">
+          SAVE PAYMENT</button
+        ><button class="save" style="margin-top: 8px" onclick="closePay()">
+          CANCEL
+        </button>
+      </div>
+    </div>
+
+    <div class="modal" id="modal">
+      <div class="db">
+        <div class="head">
+          <div>
+            <h2>Database Preview</h2>
+            <span class="muted"
+              >Resulting invoice_header and payments rows</span
+            >
+          </div>
+          <button class="save" style="width: auto" onclick="closeDB()">
+            Close
+          </button>
+        </div>
+        <h3>invoice_header</h3>
+        <div class="scroll"><table id="ht"></table></div>
+        <h3>payments</h3>
+        <div class="scroll"><table id="pt"></table></div>
+        <div id="formula" class="formula"></div>
+      </div>
+    </div>
+    <script>
+      const data = {
+        INVOICE: [
+          {
+            id: "INV-1001",
+            customer: "Nimal Perera",
+            gross: 5500,
+            discount: 500,
+            settlement: "IMMEDIATE",
+            dueDate: null,
+            cod: false,
+            items: [
+              ["Kingston SSD 1TB", "SSD-1TB", 1, 5000],
+              ["HDMI Cable", "HDMI-2M", 1, 500],
+            ],
+            payments: [],
+          },
+          {
+            id: "INV-1002",
+            customer: "ABC Computers (Pvt) Ltd",
+            gross: 12000,
+            discount: 1000,
+            settlement: "CREDIT",
+            dueDate: "2026-09-15",
+            cod: false,
+            items: [
+              ['Dell Monitor 24"', "MON-24", 2, 5000],
+              ["Keyboard", "KB-01", 1, 2000],
+            ],
+            payments: [
+              {
+                id: "PAY-1001",
+                method: "CASH",
+                amount: 7000,
+                date: "2026-08-28",
+                ref: "",
+              },
+            ],
+          },
+        ],
+        ORDER: [
+          {
+            id: "ORD-3001",
+            customer: "Tharindu Silva",
+            gross: 5000,
+            discount: 0,
+            settlement: "IMMEDIATE",
+            dueDate: null,
+            cod: true,
+            items: [
+              ["Gaming Mouse", "MSE-01", 1, 2500],
+              ["Mechanical Keyboard", "KB-MECH", 1, 2500],
+            ],
+            payments: [
+              {
+                id: "PAY-2001",
+                method: "CASH",
+                amount: 500,
+                date: "2026-08-29",
+                ref: "",
+              },
+            ],
+          },
+          {
+            id: "ORD-3002",
+            customer: "Greenline Traders",
+            gross: 22500,
+            discount: 2500,
+            settlement: "CREDIT",
+            dueDate: "2026-09-30",
+            cod: false,
+            items: [
+              ["Laptop", "LAP-001", 1, 20000],
+              ["Laptop Bag", "BAG-01", 1, 5000],
+            ],
+            payments: [],
+          },
+        ],
+        QUOTE: [
+          {
+            id: "QUO-5001",
+            customer: "Mihiri Stores",
+            gross: 18000,
+            discount: 1000,
+            settlement: "IMMEDIATE",
+            dueDate: null,
+            cod: false,
+            items: [
+              ["POS Printer", "PRN-01", 1, 10000],
+              ["Barcode Scanner", "SCN-01", 2, 3500],
+            ],
+            payments: [],
+          },
+        ],
+      };
+      let type = "INVOICE",
+        idx = 0,
+        pm = "CASH";
+      const today = new Date().toISOString().slice(0, 10);
+      function d() {
+        return data[type][idx];
+      }
+      function net() {
+        return d().gross - d().discount;
+      }
+      function paid() {
+        return d().payments.reduce((a, x) => a + x.amount, 0);
+      }
+      function due() {
+        return Math.max(0, net() - paid());
+      }
+      function stat() {
+        return paid() === 0 ? "UNPAID" : due() > 0 ? "PARTIALLY_PAID" : "PAID";
+      }
+      function money(x) {
+        return "Rs. " + x.toLocaleString("en-LK", { minimumFractionDigits: 2 });
+      }
+      function setType(t, b) {
+        type = t;
+        idx = 0;
+        document
+          .querySelectorAll(".tab")
+          .forEach((x) => x.classList.remove("active"));
+        b.classList.add("active");
+        render();
+      }
+      function renderDocs() {
+        document.getElementById("docs").innerHTML = data[type]
+          .map(
+            (x, i) =>
+              `<div class="doc ${i === idx ? "sel" : ""}" onclick="idx=${i};render()"><b>${x.id}</b><small>${x.customer}</small><span class="badge ${statFor(x) === "PAID" ? "paid" : statFor(x) === "PARTIALLY_PAID" ? "partial" : "unpaid"}">${statFor(x)}</span>${x.cod ? '<span class="badge partial"> COD</span>' : ""}</div>`,
+          )
+          .join("");
+      }
+      function statFor(x) {
+        let p = x.payments.reduce((a, z) => a + z.amount, 0),
+          n = x.gross - x.discount;
+        return p === 0 ? "UNPAID" : p < n ? "PARTIALLY_PAID" : "PAID";
+      }
+      function render() {
+        let x = d();
+        renderDocs();
+        document.getElementById("title").textContent =
+          type === "INVOICE"
+            ? "Invoice Terminal"
+            : type === "ORDER"
+              ? "Order Terminal"
+              : "Quotation Terminal";
+        document.getElementById("no").textContent = x.id;
+        document.getElementById("customer").textContent = x.customer;
+        document.getElementById("items").innerHTML = x.items
+          .map(
+            (i) =>
+              `<tr><td>${i[0]}</td><td>${i[1]}</td><td>${i[2]}</td><td class="right">${money(i[3])}</td><td class="right">${money(i[2] * i[3])}</td></tr>`,
+          )
+          .join("");
+        document.getElementById("gross").textContent = money(x.gross);
+        document.getElementById("discount").textContent =
+          "- " + money(x.discount);
+        document.getElementById("net").textContent = money(net());
+        document.getElementById("settlement").textContent = x.settlement;
+        document.getElementById("status").innerHTML =
+          '<span class="badge ' +
+          (statFor(x) === "PAID"
+            ? "paid"
+            : statFor(x) === "PARTIALLY_PAID"
+              ? "partial"
+              : "unpaid") +
+          '">' +
+          statFor(x) +
+          "</span>";
+        document.getElementById("paid").textContent = money(paid());
+        document.getElementById("due").textContent = money(due());
+        document.getElementById("history").innerHTML = x.payments.length
+          ? x.payments
+              .map(
+                (p) =>
+                  `<div><span>${p.method}<br><small>${p.date}</small></span><b>${money(p.amount)}</b></div>`,
+              )
+              .join("")
+          : '<span class="muted">No payments recorded.</span>';
+        document.getElementById("pay").style.display =
+          type === "QUOTE" ? "none" : "block";
+        document.getElementById("quote").style.display =
+          type === "QUOTE" ? "block" : "none";
+      }
+      function openPay() {
+        if (type === "QUOTE") return;
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("dno").textContent =
+          d().id + " • " + d().customer;
+        document.getElementById("dnet").textContent = money(net());
+        document.getElementById("ddue").textContent = money(due());
+        document.getElementById("dp").textContent = money(paid());
+        document.getElementById("du").textContent = money(due());
+        document.getElementById("amount").value = due().toFixed(2);
+        document.getElementById("date").value = today;
+        document.getElementById("ref").value = "";
+        document.getElementById("cod").style.display = d().cod
+          ? "block"
+          : "none";
+        renderDH();
+      }
+      function closePay() {
+        document.getElementById("overlay").style.display = "none";
+      }
+      function pick(m, b) {
+        pm = m;
+        document
+          .querySelectorAll(".method")
+          .forEach((x) => x.classList.remove("active"));
+        b.classList.add("active");
+      }
+      function renderDH() {
+        document.getElementById("dh").innerHTML = d().payments.length
+          ? d()
+              .payments.map(
+                (p) =>
+                  `<div><span>${p.method}<br><small>${p.date}</small></span><b>${money(p.amount)}</b></div>`,
+              )
+              .join("")
+          : '<span class="muted">No payments recorded.</span>';
+      }
+      function savePayment() {
+        let a = Number(document.getElementById("amount").value);
+        if (!a || a <= 0) return alert("Enter a valid payment amount.");
+        if (a > due() + 0.001)
+          return alert("Payment cannot exceed outstanding amount.");
+        d().payments.push({
+          id: "PAY-" + Math.floor(10000 + Math.random() * 89999),
+          method: pm,
+          amount: a,
+          date: document.getElementById("date").value || today,
+          ref: document.getElementById("ref").value.trim(),
+        });
+        render();
+        document.getElementById("dp").textContent = money(paid());
+        document.getElementById("du").textContent = money(due());
+        document.getElementById("ddue").textContent = money(due());
+        document.getElementById("amount").value =
+          due() > 0 ? due().toFixed(2) : "";
+        renderDH();
+        alert(
+          "Payment saved. " + statFor(d()) + " • Outstanding " + money(due()),
+        );
+      }
+      function db() {
+        let x = d(),
+          n = net(),
+          p = paid(),
+          u = due(),
+          cols = [
+            ["invoice_id", "VARCHAR", "INV-" + x.id.split("-")[1]],
+            ["invoice_no", "VARCHAR", x.id],
+            ["customer_id", "BIGINT", "CUS-001"],
+            ["customer_name_snapshot", "VARCHAR", x.customer],
+            ["gross_total", "DECIMAL(18,2)", x.gross.toFixed(2)],
+            ["discount_amount", "DECIMAL(18,2)", x.discount.toFixed(2)],
+            ["net_total", "DECIMAL(18,2)", n.toFixed(2)],
+            ["settlement", "ENUM", x.settlement],
+            ["status", "ENUM", statFor(x)],
+            ["due_amount", "DECIMAL(18,2)", u.toFixed(2)],
+            ["due_date", "DATE NULL", x.dueDate || "NULL"],
+            ["currency", "CHAR(3)", "LKR"],
+            ["invoice_date", "DATETIME", "2026-08-29 17:45:00"],
+            ["created_by", "BIGINT", "USER-001"],
+            ["branch_id", "BIGINT", "BR-001"],
+            ["warehouse_id", "BIGINT", "WH-001"],
+            ["tax_total", "DECIMAL(18,2)", "0.00"],
+            ["shipping_amount", "DECIMAL(18,2)", x.cod ? "300.00" : "0.00"],
+            ["notes", "TEXT NULL", x.cod ? "COD order" : "NULL"],
+            ["created_at", "DATETIME", "2026-08-29 17:45:00"],
+            ["updated_at", "DATETIME", "2026-08-29 17:45:00"],
+          ];
+        document.getElementById("ht").innerHTML =
+          "<tr>" +
+          cols.map((c) => "<th>" + c[0] + "</th>").join("") +
+          "</tr><tr>" +
+          cols.map((c) => "<td>" + c[2] + "</td>").join("") +
+          "</tr>";
+        let pc = [
+          "payment_id",
+          "invoice_id",
+          "payment_method",
+          "amount",
+          "payment_date",
+          "reference_no",
+          "cashier_id",
+          "branch_id",
+          "status",
+          "created_at",
+        ];
+        document.getElementById("pt").innerHTML =
+          "<tr>" +
+          pc.map((c) => "<th>" + c + "</th>").join("") +
+          "</tr>" +
+          (x.payments.length
+            ? x.payments
+                .map(
+                  (q) =>
+                    `<tr><td>${q.id}</td><td>${x.id}</td><td>${q.method}</td><td>${q.amount.toFixed(2)}</td><td>${q.date}</td><td>${q.ref || "NULL"}</td><td>USER-001</td><td>BR-001</td><td>POSTED</td><td>${q.date} 17:45:00</td></tr>`,
+                )
+                .join("")
+            : '<tr><td colspan="10">No payment records.</td></tr>');
+        document.getElementById("formula").innerHTML =
+          "<b>Net Total</b> " +
+          money(n) +
+          " − <b>SUM(payments.amount)</b> " +
+          money(p) +
+          " = <b>Due Amount</b> " +
+          money(u) +
+          " &nbsp; | &nbsp; <b>Status:</b> " +
+          statFor(x);
+        document.getElementById("modal").style.display = "block";
+      }
+      function closeDB() {
+        document.getElementById("modal").style.display = "none";
+      }
+      render();
+    </script>
+  </body>
+</html>
