@@ -31,6 +31,7 @@ const PaymentForm = () => {
   const resetINVOICE = useINVOICEStore((state) => state.resetINVOICE);
 
   const docType = useINVOICEStore((state) => state.docType);
+  const delivery = useINVOICEStore((state) => state.delivery);
 
   const settlement = useINVOICEStore((state) => state.settlement);
   const paymentMethod = useINVOICEStore((state) => state.paymentMethod);
@@ -87,12 +88,16 @@ const PaymentForm = () => {
         <h1 className="text-xl font-bold text-gray-600">Payment Options</h1>
       </div>
       {/* Totals */}
-      <div className=" flex flex-col gap-2 pt-2 pb-4 ">
+      <div className=" flex flex-col gap-2 pt-2  ">
+        {/* Gross Total */}
         <div className="flex justify-between items-center flex-nowrap gap-4 px-2">
           <span className="text-gray-600">Gross Total</span>
           <span>{Number(grossTotal).toFixed(2)}</span>
         </div>
+
         <Separator />
+
+        {/* Paid Total */}
         {paid ? (
           <>
             <div className="flex justify-between items-center flex-nowrap gap-4 px-2">
@@ -104,6 +109,8 @@ const PaymentForm = () => {
         ) : (
           false
         )}
+
+        {/* Discounts */}
         <div className="flex justify-between items-center flex-nowrap gap-4 px-2">
           <span className="text-gray-600">Discount</span>
           <NextInput
@@ -115,12 +122,65 @@ const PaymentForm = () => {
             }}
           />
         </div>
-        <Separator />
-        <div className="flex justify-between items-center flex-nowrap gap-4 px-2">
+
+        {/* Delivary Options */}
+        <div className="flex flex-col gap-2 pt-2 ">
+          <div className="gap-4 flex flex-col">
+            <div className="rounded-lg grid grid-cols-2">
+              <Button
+                name={`Pickup`}
+                wfull={true}
+                click={() => setHeaderField("delivery", false)}
+                rounded={`rounded-l-xl`}
+                bg={
+                  !delivery
+                    ? `bg-blue-500 text-white hover:bg-blue-600`
+                    : `bg-gray-200 text-gray-600 hover:bg-gray-300`
+                }
+              />
+              <Button
+                name={`Delivary`}
+                wfull={true}
+                click={() => setHeaderField("delivery", true)}
+                rounded={`rounded-r-xl`}
+                bg={
+                  delivery
+                    ? `bg-blue-500 text-white hover:bg-blue-600`
+                    : `bg-gray-200 text-gray-600 hover:bg-gray-300`
+                }
+              />
+            </div>
+          </div>
+          {delivery && (
+            <>
+              <div className="flex justify-between items-center flex-nowrap gap-4 px-2 mt-2 ">
+                <span className="text-gray-600">Delivary Charges</span>
+                <div className="flex flex-row gap-4 items-center">
+                  <div className="flex gap-1 items-center">
+                    <NextInput
+                      name={`weight`}
+                      placeholder={`weight / Kg`}
+                      inputClassName={`w-32`}
+                    />
+                    <span className="text-gray-400">Kg </span>
+                  </div>
+                  <span>{Number(netTotal).toFixed(2)}</span>
+                </div>
+              </div>
+              <Separator />
+            </>
+          )}
+        </div>
+
+        {/* Net Total */}
+        <div
+          className={`flex justify-between items-center flex-nowrap gap-4 px-2 ${!delivery && `mt-3`}  mb-2`}
+        >
           <span className="text-gray-600">Net Total</span>
           <span>{Number(netTotal).toFixed(2)}</span>
         </div>
       </div>
+
       {/* Settlement */}
       <div className={`grid-cols-3 grid `}>
         {settlementsType.map((sett, index) => (
@@ -149,153 +209,156 @@ const PaymentForm = () => {
           />
         ))}
       </div>
-      {/* Payment Methods */}
-      <div className="grid grid-cols-3 gap-2">
-        {paymentMethods.map((method, index) => (
-          <Button
-            key={index}
-            rounded={`rounded-xl`}
-            pd={`px-4 py-8`}
-            wfull={true}
-            fg={`flex items-center justify-center text-2xl`}
-            bg={
-              paymentMethod == method.name
-                ? `bg-green-500 hover:bg-green-600 text-white`
-                : `bg-gray-200 text-gray-700 hover:bg-gray-300`
-            }
-            name={method.icon}
-            click={method.func}
-          />
-        ))}
-      </div>
-      {/* Payment Tabs */}
-      <div className="flex flex-col space-y-2 bg-gray-50 rounded-xl p-4 border border-gray-300 shadow-md">
-        {paymentMethod == `CASH` && (
-          <div className="flex flex-col gap-1">
-            <NextInput
-              name={`cashReceived`}
-              type="number"
-              label={`Cash Received`}
-              placeholder={`5000.00`}
-              value={cashReceived}
-              onChange={(e) => {
-                setHeaderField(`cashReceived`, e.target.value);
-              }}
-            />
-            <NextInput
-              name={`cashBalance`}
-              type="number"
-              label={`Balance`}
-              placeholder={`0`}
-              value={Number(cashReceived) - Number(netTotal)}
-              readonly={true}
-            />
-          </div>
-        )}
 
-        {paymentMethod == `CARD` && (
-          <div className="flex flex-col space-y-2">
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                name={<RiVisaLine />}
-                fg={`flex items-center justify-center text-6xl ${cardType == `VISA` ? `border-l-12 border-green-400` : ``}`}
-                pd={`px-4 py-4`}
-                wfull={true}
-                click={() => setHeaderField(`cardType`, `VISA`)}
+      {/* Payment Amounts */}
+      <div className="flex flex-col gap-4 bg-white border border-blue-300 rounded-xl p-4 shadow-md">
+        {/* Payment Methods */}
+        <div className="grid grid-cols-3 gap-2">
+          {paymentMethods.map((method, index) => (
+            <Button
+              key={index}
+              rounded={`rounded-lg`}
+              pd={`px-4 py-8`}
+              wfull={true}
+              fg={`flex items-center justify-center text-2xl`}
+              bg={
+                paymentMethod == method.name
+                  ? `bg-green-500 hover:bg-green-600 text-white`
+                  : `bg-gray-200 text-gray-700 hover:bg-gray-300`
+              }
+              name={method.icon}
+              click={method.func}
+            />
+          ))}
+        </div>
+        {/* Payment Tabs */}
+        <div className="flex flex-col space-y-2">
+          {paymentMethod == `CASH` && (
+            <div className="flex flex-col gap-1">
+              <NextInput
+                name={`cashReceived`}
+                type="number"
+                label={`Cash Received`}
+                placeholder={`5000.00`}
+                value={cashReceived}
+                onChange={(e) => {
+                  setHeaderField(`cashReceived`, e.target.value);
+                }}
               />
-              <Button
-                name={<FaCcMastercard />}
-                fg={`flex items-center justify-center text-6xl ${cardType == `MASTER` ? `border-l-12 border-green-400` : ``}`}
-                bg={`bg-orange-400 text-white hover:bg-orange-500`}
-                pd={`px-4 py-4`}
-                wfull={true}
-                click={() => setHeaderField(`cardType`, `MASTER`)}
+              <NextInput
+                name={`cashBalance`}
+                type="number"
+                label={`Balance`}
+                placeholder={`0`}
+                value={Number(cashReceived) - Number(netTotal)}
+                readonly={true}
               />
             </div>
-            <NextInput
-              name={`cardDigits`}
-              label={`Last 4 Digits`}
-              placeholder={`6564`}
-              value={cardDigits}
-              max={4}
-              onChange={(e) => {
-                setHeaderField(`cardDigits`, e.target.value);
-              }}
-            />
-            <NextInput
-              name={`paying`}
-              type="number"
-              label={`Paying`}
-              disabled={settlement === "FULL"}
-              placeholder={`0.00`}
-              inputClassName={settlement === "FULL" && `bg-red-100`}
-              value={cardAmount}
-              onChange={(e) => {
-                setHeaderField(`cardAmount`, e.target.value);
-              }}
-            />
-            <NextInput
-              name={`cashBalance`}
-              type="number"
-              label={`Balance`}
-              placeholder={`0`}
-              value={Number(cardAmount) - Number(netTotal)}
-              readonly={true}
-            />
-          </div>
-        )}
+          )}
 
-        {paymentMethod == `MIX` && (
-          <>
-            <NextInput
-              name={`cash amount`}
-              type="number"
-              label={`Cash Amount`}
-              placeholder={`5000.00`}
-              value={cashAmount}
-              onChange={(e) => {
-                setHeaderField(`cashAmount`, e.target.value);
-              }}
-            />
-            <NextInput
-              name={`card amount`}
-              type="number"
-              label={`Card Amount`}
-              placeholder={`5000.00`}
-              value={cardAmount}
-              onChange={(e) => {
-                setHeaderField(`cardAmount`, e.target.value);
-              }}
-            />
-            <NextInput
-              name={`bank amount`}
-              type="number"
-              label={`Bank Amount`}
-              placeholder={`5000.00`}
-              value={bankAmount}
-              onChange={(e) => {
-                setHeaderField(`bankAmount`, e.target.value);
-              }}
-            />
-            <NextInput
-              name={`cashBalance`}
-              type="number"
-              label={`Balance`}
-              placeholder={`0`}
-              value={
-                Number(cashAmount) +
-                Number(cardAmount) +
-                Number(bankAmount) -
-                Number(netTotal)
-              }
-              readonly={true}
-            />
-          </>
-        )}
+          {paymentMethod == `CARD` && (
+            <div className="flex flex-col space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  name={<RiVisaLine />}
+                  fg={`flex items-center justify-center text-6xl ${cardType == `VISA` ? `border-l-12 border-green-400` : ``}`}
+                  pd={`px-4 py-4`}
+                  wfull={true}
+                  click={() => setHeaderField(`cardType`, `VISA`)}
+                />
+                <Button
+                  name={<FaCcMastercard />}
+                  fg={`flex items-center justify-center text-6xl ${cardType == `MASTER` ? `border-l-12 border-green-400` : ``}`}
+                  bg={`bg-orange-400 text-white hover:bg-orange-500`}
+                  pd={`px-4 py-4`}
+                  wfull={true}
+                  click={() => setHeaderField(`cardType`, `MASTER`)}
+                />
+              </div>
+              <NextInput
+                name={`cardDigits`}
+                label={`Last 4 Digits`}
+                placeholder={`6564`}
+                value={cardDigits}
+                max={4}
+                onChange={(e) => {
+                  setHeaderField(`cardDigits`, e.target.value);
+                }}
+              />
+              <NextInput
+                name={`paying`}
+                type="number"
+                label={`Paying`}
+                disabled={settlement === "FULL"}
+                placeholder={`0.00`}
+                inputClassName={settlement === "FULL" && `bg-red-100`}
+                value={cardAmount}
+                onChange={(e) => {
+                  setHeaderField(`cardAmount`, e.target.value);
+                }}
+              />
+              <NextInput
+                name={`cashBalance`}
+                type="number"
+                label={`Balance`}
+                placeholder={`0`}
+                value={Number(cardAmount) - Number(netTotal)}
+                readonly={true}
+              />
+            </div>
+          )}
 
-        {paymentMethod == `CREDIT` && (
-          <div className="flex flex-col space-y-2">
-            {/* <NextInput
+          {paymentMethod == `MIX` && (
+            <>
+              <NextInput
+                name={`cash amount`}
+                type="number"
+                label={`Cash Amount`}
+                placeholder={`5000.00`}
+                value={cashAmount}
+                onChange={(e) => {
+                  setHeaderField(`cashAmount`, e.target.value);
+                }}
+              />
+              <NextInput
+                name={`card amount`}
+                type="number"
+                label={`Card Amount`}
+                placeholder={`5000.00`}
+                value={cardAmount}
+                onChange={(e) => {
+                  setHeaderField(`cardAmount`, e.target.value);
+                }}
+              />
+              <NextInput
+                name={`bank amount`}
+                type="number"
+                label={`Bank Amount`}
+                placeholder={`5000.00`}
+                value={bankAmount}
+                onChange={(e) => {
+                  setHeaderField(`bankAmount`, e.target.value);
+                }}
+              />
+              <NextInput
+                name={`cashBalance`}
+                type="number"
+                label={`Balance`}
+                placeholder={`0`}
+                value={
+                  Number(cashAmount) +
+                  Number(cardAmount) +
+                  Number(bankAmount) -
+                  Number(netTotal)
+                }
+                readonly={true}
+              />
+            </>
+          )}
+
+          {paymentMethod == `CREDIT` && (
+            <div className="flex flex-col space-y-2">
+              {/* <NextInput
               name={`down payment amount`}
               type="number"
               label={`DownPayment`}
@@ -309,49 +372,13 @@ const PaymentForm = () => {
               }}
             /> */}
 
-            <div className="bg-red-400 flex items-center justify-center flex-col p-4 rounded-lg">
-              <span className=" text-gray-100">Total Due</span>
-              <span className="text-white py-0.5 font-bold px-4 text-4xl">
-                {Number(creditAmount).toFixed(2)}
-              </span>
-            </div>
-
-            <NextInput
-              name={`down payment amount`}
-              type="date"
-              label={`Due Date`}
-            />
-          </div>
-        )}
-      </div>
-      {/* Payment Fullfillment */}
-      {settlement !== "FULL" && (
-        <div className="flex flex-col space-y-2 bg-gray-50 rounded-xl p-4 border border-gray-300 shadow-md mt-0.5">
-          {/* Partial Payment Settlement */}
-          {settlement === "PARTIAL" && (
-            <div className="flex flex-col gap-4">
-              <NextDropdown
-                label={`Settle`}
-                placeholder="Select When Settles !"
-                items={[
-                  { label: "On Pickup", value: "ON_PICKUP" },
-                  { label: "On Delivary", value: "ON_DELIVARY" },
-                ]}
-              />
-            </div>
-          )}
-
-          {settlement === "CREDIT" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
-              <div className="bg-red-400 flex items-center justify-center flex-col p-2 rounded-lg">
+              <div className="bg-red-400 flex items-center justify-center flex-col p-4 rounded-lg">
                 <span className=" text-gray-100">Total Due</span>
-                <span className="text-white py-0.5 font-bold px-4 text-xl">
-                  {Number(netTotal) -
-                    (Number(cashAmount) +
-                      Number(cardAmount) +
-                      Number(bankAmount))}
+                <span className="text-white py-0.5 font-bold px-4 text-4xl">
+                  {Number(creditAmount).toFixed(2)}
                 </span>
               </div>
+
               <NextInput
                 name={`down payment amount`}
                 type="date"
@@ -360,9 +387,45 @@ const PaymentForm = () => {
             </div>
           )}
         </div>
-      )}
-      {/* Delivary Options */}
-      {docType === "ORDER" && <div className="flex flex-col"></div>}
+        {/* Payment Fullfillment */}
+        {settlement !== "FULL" && (
+          <div className="flex flex-col space-y-2 border-t border-blue-300 pt-4 mt-1">
+            {/* Partial Payment Settlement */}
+            {settlement === "PARTIAL" && (
+              <div className="flex flex-col gap-4">
+                <NextDropdown
+                  label={`Settle`}
+                  placeholder="Select When Settles !"
+                  items={[
+                    { label: "On Pickup", value: "ON_PICKUP" },
+                    { label: "On Delivary", value: "ON_DELIVARY" },
+                  ]}
+                />
+              </div>
+            )}
+
+            {settlement === "CREDIT" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                <div className="bg-red-400 flex items-center justify-center flex-col p-2 rounded-lg">
+                  <span className=" text-gray-100">Total Due</span>
+                  <span className="text-white py-0.5 font-bold px-4 text-xl">
+                    {Number(netTotal) -
+                      (Number(cashAmount) +
+                        Number(cardAmount) +
+                        Number(bankAmount))}
+                  </span>
+                </div>
+                <NextInput
+                  name={`down payment amount`}
+                  type="date"
+                  label={`Due Date`}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Action */}
       <div className="flex items-center gap-2">
         <Button

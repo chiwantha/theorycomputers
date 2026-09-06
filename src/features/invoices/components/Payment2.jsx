@@ -2,13 +2,8 @@
 import Button from "@/components/button/Button";
 import Separator from "@/components/separator/Separator";
 import { useINVOICEStore } from "@/store/invoiceStore";
-import { FaRupeeSign } from "react-icons/fa6";
-import { FaCreditCard } from "react-icons/fa";
-import { AiFillBank } from "react-icons/ai";
-import { GiReceiveMoney } from "react-icons/gi";
-import { useEffect, useState } from "react";
 
-import { useCUSTOMERStore } from "@/store/customerStore";
+import { useEffect, useState } from "react";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -16,24 +11,15 @@ import Drawer from "@/components/drawer/Drawer";
 import PaymentForm from "./PaymentForm";
 
 const PaymentSection2 = () => {
-  const router = useRouter();
-  const { data: userData } = useSession();
-  const [pending, setPending] = useState(false);
-
   const docType = useINVOICEStore((state) => state.docType);
-
   const grossTotal = useINVOICEStore((state) => state.grossTotal);
   const paid = useINVOICEStore((state) => state.paid);
   const discount = useINVOICEStore((state) => state.discount);
   const netTotal = useINVOICEStore((state) => state.netTotal);
-
   const paymentMethod = useINVOICEStore((state) => state.paymentMethod);
-  const downPayment = useINVOICEStore((state) => state.downPayment);
-
   const setDiscount = useINVOICEStore((state) => state.setDiscount);
   const billEdit = useINVOICEStore((state) => state.billEdit);
   const setHeaderField = useINVOICEStore((state) => state.setHeaderField);
-  const resetINVPayment = useINVOICEStore((state) => state.resetINVPayment);
 
   useEffect(() => {
     if (docType === `INVOICE`) {
@@ -99,13 +85,11 @@ const PaymentSection2 = () => {
 
       <Button
         name={
-          pending
-            ? `Processing...`
-            : docType === `INVOICE`
-              ? billEdit
-                ? `PAY`
-                : `EDIT BACK`
-              : `SAVE`
+          docType === `INVOICE` || docType === `ORDER`
+            ? billEdit
+              ? `PAY`
+              : `EDIT BACK`
+            : `SAVE`
         }
         wfull={true}
         pd={`py-3 px-4 font-bold text-xl`}
