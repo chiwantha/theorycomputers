@@ -6,6 +6,7 @@ import {
   BarChart2,
   Hammer,
   Menu,
+  PackageCheck,
   ReceiptText,
   ShelvingUnit,
   Wrench,
@@ -30,6 +31,11 @@ const paths = [
     name: `Jobs`,
     path: `/pos/jobs`,
     icon: <Hammer size={20} />,
+  },
+  {
+    name: `Orders`,
+    path: `/pos/orders`,
+    icon: <PackageCheck size={20} />,
   },
   {
     name: `Payments`,
