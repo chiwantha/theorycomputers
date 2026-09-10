@@ -99,14 +99,6 @@ const OrderCard = ({
         <div className="flex flex-col w-full gap-1">
           {/* HEADER */}
           <div className="flex items-center justify-between gap-2">
-            <span
-              onClick={() => navigator.clipboard.writeText(ord_no)}
-              title="Click to copy"
-              className="text-gray-500 font-bold tracking-tighter text-xl text-nowrap line-clamp-1 text-ellipsis cursor-pointer hover:text-blue-500"
-            >
-              {ord_no.split("-").at(-1) || "Order No"}
-            </span>
-
             <CopyInput
               displayValue={ord_no.split("-").at(-1) || "Order No"}
               value={ord_no.split("-").at(-1)}
