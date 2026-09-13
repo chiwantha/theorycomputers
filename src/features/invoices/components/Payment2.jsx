@@ -9,8 +9,9 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Drawer from "@/components/drawer/Drawer";
 import PaymentForm from "./PaymentForm";
+import { toast } from "react-toastify";
 
-const PaymentSection2 = () => {
+const PaymentSection2 = ({ od }) => {
   const docType = useINVOICEStore((state) => state.docType);
   const grossTotal = useINVOICEStore((state) => state.grossTotal);
   const paid = useINVOICEStore((state) => state.paid);
@@ -84,13 +85,7 @@ const PaymentSection2 = () => {
       </fieldset>
 
       <Button
-        name={
-          docType === `INVOICE` || docType === `ORDER`
-            ? billEdit
-              ? `PAY`
-              : `EDIT BACK`
-            : `SAVE`
-        }
+        name={docType === `INVOICE` ? (billEdit ? "PAY" : `EDIT BACK`) : `SAVE`}
         wfull={true}
         pd={`py-3 px-4 font-bold text-xl`}
         bg={
@@ -98,11 +93,16 @@ const PaymentSection2 = () => {
             ? `bg-green-500 text-white hover:bg-green-600`
             : `bg-blue-500 text-white hover:bg-blue-600`
         }
-        click={() => setHeaderField("billEdit", false)}
+        click={() => {
+          if (docType === "INVOICE") {
+            setHeaderField("billEdit", false);
+          } else {
+            toast.success("Order Saved !");
+          }
+        }}
       />
 
       <Drawer
-        button={`Pay`}
         trigger={false}
         form={<PaymentForm />}
         open={!billEdit}
